@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Outil découverte codes APRIL</title>
+<style>
+body { font-family: monospace; background: #0f1117; color: #eef0f6; padding: 30px; max-width: 900px; margin: 0 auto; }
+h1 { color: #4f9cf9; font-size: 1.4rem; }
+h2 { color: #f0b429; font-size: 1rem; margin-top: 30px; }
+.btn {
+  padding: 10px 20px; background: #4f9cf9; color: #fff; border: none;
+  border-radius: 6px; cursor: pointer; font-size: 14px; margin: 5px;
+}
+.btn:hover { background: #2563eb; }
+.btn.green { background: #34d399; color: #000; }
+pre {
+  background: #1e2330; border: 1px solid #2d3448; border-radius: 8px;
+  padding: 16px; overflow-x: auto; font-size: 12px; white-space: pre-wrap;
+  max-height: 400px; overflow-y: auto;
+}
+.notice {
+  background: rgba(240,180,41,0.1); border: 1px solid rgba(240,180,41,0.3);
+  border-radius: 8px; padding: 16px; margin-bottom: 20px; font-size: 13px; color: #f0b429;
+}
+input {
+  padding: 8px 12px; background: #1e2330; border: 1px solid #2d3448;
+  color: #eef0f6; border-radius: 6px; font-family: monospace; font-size: 13px; width: 300px;
+}
+label { font-size: 12px; color: #7e8aaa; display: block; margin-bottom: 4px; }
+.row { margin-bottom: 16px; }
+</style>
+</head>
+<body>
+
+<h1>🔍 Outil de découverte — Codes APRIL healthProtection</h1>
+
+<div class="notice">
+  ⚠️ Cet outil est à usage <strong>interne uniquement</strong>. Ne le laissez pas accessible publiquement.<br>
+  Il appelle votre proxy PHP pour récupérer les codes produits, garanties et régimes APRIL.<br>
+  Supprimez ce fichier une fois les codes identifiés.
+</div>
+
+<div class="row">
+  <label>URL de votre proxy APRIL</label>
+  <input type="text" id="proxyUrl" value="proxy-april.php" placeholder="proxy-april.php ou URL complète">
+</div>
+
+<h2>1. Liste des produits disponibles</h2>
+<p style="font-size:13px;color:#7e8aaa">Récupère tous les produits APRIL auxquels vous avez accès avec vos credentials.</p>
+<button class="btn" onclick="fetchProduits()">Récupérer les produits</button>
+<pre id="resultProduits">— cliquez le bouton —</pre>
+
+<h2>2. Garanties d'un produit</h2>
+<p style="font-size:13px;color:#7e8aaa">Une fois le productCode identifié ci-dessus, entrez-le ici pour voir ses garanties.</p>
+<div class="row">
+  <label>productCode</label>
+  <input type="text" id="productCode" placeholder="ex: SANTE_IND_2024">
+</div>
+<button class="btn" onclick="fetchGaranties()">Récupérer les garanties</button>
+<pre id="resultGaranties">— entrez un productCode —</pre>
+
+<h2>3. Commissions disponibles</h2>
+<button class="btn" onclick="fetchCommissions()">Récupérer les commissions</button>
+<pre id="resultCommissions">— entrez un productCode ci-dessus —</pre>
+
+<h2>4. Régimes obligatoires</h2>
+<p style="font-size:13px;color:#7e8aaa">Mapping des régimes sociaux → codes APRIL.</p>
+<button class="btn" onclick="fetchRegimes()">Récupérer les régimes</button>
+<pre id="resultRegimes">— cliquez le bouton —</pre>
+
+<h2>5. Test tarification</h2>
+<p style="font-size:13px;color:#7e8aaa">Test rapide avec les codes trouvés ci-dessus.</p>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+  <div>
+    <label>productCode</label>
+    <input type="text" id="tarifProduct" placeholder="productCode APRIL">
+  </div>
+  <div>
+    <label>mandatoryScheme (code régime)</label>
+    <input type="text" id="tarifRegime" placeholder="ex: GENERAL">
+  </div>
+  <div>
+    <label>guaranteeCode</label>
+    <input type="text" id="tarifGuarantee" placeholder="ex: SANTE_BASE">
+  </div>
+  <div>
+    <label>levelCode</label>
+    <input type="text" id="tarifLevel" placeholder="ex: 1 ou CONFORT">
+  </div>
+  <div>
+    <label>Date naissance (aaaa-mm-jj)</label>
+    <input type="text" id="tarifBirth" value="1975-06-15">
+  </div>
+  <div>
+    <label>Code postal</label>
+    <input type="text" id="tarifZip" value="56000">
+  </div>
+</div>
+<button class="btn green" onclick="testTarif()">Tester la tarification</button>
+<pre id="resultTarif">— remplissez les champs et cliquez —</pre>
+
+<script>
+function getProxy() {
+  return document.getElementById('proxyUrl').value || 'proxy-april.php';
+}
+
+async function callProxy(url, options = {}) {
+  try {
+    const res = await fetch(url, options);
+    const text = await res.text();
+    try { return JSON.parse(text); } catch(e) { return { raw: text }; }
+  } catch(err) {
+    return { error: err.message };
+  }
+}
+
+async function fetchProduits() {
+  document.getElementById('resultProduits').textContent = 'Chargement...';
+  const data = await callProxy(getProxy() + '?action=produits');
+  document.getElementById('resultProduits').textContent = JSON.stringify(data, null, 2);
+}
+
+async function fetchGaranties() {
+  const pc = document.getElementById('productCode').value;
+  if (!pc) { alert('Entrez un productCode'); return; }
+  document.getElementById('resultGaranties').textContent = 'Chargement...';
+  const data = await callProxy(getProxy() + '?action=garanties&productCode=' + encodeURIComponent(pc));
+  document.getElementById('resultGaranties').textContent = JSON.stringify(data, null, 2);
+}
+
+async function fetchCommissions() {
+  const pc = document.getElementById('productCode').value;
+  if (!pc) { alert('Entrez un productCode'); return; }
+  document.getElementById('resultCommissions').textContent = 'Chargement...';
+  const data = await callProxy(getProxy() + '?action=commissions&productCode=' + encodeURIComponent(pc));
+  document.getElementById('resultCommissions').textContent = JSON.stringify(data, null, 2);
+}
+
+async function fetchRegimes() {
+  document.getElementById('resultRegimes').textContent = 'Chargement...';
+  const data = await callProxy(getProxy() + '?action=regimes');
+  document.getElementById('resultRegimes').textContent = JSON.stringify(data, null, 2);
+}
+
+async function testTarif() {
+  const product    = document.getElementById('tarifProduct').value;
+  const regime     = document.getElementById('tarifRegime').value;
+  const guarantee  = document.getElementById('tarifGuarantee').value;
+  const level      = document.getElementById('tarifLevel').value;
+  const birth      = document.getElementById('tarifBirth').value;
+  const zip        = document.getElementById('tarifZip').value;
+
+  if (!product || !guarantee || !birth) {
+    alert('Remplissez au minimum : productCode, guaranteeCode, date naissance');
+    return;
+  }
+
+  document.getElementById('resultTarif').textContent = 'Calcul en cours...';
+  const data = await callProxy(getProxy() + '?action=tarif', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      birthdate:       birth,
+      zipcode:         zip,
+      city:            'Vannes',
+      profile:         'individuel',
+      mandatoryScheme: regime,
+      productCode:     product,
+      guarantees:      [{ guaranteeCode: guarantee, levelCode: level }],
+    }),
+  });
+  document.getElementById('resultTarif').textContent = JSON.stringify(data, null, 2);
+}
+</script>
+</body>
+</html>
