@@ -7,40 +7,40 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #0f1117;
-  --surface: #181c27;
-  --surface2: #1e2330;
-  --surface3: #252b3b;
-  --border: #2d3448;
-  --border-light: #3a4260;
-  --ink: #eef0f6;
-  --ink-muted: #7e8aaa;
-  --ink-dim: #4a5270;
-  --accent: #4f9cf9;
-  --accent-glow: rgba(79,156,249,0.15);
-  --gold: #f0b429;
-  --green: #34d399;
-  --red: #f87171;
-  --malj: #a78bfa;
-  --inizys: #f97316;
-  --neoliane: #10b981;
+  --bg: #f0f2f7;
+  --surface: #ffffff;
+  --surface2: #f5f7fb;
+  --surface3: #eaecf4;
+  --border: #d8dde8;
+  --border-light: #c0c8d8;
+  --ink: #1a2035;
+  --ink-muted: #5a6480;
+  --ink-dim: #9aa0b8;
+  --accent: #2563eb;
+  --accent-glow: rgba(37,99,235,0.10);
+  --gold: #d97706;
+  --green: #059669;
+  --red: #dc2626;
+  --malj: #7c3aed;
+  --inizys: #ea580c;
+  --neoliane: #047857;
   --eco: #64748b;
-  --ecoplus: #06b6d4;
-  --equilibre: #34d399;
-  --confort: #a78bfa;
-  --privilege: #f0b429;
-  --vip: #f97316;
+  --ecoplus: #0891b2;
+  --equilibre: #059669;
+  --confort: #7c3aed;
+  --privilege: #d97706;
+  --vip: #ea580c;
   --radius: 14px;
   --radius-sm: 8px;
-  --shadow: 0 4px 24px rgba(0,0,0,0.4);
-  --shadow-lg: 0 12px 48px rgba(0,0,0,0.6);
+  --shadow: 0 2px 12px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; line-height: 1.5; }
 body::before {
   content: ''; position: fixed; inset: 0;
-  background: radial-gradient(ellipse 80% 50% at 20% 0%, rgba(79,156,249,0.06) 0%, transparent 60%),
-              radial-gradient(ellipse 60% 40% at 80% 100%, rgba(240,180,41,0.04) 0%, transparent 60%);
+  background: radial-gradient(ellipse 80% 50% at 20% 0%, rgba(37,99,235,0.04) 0%, transparent 60%),
+              radial-gradient(ellipse 60% 40% at 80% 100%, rgba(217,119,6,0.03) 0%, transparent 60%);
   pointer-events: none; z-index: 0;
 }
 .app { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 48px 20px 100px; }
@@ -102,9 +102,9 @@ body::before {
 .fg input, .fg select {
   padding:11px 14px; border:1.5px solid var(--border);
   border-radius:var(--radius-sm); font-family:'Outfit',sans-serif; font-size:14px;
-  color:var(--ink); background:var(--surface2); outline:none; transition:border-color .15s; appearance:none;
+  color:var(--ink); background:var(--surface); outline:none; transition:border-color .15s; appearance:none;
 }
-.fg input:focus, .fg select:focus { border-color:var(--accent); background:var(--surface3); }
+.fg input:focus, .fg select:focus { border-color:var(--accent); background:#fff; box-shadow:0 0 0 3px rgba(37,99,235,0.08); }
 
 /* Level selector */
 .level-selector { margin-bottom:28px; }
@@ -127,13 +127,13 @@ body::before {
 /* CTA */
 .btn-search {
   width:100%; padding:16px;
-  background:linear-gradient(135deg,var(--accent),#2563eb);
+  background:linear-gradient(135deg,var(--accent),#1d4ed8);
   color:#fff; border:none; border-radius:var(--radius-sm);
   font-family:'Outfit',sans-serif; font-size:16px; font-weight:700;
   cursor:pointer; transition:all .2s; display:flex; align-items:center; justify-content:center; gap:10px;
-  box-shadow:0 4px 20px rgba(79,156,249,0.3);
+  box-shadow:0 4px 16px rgba(37,99,235,0.25);
 }
-.btn-search:hover { transform:translateY(-2px); box-shadow:0 8px 32px rgba(79,156,249,0.45); }
+.btn-search:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(37,99,235,0.38); }
 
 /* Fee info notice */
 .fee-notice {
@@ -181,7 +181,7 @@ body::before {
 .sort-wrap select {
   padding:7px 12px; border:1.5px solid var(--border); border-radius:var(--radius-sm);
   font-family:'Outfit',sans-serif; font-size:12px;
-  background:var(--surface2); color:var(--ink); outline:none;
+  background:var(--surface); color:var(--ink); outline:none;
 }
 
 /* TOP 3 */
@@ -272,7 +272,7 @@ body::before {
 .btn-row:hover { background:var(--accent); border-color:var(--accent); color:#fff; }
 
 /* MODAL */
-.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); backdrop-filter:blur(6px); z-index:100; align-items:center; justify-content:center; padding:20px; }
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); backdrop-filter:blur(4px); z-index:100; align-items:center; justify-content:center; padding:20px; }
 .modal-overlay.open { display:flex; }
 .modal { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:32px; max-width:640px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:var(--shadow-lg); animation:modalIn .25s ease; }
 @keyframes modalIn { from{opacity:0;transform:scale(.95) translateY(10px)} to{opacity:1;transform:scale(1) translateY(0)} }
@@ -343,6 +343,14 @@ body::before {
       <label>Naissance conjoint(e)</label>
       <input type="date" id="birthdate_partner">
     </div>
+    <div class="fg" id="child1Field" style="display:none">
+      <label>Date de naissance enfant 1</label>
+      <input type="date" id="birthdate_child1">
+    </div>
+    <div class="fg" id="child2Field" style="display:none">
+      <label>Date de naissance enfant 2</label>
+      <input type="date" id="birthdate_child2">
+    </div>
     <div class="fg">
       <label>Régime social</label>
       <select id="regime">
@@ -367,7 +375,7 @@ body::before {
 
   <div class="fee-notice">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-    <span>Les cotisations MALJ s'entendent hors frais d'association et d'assistance : <strong>13 €/an</strong> (Mutuelle Santé) ou <strong>6 €/an</strong> (Senior). Ces frais sont proratisés et inclus dans le tarif mensuel affiché.</span>
+    <span>Les cotisations MALJ s'entendent hors frais d'association et d'assistance : <strong>13 €/an</strong> (Mutuelle Santé) ou <strong>6 €/an</strong> (Senior). Ces frais sont proratisés et inclus dans le tarif affiché. Pour les profils couple/famille, le tarif MALJ est calculé <strong>par tête</strong> (adhérent + conjoint + enfant(s)).</span>
   </div>
 
   <div class="error-box" id="errorBox">
@@ -549,7 +557,7 @@ function getNeolianeRegime(regimeCode) {
 }
 
 // Construire profileHealth selon le profil sélectionné
-function buildNeolianeProfile(profile, birthdate, birthdatePartner, regime) {
+function buildNeolianeProfile(profile, birthdate, birthdatePartner, regime, bdChild1, bdChild2) {
   const scheme = getNeolianeRegime(regime);
   const birthYear = new Date(birthdate).getFullYear().toString();
   const members = [{ socialSecurityScheme: scheme, birthYear, familyMember: 'holder' }];
@@ -558,12 +566,13 @@ function buildNeolianeProfile(profile, birthdate, birthdatePartner, regime) {
     const partnerYear = new Date(birthdatePartner).getFullYear().toString();
     members.push({ socialSecurityScheme: scheme, birthYear: partnerYear, familyMember: 'spouse' });
   }
-  if (profile === 'famille_1e') {
-    members.push({ socialSecurityScheme: 'student', birthYear: '2010', familyMember: 'child' });
+  if (['famille_1e', 'famille_2e'].includes(profile)) {
+    const c1Year = bdChild1 ? new Date(bdChild1).getFullYear().toString() : '2015';
+    members.push({ socialSecurityScheme: 'student', birthYear: c1Year, familyMember: 'child' });
   }
   if (profile === 'famille_2e') {
-    members.push({ socialSecurityScheme: 'student', birthYear: '2010', familyMember: 'child' });
-    members.push({ socialSecurityScheme: 'student', birthYear: '2013', familyMember: 'child' });
+    const c2Year = bdChild2 ? new Date(bdChild2).getFullYear().toString() : '2018';
+    members.push({ socialSecurityScheme: 'student', birthYear: c2Year, familyMember: 'child' });
   }
   return members;
 }
@@ -577,7 +586,7 @@ function getDateEffect() {
 }
 
 // Appel API Neoliane complet → retourne liste d'offres formatées
-async function fetchNeoliane(profile, birthdate, birthdatePartner, zipcode, regime, lvlRule) {
+async function fetchNeoliane(profile, birthdate, birthdatePartner, zipcode, regime, lvlRule, bdChild1, bdChild2) {
   try {
     const res = await fetch(NEOLIANE_PROXY, {
       method: 'POST',
@@ -586,7 +595,7 @@ async function fetchNeoliane(profile, birthdate, birthdatePartner, zipcode, regi
         action: 'get_prices',
         zipCode: zipcode,
         dateEffect: getDateEffect(),
-        profileHealth: buildNeolianeProfile(profile, birthdate, birthdatePartner, regime)
+        profileHealth: buildNeolianeProfile(profile, birthdate, birthdatePartner, regime, bdChild1, bdChild2)
       })
     });
     const data = await res.json();
@@ -730,8 +739,12 @@ function setProfile(el) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
   currentProfile = el.dataset.p;
-  const isCouple = ['couple','famille_1e','famille_2e'].includes(currentProfile);
-  document.getElementById('partnerField').style.display = isCouple ? '' : 'none';
+  const isCouple  = ['couple','famille_1e','famille_2e'].includes(currentProfile);
+  const hasChild1 = ['famille_1e','famille_2e'].includes(currentProfile);
+  const hasChild2 = currentProfile === 'famille_2e';
+  document.getElementById('partnerField').style.display = isCouple  ? '' : 'none';
+  document.getElementById('child1Field').style.display  = hasChild1 ? '' : 'none';
+  document.getElementById('child2Field').style.display  = hasChild2 ? '' : 'none';
 }
 
 function showError(msg) {
@@ -766,10 +779,17 @@ async function launchSearch() {
 
   const bd        = document.getElementById('birthdate').value;
   const bdPartner = document.getElementById('birthdate_partner').value;
+  const bdChild1  = document.getElementById('birthdate_child1').value;
+  const bdChild2  = document.getElementById('birthdate_child2').value;
   const zipcode   = document.getElementById('zipcode').value;
   const regime    = document.getElementById('regime').value;
   const age       = ageRevolu(bd);
   const famCode   = getInizysFamily(currentProfile);
+
+  // Âges conjoint et enfants
+  const agePartner = bdPartner ? ageRevolu(bdPartner) : null;
+  const ageChild1  = bdChild1  ? ageRevolu(bdChild1)  : 10; // défaut 10 ans
+  const ageChild2  = bdChild2  ? ageRevolu(bdChild2)  : 7;  // défaut 7 ans
 
   // Loading animation
   const steps = ['step1','step2','step3','step4','step5','step6'];
@@ -793,15 +813,43 @@ async function launchSearch() {
   const maljContract  = isSenior ? 'MALJ Santé Senior'  : 'MALJ Mutuelle Santé';
   const maljGuarantees= isSenior ? MALJ_SENIOR_GUARANTEES : MALJ_SANTE_GUARANTEES;
   const maljFees      = isSenior ? MALJ_FEES.MALJ_SENIOR_2026 : MALJ_FEES.MALJ_SANTE_2026;
+  const maljFeesAnnual= isSenior ? 6 : 13;
 
   const maljFormulas  = ['ECO','ZEN','EQUILIBRE','SERENITE','EXCELLENCE'];
   maljFormulas.forEach(fc => {
     const g = maljGuarantees[fc];
     if (!g) return;
     if (g.soins_optam < lvlRule.min || g.soins_optam > lvlRule.max) return;
-    const basePremium = getMaljPrice(maljProduct, fc, age, regime);
-    if (!basePremium) return;
-    // Prix total = cotisation de base + frais fixes
+
+    // Tarif adhérent principal
+    const baseHolder = getMaljPrice(maljProduct, fc, age, regime);
+    if (!baseHolder) return;
+
+    // Calcul par tête selon profil
+    let basePremium = baseHolder;
+
+    if (['couple','famille_1e','famille_2e'].includes(currentProfile) && agePartner !== null) {
+      // Conjoint : même contrat (Senior si ≥65, Santé sinon)
+      const partnerIsSenior = agePartner >= 65;
+      const partnerProduct = partnerIsSenior ? 'MALJ_SENIOR_2026' : 'MALJ_SANTE_2026';
+      const basePartner = getMaljPrice(partnerProduct, fc, agePartner, regime);
+      if (basePartner) basePremium += basePartner;
+    }
+
+    if (['famille_1e','famille_2e'].includes(currentProfile)) {
+      // Enfant : toujours MALJ_SANTE_2026, âge clampé à 17 min
+      const c1Age = Math.max(17, ageChild1);
+      const baseChild1 = getMaljPrice('MALJ_SANTE_2026', fc, c1Age, regime);
+      if (baseChild1) basePremium += baseChild1;
+    }
+
+    if (currentProfile === 'famille_2e') {
+      const c2Age = Math.max(17, ageChild2);
+      const baseChild2 = getMaljPrice('MALJ_SANTE_2026', fc, c2Age, regime);
+      if (baseChild2) basePremium += baseChild2;
+    }
+
+    // Frais fixes (par contrat, pas par tête)
     const totalPrice = Math.round((basePremium + maljFees) * 100) / 100;
     offers.push({
       insurer:  'MALJ',
@@ -811,7 +859,7 @@ async function launchSearch() {
       price:    totalPrice,
       price_base: basePremium,
       fees:         maljFees,
-      fees_annual:  isSenior ? 6 : 13,
+      fees_annual:  maljFeesAnnual,
       level:        getSoinsLevel(g.soins_optam),
     });
   });
@@ -837,7 +885,7 @@ async function launchSearch() {
   });
 
   // ─── NEOLIANE (API temps réel) ──────────────────────
-  const neoliane = await fetchNeoliane(currentProfile, bd, bdPartner, zipcode, regime, lvlRule);
+  const neoliane = await fetchNeoliane(currentProfile, bd, bdPartner, zipcode, regime, lvlRule, bdChild1, bdChild2);
   offers.push(...neoliane);
 
   offers.sort((a, b) => a.price - b.price);
