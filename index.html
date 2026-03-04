@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Comparateur Mutuelle Santé — MALJ & INIZYS</title>
+<title>Comparateur Mutuelle Santé — MALJ, INIZYS & NEOLIANE</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -23,6 +23,7 @@
   --red: #f87171;
   --malj: #a78bfa;
   --inizys: #f97316;
+  --neoliane: #10b981;
   --eco: #64748b;
   --ecoplus: #06b6d4;
   --equilibre: #34d399;
@@ -304,13 +305,14 @@ body::before {
 <header class="header">
   <div class="header-eyebrow"><span class="eyebrow-dot"></span> Tarifs officiels 2026</div>
   <h1>Comparez votre mutuelle santé<br><em>aux vrais tarifs</em></h1>
-  <p>MALJ (Mutuelle Santé & Senior) et INIZYS — tarifs 2026 exacts, calculés par âge et profil.</p>
+  <p>MALJ, INIZYS et NEOLIANE — tarifs 2026 exacts, calculés par âge et profil.</p>
 </header>
 
 <div class="insurers-row">
   <div class="insurer-badge"><span class="dot" style="background:var(--malj)"></span> MALJ Mutuelle Santé</div>
   <div class="insurer-badge"><span class="dot" style="background:#c084fc)"></span> MALJ Santé Senior</div>
   <div class="insurer-badge"><span class="dot" style="background:var(--inizys)"></span> INIZYS</div>
+  <div class="insurer-badge"><span class="dot" style="background:var(--neoliane)"></span> NEOLIANE</div>
 </div>
 
 <div class="form-card">
@@ -382,8 +384,9 @@ body::before {
     <div class="loading-step" id="step1">⟳ Calcul MALJ Mutuelle Santé…</div>
     <div class="loading-step" id="step2">⟳ Calcul MALJ Santé Senior…</div>
     <div class="loading-step" id="step3">⟳ Calcul INIZYS…</div>
-    <div class="loading-step" id="step4">⟳ Application du niveau de garanties…</div>
-    <div class="loading-step" id="step5">⟳ Classement des offres…</div>
+    <div class="loading-step" id="step4">⟳ Récupération tarifs NEOLIANE…</div>
+    <div class="loading-step" id="step5">⟳ Application du niveau de garanties…</div>
+    <div class="loading-step" id="step6">⟳ Classement des offres…</div>
   </div>
 </div>
 
@@ -423,7 +426,7 @@ body::before {
   </div>
 
   <div style="margin-top:24px;text-align:center">
-    <div class="data-badge">Tarifs officiels 2026 — MALJ & INIZYS</div>
+    <div class="data-badge">Tarifs officiels 2026 — MALJ, INIZYS & NEOLIANE</div>
   </div>
 </div>
 
@@ -511,8 +514,119 @@ const INSURER_COLORS = {
   'MALJ Mutuelle Santé': 'var(--malj)',
   'MALJ Santé Senior':   '#c084fc',
   'INIZYS':              'var(--inizys)',
+  'NEOLIANE':            'var(--neoliane)',
 };
 
+// ═══════════════════════════════════════════════════════
+//  NEOLIANE — CONFIG API
+// ═══════════════════════════════════════════════════════
+const NEOLIANE_PROXY = 'http://lfpsjsv.cluster031.hosting.ovh.net/neoliane-proxy.php';
+
+// Mapping warrantyId=112 (Soins courants) → valeur numérique
+function parseSoins(val) {
+  if (!val) return 0;
+  const m = String(val).match(/(\d+)/);
+  return m ? parseInt(m[1]) : 0;
+}
+
+// Extraire valeur numérique d'une garantie (% ou €)
+function parseWarranty(val) {
+  if (!val || val === 'Néant' || val === 'Non') return 0;
+  const m = String(val).match(/(\d+)/);
+  return m ? parseInt(m[1]) : 0;
+}
+
+// Mapping régime comparateur → Neoliane socialSecurityScheme
+function getNeolianeRegime(regimeCode) {
+  const map = {
+    '550001': 'employee',       // Salarié
+    '550002': 'employee',       // Alsace-Moselle → employee
+    '550006': 'civil_servant',  // Fonctionnaire
+    '550008': 'self_employed',  // TNS
+    '550020': 'retired',        // Retraité
+  };
+  return map[regimeCode] || 'employee';
+}
+
+// Construire profileHealth selon le profil sélectionné
+function buildNeolianeProfile(profile, birthdate, birthdatePartner, regime) {
+  const scheme = getNeolianeRegime(regime);
+  const birthYear = new Date(birthdate).getFullYear().toString();
+  const members = [{ socialSecurityScheme: scheme, birthYear, familyMember: 'holder' }];
+
+  if (['couple', 'famille_1e', 'famille_2e'].includes(profile) && birthdatePartner) {
+    const partnerYear = new Date(birthdatePartner).getFullYear().toString();
+    members.push({ socialSecurityScheme: scheme, birthYear: partnerYear, familyMember: 'spouse' });
+  }
+  if (profile === 'famille_1e') {
+    members.push({ socialSecurityScheme: 'student', birthYear: '2010', familyMember: 'child' });
+  }
+  if (profile === 'famille_2e') {
+    members.push({ socialSecurityScheme: 'student', birthYear: '2010', familyMember: 'child' });
+    members.push({ socialSecurityScheme: 'student', birthYear: '2013', familyMember: 'child' });
+  }
+  return members;
+}
+
+// Date d'effet = 1er du mois prochain
+function getDateEffect() {
+  const d = new Date();
+  d.setMonth(d.getMonth() + 1);
+  d.setDate(1);
+  return d.toISOString().split('T')[0];
+}
+
+// Appel API Neoliane complet → retourne liste d'offres formatées
+async function fetchNeoliane(profile, birthdate, birthdatePartner, zipcode, regime, lvlRule) {
+  try {
+    const res = await fetch(NEOLIANE_PROXY, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'get_prices',
+        zipCode: zipcode,
+        dateEffect: getDateEffect(),
+        profileHealth: buildNeolianeProfile(profile, birthdate, birthdatePartner, regime)
+      })
+    });
+    const data = await res.json();
+    if (!data.status || !data.products) return [];
+
+    const offers = [];
+    data.products.forEach(p => {
+      const warranties = p.pricingPersonalInsurance?.warranties || [];
+      const soinsW = warranties.find(w => w.id === 112);
+      const hospW  = warranties.find(w => w.id === 109);
+      const dentW  = warranties.find(w => w.id === 110);
+      const optiW  = warranties.find(w => w.id === 111);
+      const audioW = warranties.find(w => w.id === 396);
+
+      const soins = parseSoins(soinsW?.value);
+      if (soins < lvlRule.min || soins > lvlRule.max) return;
+      if (!p.isSellable) return;
+
+      offers.push({
+        insurer:   'NEOLIANE',
+        contract:  p.gammeLabel,
+        formula:   p.formulaLabel,
+        guarantees: {
+          soins_optam:        soins,
+          hospit_optam:       parseWarranty(hospW?.value),
+          dentaire:           parseWarranty(dentW?.value),
+          optique_b_simple:   parseWarranty(optiW?.value),
+          optique_b_complexe: parseWarranty(optiW?.value),
+          audio:              parseWarranty(audioW?.value),
+        },
+        price: p.amount,
+        level: getSoinsLevel(soins),
+      });
+    });
+    return offers;
+  } catch(e) {
+    console.error('Erreur Neoliane:', e);
+    return [];
+  }
+}
 // ═══════════════════════════════════════════════════════
 //  CALCUL ÂGE RÉVOLU AU 31/12/2025
 // ═══════════════════════════════════════════════════════
@@ -650,15 +764,17 @@ async function launchSearch() {
   document.getElementById('results').classList.remove('visible');
   document.getElementById('loading').classList.add('visible');
 
-  const bd      = document.getElementById('birthdate').value;
-  const regime  = document.getElementById('regime').value;
-  const age     = ageRevolu(bd);
-  const famCode = getInizysFamily(currentProfile);
+  const bd        = document.getElementById('birthdate').value;
+  const bdPartner = document.getElementById('birthdate_partner').value;
+  const zipcode   = document.getElementById('zipcode').value;
+  const regime    = document.getElementById('regime').value;
+  const age       = ageRevolu(bd);
+  const famCode   = getInizysFamily(currentProfile);
 
   // Loading animation
-  const steps = ['step1','step2','step3','step4','step5'];
+  const steps = ['step1','step2','step3','step4','step5','step6'];
   for (let i = 0; i < steps.length; i++) {
-    await new Promise(r => setTimeout(r, 200));
+    await new Promise(r => setTimeout(r, 180));
     document.getElementById(steps[i]).classList.add('active');
     if (i > 0) document.getElementById(steps[i-1]).classList.replace('active','done');
   }
@@ -719,6 +835,10 @@ async function launchSearch() {
       level:    getSoinsLevel(g.soins_optam),
     });
   });
+
+  // ─── NEOLIANE (API temps réel) ──────────────────────
+  const neoliane = await fetchNeoliane(currentProfile, bd, bdPartner, zipcode, regime, lvlRule);
+  offers.push(...neoliane);
 
   offers.sort((a, b) => a.price - b.price);
   currentResults = offers;
