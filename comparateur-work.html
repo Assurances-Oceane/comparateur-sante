@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comparateur Mutuelle Santé — MALJ, INIZYS & NEOLIANE</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f0f2f7;
+  --surface: #ffffff;
+  --surface2: #f5f7fb;
+  --surface3: #eaecf4;
+  --border: #d8dde8;
+  --border-light: #c0c8d8;
+  --ink: #1a2035;
+  --ink-muted: #5a6480;
+  --ink-dim: #9aa0b8;
+  --accent: #2563eb;
+  --accent-glow: rgba(37,99,235,0.10);
+  --gold: #d97706;
+  --green: #059669;
+  --red: #dc2626;
+  --malj: #7c3aed;
+  --inizys: #ea580c;
+  --neoliane: #047857;
+  --eco: #64748b;
+  --ecoplus: #0891b2;
+  --equilibre: #059669;
+  --confort: #7c3aed;
+  --privilege: #d97706;
+  --vip: #ea580c;
+  --radius: 14px;
+  --radius-sm: 8px;
+  --shadow: 0 2px 12px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; line-height: 1.5; }
+body::before {
+  content: ''; position: fixed; inset: 0;
+  background: radial-gradient(ellipse 80% 50% at 20% 0%, rgba(37,99,235,0.04) 0%, transparent 60%),
+              radial-gradient(ellipse 60% 40% at 80% 100%, rgba(217,119,6,0.03) 0%, transparent 60%);
+  pointer-events: none; z-index: 0;
+}
+.app { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 48px 20px 100px; }
+
+/* HEADER */
+.header { text-align: center; margin-bottom: 48px; }
+.header-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 20px;
+}
+.eyebrow-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)} }
+.header h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem,5vw,3.4rem); font-weight: 800;
+  line-height: 1.05; letter-spacing:-.02em; margin-bottom: 14px;
+}
+.header h1 em { font-style:normal; color: var(--accent); }
+.header p { color: var(--ink-muted); font-size: 15px; font-weight: 300; max-width: 520px; margin: 0 auto; }
+
+/* INSURER BADGES */
+.insurers-row { display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-bottom:36px; }
+.insurer-badge {
+  display:flex; align-items:center; gap:7px;
+  padding:7px 16px; background:var(--surface2);
+  border:1px solid var(--border); border-radius:999px;
+  font-size:12px; font-weight:700; letter-spacing:.04em;
+}
+.insurer-badge .dot { width:8px; height:8px; border-radius:50%; }
+
+/* FORM CARD */
+.form-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); padding:36px;
+  box-shadow:var(--shadow); margin-bottom:24px;
+}
+.section-label {
+  font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-dim); margin-bottom:16px; display:flex; align-items:center; gap:8px;
+}
+.section-label::after { content:''; flex:1; height:1px; background:var(--border); }
+
+/* Profile tabs */
+.profile-tabs { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:28px; }
+.tab {
+  padding:9px 18px; border-radius:999px; border:1.5px solid var(--border);
+  background:transparent; color:var(--ink-muted);
+  font-family:'Outfit',sans-serif; font-size:13px; font-weight:500;
+  cursor:pointer; transition:all .18s; display:flex; align-items:center; gap:6px;
+}
+.tab:hover { border-color:var(--accent); color:var(--accent); }
+.tab.active { background:var(--accent); border-color:var(--accent); color:#fff; font-weight:600; }
+
+/* Form grid */
+.form-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(175px,1fr)); gap:14px; margin-bottom:24px; }
+.fg { display:flex; flex-direction:column; gap:6px; }
+.fg label { font-size:11px; font-weight:600; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-muted); }
+.fg input, .fg select {
+  padding:11px 14px; border:1.5px solid var(--border);
+  border-radius:var(--radius-sm); font-family:'Outfit',sans-serif; font-size:14px;
+  color:var(--ink); background:var(--surface); outline:none; transition:border-color .15s; appearance:none;
+}
+.fg input:focus, .fg select:focus { border-color:var(--accent); background:#fff; box-shadow:0 0 0 3px rgba(37,99,235,0.08); }
+
+/* Level selector */
+.level-selector { margin-bottom:28px; }
+.levels-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:8px; }
+@media(max-width:700px){.levels-grid{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:420px){.levels-grid{grid-template-columns:repeat(2,1fr);}}
+.level-btn {
+  padding:12px 6px; border-radius:var(--radius-sm); border:1.5px solid var(--border);
+  background:var(--surface2); cursor:pointer; text-align:center; transition:all .2s;
+  position:relative; overflow:hidden;
+}
+.level-btn::before { content:''; position:absolute; inset:0; opacity:0; transition:opacity .2s; }
+.level-btn:hover { transform:translateY(-2px); }
+.level-btn.active { border-color:var(--level-color,var(--accent)); }
+.level-btn.active::before { opacity:1; background:color-mix(in srgb,var(--level-color,var(--accent)) 12%,transparent); }
+.level-name { font-size:13px; font-weight:700; display:block; color:var(--ink); margin-bottom:3px; }
+.level-range { font-size:10px; color:var(--ink-muted); display:block; }
+.level-dot { width:8px; height:8px; border-radius:50%; margin:0 auto 6px; }
+
+/* CTA */
+.btn-search {
+  width:100%; padding:16px;
+  background:linear-gradient(135deg,var(--accent),#1d4ed8);
+  color:#fff; border:none; border-radius:var(--radius-sm);
+  font-family:'Outfit',sans-serif; font-size:16px; font-weight:700;
+  cursor:pointer; transition:all .2s; display:flex; align-items:center; justify-content:center; gap:10px;
+  box-shadow:0 4px 16px rgba(37,99,235,0.25);
+}
+.btn-search:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(37,99,235,0.38); }
+
+/* Fee info notice */
+.fee-notice {
+  margin-top:14px; padding:12px 16px;
+  background:rgba(79,156,249,0.06); border:1px solid rgba(79,156,249,0.2);
+  border-radius:var(--radius-sm); font-size:12px; color:var(--ink-muted);
+  display:flex; align-items:flex-start; gap:8px;
+}
+.fee-notice svg { flex-shrink:0; margin-top:1px; }
+
+/* ERROR */
+.error-box {
+  display:none; margin-top:14px;
+  background:rgba(248,113,113,0.08); border:1px solid rgba(248,113,113,0.3);
+  border-radius:var(--radius-sm); padding:12px 16px;
+  color:var(--red); font-size:13px; align-items:center; gap:8px;
+}
+.error-box.visible { display:flex; }
+
+/* LOADING */
+.loading { display:none; text-align:center; padding:60px 0; }
+.loading.visible { display:block; }
+.spinner-wrap { position:relative; width:52px; height:52px; margin:0 auto 20px; }
+.spinner { width:52px; height:52px; border:2px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin .8s linear infinite; }
+.spinner-inner { position:absolute; top:10px; left:10px; width:32px; height:32px; border:2px solid var(--border); border-bottom-color:var(--gold); border-radius:50%; animation:spin .5s linear infinite reverse; }
+@keyframes spin { to{transform:rotate(360deg)} }
+.loading p { color:var(--ink-muted); font-size:14px; }
+.loading-steps { margin-top:20px; display:flex; flex-direction:column; gap:6px; }
+.loading-step { font-size:12px; color:var(--ink-dim); transition:color .3s; display:flex; align-items:center; justify-content:center; gap:8px; }
+.loading-step.active { color:var(--accent); }
+.loading-step.done { color:var(--green); }
+
+/* RESULTS */
+#results { display:none; }
+#results.visible { display:block; }
+.results-bar { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; flex-wrap:wrap; gap:12px; }
+.results-title { font-family:'Playfair Display',serif; font-size:22px; font-weight:700; }
+.results-title span { color:var(--accent); }
+.level-indicator {
+  display:inline-flex; align-items:center; gap:7px; padding:6px 14px;
+  border-radius:999px; border:1.5px solid; font-size:12px; font-weight:700;
+  letter-spacing:.06em; text-transform:uppercase;
+}
+.sort-wrap { display:flex; align-items:center; gap:8px; font-size:12px; color:var(--ink-muted); }
+.sort-wrap select {
+  padding:7px 12px; border:1.5px solid var(--border); border-radius:var(--radius-sm);
+  font-family:'Outfit',sans-serif; font-size:12px;
+  background:var(--surface); color:var(--ink); outline:none;
+}
+
+/* TOP 3 */
+.top3-section { margin-bottom:40px; }
+.top3-label {
+  font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--gold); margin-bottom:16px; display:flex; align-items:center; gap:8px;
+}
+.top3-label::before { content:''; display:block; width:16px; height:2px; background:var(--gold); }
+.top3-label::after { content:''; flex:1; height:1px; background:var(--border); }
+.top3-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; }
+.top-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); padding:24px;
+  box-shadow:var(--shadow); position:relative; overflow:hidden;
+  transition:transform .2s,box-shadow .2s;
+  animation:fadeUp .4s ease both;
+}
+.top-card:hover { transform:translateY(-4px); box-shadow:var(--shadow-lg); }
+@keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+.top-card.rank-1 { border-color:var(--gold); }
+.top-card.rank-1::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--gold),#fde68a,var(--gold)); }
+.rank-badge { position:absolute; top:16px; right:16px; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; }
+.rank-badge.r1 { background:var(--gold); color:#000; }
+.rank-badge.r2,.rank-badge.r3 { background:var(--surface3); color:var(--ink-muted); border:1px solid var(--border); }
+.tc-insurer { font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; margin-bottom:2px; }
+.tc-name { font-family:'Playfair Display',serif; font-size:17px; font-weight:700; margin-bottom:2px; }
+.tc-formula { font-size:12px; color:var(--ink-muted); margin-bottom:16px; }
+.tc-price { font-family:'Playfair Display',serif; font-size:2.2rem; font-weight:700; color:var(--ink); line-height:1; margin-bottom:3px; }
+.tc-unit { font-size:12px; color:var(--ink-muted); margin-bottom:6px; }
+.tc-fees { font-size:11px; color:#f0b42988; margin-bottom:14px; }
+.tc-guarantees { display:flex; flex-direction:column; gap:7px; margin-bottom:18px; }
+.g-row { display:flex; align-items:center; justify-content:space-between; font-size:12px; }
+.g-label { color:var(--ink-muted); white-space:nowrap; }
+.g-bar-wrap { flex:1; margin:0 10px; height:4px; background:var(--surface3); border-radius:2px; overflow:hidden; }
+.g-bar { height:100%; border-radius:2px; transition:width .6s ease; }
+.g-val { font-size:11px; font-weight:600; color:var(--ink); min-width:52px; text-align:right; }
+.btn-choose {
+  display:block; width:100%; padding:11px; border-radius:var(--radius-sm); border:none;
+  font-family:'Outfit',sans-serif; font-size:13px; font-weight:700;
+  cursor:pointer; text-align:center; transition:all .18s;
+}
+.rank-1 .btn-choose { background:var(--gold); color:#000; }
+.rank-1 .btn-choose:hover { background:#fcd34d; }
+.rank-2 .btn-choose, .rank-3 .btn-choose { background:var(--accent); color:#fff; }
+.rank-2 .btn-choose:hover, .rank-3 .btn-choose:hover { background:#2563eb; }
+
+/* TABLE */
+.all-section {}
+.all-label {
+  font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--ink-muted); margin-bottom:16px; display:flex; align-items:center; gap:8px;
+}
+.all-label::before { content:''; display:block; width:16px; height:2px; background:var(--border-light); }
+.all-label::after { content:''; flex:1; height:1px; background:var(--border); }
+.result-row-header {
+  display:grid; grid-template-columns:1fr 90px 130px 120px 120px;
+  gap:12px; padding:8px 20px; margin-bottom:6px;
+  font-size:10px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-dim);
+}
+.result-row {
+  display:grid; grid-template-columns:1fr 90px 130px 120px 120px;
+  gap:12px; align-items:center; padding:14px 20px;
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm);
+  margin-bottom:8px; transition:all .18s; animation:fadeUp .3s ease both; font-size:13px;
+}
+.result-row:hover { border-color:var(--border-light); background:var(--surface2); transform:translateX(3px); }
+@media(max-width:700px){
+  .result-row,.result-row-header{grid-template-columns:1fr auto;}
+  .result-row>*:nth-child(3),.result-row>*:nth-child(4),
+  .result-row-header>*:nth-child(3),.result-row-header>*:nth-child(4){display:none;}
+}
+.rr-name { font-weight:600; }
+.rr-insurer { font-size:11px; color:var(--ink-muted); margin-top:2px; }
+.rr-formula { font-size:11px; color:var(--ink-muted); }
+.rr-soins { text-align:center; }
+.soins-badge { display:inline-block; padding:3px 8px; border-radius:999px; font-size:11px; font-weight:700; }
+.rr-guarantee { text-align:center; font-size:12px; color:var(--ink-muted); }
+.rr-price { text-align:right; font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:700; }
+.rr-price small { font-family:'Outfit'; font-size:11px; color:var(--ink-muted); font-weight:400; display:block; }
+.rr-action { text-align:right; }
+.btn-row {
+  padding:8px 14px; border-radius:var(--radius-sm);
+  background:var(--surface3); color:var(--ink); border:1px solid var(--border);
+  font-family:'Outfit',sans-serif; font-size:12px; font-weight:600;
+  cursor:pointer; transition:all .15s; white-space:nowrap;
+}
+.btn-row:hover { background:var(--accent); border-color:var(--accent); color:#fff; }
+
+/* MODAL */
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); backdrop-filter:blur(4px); z-index:100; align-items:center; justify-content:center; padding:20px; }
+.modal-overlay.open { display:flex; }
+.modal { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:32px; max-width:640px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:var(--shadow-lg); animation:modalIn .25s ease; }
+@keyframes modalIn { from{opacity:0;transform:scale(.95) translateY(10px)} to{opacity:1;transform:scale(1) translateY(0)} }
+.modal-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:24px; }
+.modal-title { font-family:'Playfair Display',serif; font-size:22px; font-weight:700; }
+.modal-subtitle { font-size:13px; color:var(--ink-muted); margin-top:4px; }
+.btn-close { background:var(--surface3); border:1px solid var(--border); width:32px; height:32px; border-radius:50%; cursor:pointer; color:var(--ink-muted); font-size:18px; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all .15s; }
+.btn-close:hover { background:var(--red); border-color:var(--red); color:#fff; }
+.guarantee-table { width:100%; border-collapse:collapse; font-size:13px; }
+.guarantee-table th { padding:8px 12px; text-align:left; font-size:10px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-dim); border-bottom:1px solid var(--border); }
+.guarantee-table th:last-child { text-align:right; }
+.guarantee-table td { padding:10px 12px; border-bottom:1px solid var(--border); color:var(--ink); }
+.guarantee-table td:last-child { text-align:right; font-weight:600; color:var(--accent); }
+.guarantee-table tr:last-child td { border-bottom:none; }
+.gtable-section { font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-dim); padding:14px 12px 4px; }
+.modal-fee-notice { margin-top:16px; padding:12px 16px; background:rgba(240,180,41,0.07); border:1px solid rgba(240,180,41,0.2); border-radius:var(--radius-sm); font-size:12px; color:#d97706; }
+
+/* Data source badge */
+.data-badge {
+  display:inline-flex; align-items:center; gap:5px; margin-top:16px;
+  padding:5px 12px; border-radius:999px; border:1px solid var(--border);
+  font-size:11px; color:var(--green); font-weight:600;
+}
+.data-badge::before { content:''; display:block; width:6px; height:6px; border-radius:50%; background:var(--green); }
+</style>
+</head>
+<body>
+<div class="app">
+
+<header class="header">
+  <div class="header-eyebrow"><span class="eyebrow-dot"></span> Tarifs officiels 2026</div>
+  <h1>Comparez votre mutuelle santé<br><em>aux vrais tarifs</em></h1>
+  <p>MALJ, INIZYS et NEOLIANE — tarifs 2026 exacts, calculés par âge et profil.</p>
+</header>
+
+<div class="insurers-row">
+  <div class="insurer-badge"><span class="dot" style="background:var(--malj)"></span> MALJ Mutuelle Santé</div>
+  <div class="insurer-badge"><span class="dot" style="background:#c084fc)"></span> MALJ Santé Senior</div>
+  <div class="insurer-badge"><span class="dot" style="background:var(--inizys)"></span> INIZYS</div>
+  <div class="insurer-badge"><span class="dot" style="background:var(--neoliane)"></span> NEOLIANE</div>
+</div>
+
+<div class="form-card">
+  <div class="section-label">Votre profil</div>
+  <div class="profile-tabs">
+    <button class="tab active" data-p="individuel" onclick="setProfile(this)">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+      Individuel
+    </button>
+    <button class="tab" data-p="couple" onclick="setProfile(this)">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="7" r="3"/><circle cx="16" cy="7" r="3"/><path d="M2 21v-1a5 5 0 015-5h3"/><path d="M14 21v-1a5 5 0 015-5"/></svg>
+      Couple
+    </button>
+    <button class="tab" data-p="famille_1e" onclick="setProfile(this)">Famille (1 enf.)</button>
+    <button class="tab" data-p="famille_2e" onclick="setProfile(this)">Famille (2+ enf.)</button>
+  </div>
+
+  <div class="form-grid" id="formFields">
+    <div class="fg">
+      <label>Date de naissance (assuré principal)</label>
+      <input type="date" id="birthdate">
+    </div>
+    <div class="fg">
+      <label>Code postal</label>
+      <input type="text" id="zipcode" placeholder="75001" maxlength="5">
+    </div>
+    <div class="fg" id="partnerField" style="display:none">
+      <label>Naissance conjoint(e)</label>
+      <input type="date" id="birthdate_partner">
+    </div>
+    <div class="fg" id="child1Field" style="display:none">
+      <label>Date de naissance enfant 1</label>
+      <input type="date" id="birthdate_child1">
+    </div>
+    <div class="fg" id="child2Field" style="display:none">
+      <label>Date de naissance enfant 2</label>
+      <input type="date" id="birthdate_child2">
+    </div>
+    <div class="fg">
+      <label>Régime social</label>
+      <select id="regime">
+        <option value="550001">Salarié (régime général)</option>
+        <option value="550002">Alsace-Moselle</option>
+        <option value="550006">Agents publics / Fonctionnaire</option>
+        <option value="550008">TNS / Travailleur non salarié</option>
+        <option value="550020">Retraité</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="level-selector">
+    <div class="section-label">Niveau de garanties souhaité</div>
+    <div class="levels-grid" id="levelsGrid"></div>
+  </div>
+
+  <button class="btn-search" onclick="launchSearch()">
+    Comparer les offres
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+  </button>
+
+  <div class="fee-notice">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    <span>Les cotisations MALJ s'entendent hors frais d'association et d'assistance : <strong>13 €/an</strong> (Mutuelle Santé) ou <strong>6 €/an</strong> (Senior). Ces frais sont proratisés et inclus dans le tarif affiché. Pour les profils couple/famille, le tarif MALJ est calculé <strong>par tête</strong> (adhérent + conjoint + enfant(s)).</span>
+  </div>
+
+  <div class="error-box" id="errorBox">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    <span id="errorMsg"></span>
+  </div>
+</div>
+
+<!-- LOADING -->
+<div class="loading" id="loading">
+  <div class="spinner-wrap"><div class="spinner"></div><div class="spinner-inner"></div></div>
+  <p>Calcul des tarifs en cours…</p>
+  <div class="loading-steps">
+    <div class="loading-step" id="step1">⟳ Calcul MALJ Mutuelle Santé…</div>
+    <div class="loading-step" id="step2">⟳ Calcul MALJ Santé Senior…</div>
+    <div class="loading-step" id="step3">⟳ Calcul INIZYS…</div>
+    <div class="loading-step" id="step4">⟳ Récupération tarifs NEOLIANE…</div>
+    <div class="loading-step" id="step5">⟳ Application du niveau de garanties…</div>
+    <div class="loading-step" id="step6">⟳ Classement des offres…</div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div id="results">
+  <div class="results-bar">
+    <div>
+      <div class="results-title"><span id="resultCount">0</span> offre(s) pour votre sélection</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <div class="level-indicator" id="levelIndicator"></div>
+      <div class="sort-wrap">
+        Trier :
+        <select onchange="sortResults(this.value)">
+          <option value="price">Prix ↑</option>
+          <option value="soins">Soins ↓</option>
+          <option value="name">Nom A→Z</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="top3-section">
+    <div class="top3-label">🏆 Top 3 — Les moins chers du niveau</div>
+    <div class="top3-grid" id="top3Grid"></div>
+  </div>
+
+  <div class="all-section">
+    <div class="all-label">Toutes les offres correspondantes</div>
+    <div class="result-row-header">
+      <div>Assureur / Contrat</div>
+      <div style="text-align:center">Formule</div>
+      <div style="text-align:center">Soins courants</div>
+      <div style="text-align:right">Prix / mois (tout compris)</div>
+    </div>
+    <div id="allResults"></div>
+  </div>
+
+  <div style="margin-top:24px;text-align:center">
+    <div class="data-badge">Tarifs officiels 2026 — MALJ, INIZYS & NEOLIANE</div>
+  </div>
+</div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="modalTitle"></div>
+        <div class="modal-subtitle" id="modalSubtitle"></div>
+      </div>
+      <button class="btn-close" onclick="closeModal()">×</button>
+    </div>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  TARIFS RÉELS INTÉGRÉS
+// ═══════════════════════════════════════════════════════
+
+const MALJ_PRICING = {"MALJ_SANTE_2026": {"ECO": {"550001": {"17": 19.78, "18": 20.28, "19": 20.78, "20": 21.31, "21": 21.84, "22": 22.38, "23": 22.94, "24": 23.52, "25": 24.11, "26": 24.71, "27": 25.32, "28": 25.96, "29": 26.61, "30": 27.27, "31": 27.96, "32": 28.66, "33": 29.36, "34": 30.1, "35": 30.85, "36": 31.63, "37": 32.42, "38": 33.23, "39": 34.05, "40": 34.91, "41": 35.95, "42": 37.04, "43": 38.15, "44": 39.3, "45": 40.47, "46": 41.69, "47": 42.94, "48": 44.22, "49": 45.55, "50": 46.92, "51": 48.33, "52": 49.77, "53": 51.27, "54": 52.81, "55": 54.39, "56": 56.02, "57": 57.71, "58": 59.43, "59": 61.22, "60": 63.05, "61": 64.94, "62": 66.89, "63": 68.9, "64": 70.96, "65": 73.1, "66": 75.28, "67": 77.54, "68": 79.87, "69": 82.27, "70": 84.73, "71": 87.28, "72": 89.9, "73": 92.59, "74": 95.38, "75": 98.24}, "550002": {"17": 10.41, "18": 10.67, "19": 10.94, "20": 11.21, "21": 11.5, "22": 11.78, "23": 12.08, "24": 12.38, "25": 12.69, "26": 13.0, "27": 13.33, "28": 13.66, "29": 14.0, "30": 14.35, "31": 14.71, "32": 15.08, "33": 15.46, "34": 15.85, "35": 16.24, "36": 16.64, "37": 17.06, "38": 17.49, "39": 17.93, "40": 18.38, "41": 18.93, "42": 19.5, "43": 20.08, "44": 20.68, "45": 21.3, "46": 21.94, "47": 22.6, "48": 23.28, "49": 23.97, "50": 24.69, "51": 25.44, "52": 26.2, "53": 26.98, "54": 27.79, "55": 28.63, "56": 29.49, "57": 30.37, "58": 31.28, "59": 32.22, "60": 33.19, "61": 34.18, "62": 35.21, "63": 36.26, "64": 37.35, "65": 38.47, "66": 39.63, "67": 40.81, "68": 42.04, "69": 43.3, "70": 44.6, "71": 45.94, "72": 47.31, "73": 48.74, "74": 50.2, "75": 51.7}, "550006": {"17": 8.86, "18": 9.07, "19": 9.3, "20": 9.53, "21": 9.77, "22": 10.01, "23": 10.26, "24": 10.52, "25": 10.78, "26": 11.05, "27": 11.33, "28": 11.61, "29": 11.9, "30": 12.2, "31": 12.5, "32": 12.82, "33": 13.14, "34": 13.47, "35": 13.81, "36": 14.15, "37": 14.5, "38": 14.87, "39": 15.23, "40": 15.62, "41": 16.08, "42": 16.57, "43": 17.06, "44": 17.58, "45": 18.1, "46": 18.65, "47": 19.21, "48": 19.78, "49": 20.38, "50": 20.99, "51": 21.62, "52": 22.27, "53": 22.93, "54": 23.62, "55": 24.33, "56": 25.06, "57": 25.81, "58": 26.59, "59": 27.39, "60": 28.21, "61": 29.05, "62": 29.93, "63": 30.83, "64": 31.75, "65": 32.7, "66": 33.68, "67": 34.69, "68": 35.73, "69": 36.8, "70": 37.91, "71": 39.04, "72": 40.21, "73": 41.42, "74": 42.66, "75": 43.94}, "550008": {"17": 16.82, "18": 17.24, "19": 17.67, "20": 18.11, "21": 18.56, "22": 19.02, "23": 19.5, "24": 19.98, "25": 20.49, "26": 21.0, "27": 21.53, "28": 22.07, "29": 22.62, "30": 23.18, "31": 23.77, "32": 24.35, "33": 24.96, "34": 25.58, "35": 26.22, "36": 26.88, "37": 27.55, "38": 28.25, "39": 28.95, "40": 29.67, "41": 30.56, "42": 31.48, "43": 32.43, "44": 33.4, "45": 34.4, "46": 35.43, "47": 36.5, "48": 37.59, "49": 38.72, "50": 39.88, "51": 41.07, "52": 42.31, "53": 43.57, "54": 44.89, "55": 46.24, "56": 47.62, "57": 49.04, "58": 50.51, "59": 52.04, "60": 53.59, "61": 55.2, "62": 56.86, "63": 58.56, "64": 60.32, "65": 62.13, "66": 64.0, "67": 65.91, "68": 67.89, "69": 69.93, "70": 72.03, "71": 74.19, "72": 76.41, "73": 78.71, "74": 81.07, "75": 83.5}, "550020": {"17": 16.82, "18": 17.24, "19": 17.67, "20": 18.11, "21": 18.56, "22": 19.02, "23": 19.5, "24": 19.98, "25": 20.49, "26": 21.0, "27": 21.53, "28": 22.07, "29": 22.62, "30": 23.18, "31": 23.77, "32": 24.35, "33": 24.96, "34": 25.58, "35": 26.22, "36": 26.88, "37": 27.55, "38": 28.25, "39": 28.95, "40": 29.67, "41": 30.56, "42": 31.48, "43": 32.43, "44": 33.4, "45": 34.4, "46": 35.43, "47": 36.5, "48": 37.59, "49": 38.72, "50": 39.88, "51": 41.07, "52": 42.31, "53": 43.57, "54": 44.89, "55": 46.24, "56": 47.62, "57": 49.04, "58": 50.51, "59": 52.04, "60": 53.59, "61": 55.2, "62": 56.86, "63": 58.56, "64": 60.32, "65": 62.13, "66": 64.0, "67": 65.91, "68": 67.89, "69": 69.93, "70": 72.03, "71": 74.19, "72": 76.41, "73": 78.71, "74": 81.07, "75": 83.5}}, "EQUILIBRE": {"550001": {"17": 50.18, "18": 50.73, "19": 51.28, "20": 51.86, "21": 52.44, "22": 53.04, "23": 53.66, "24": 54.29, "25": 54.94, "26": 55.61, "27": 56.29, "28": 56.98, "29": 57.7, "30": 58.43, "31": 59.19, "32": 59.96, "33": 60.75, "34": 61.56, "35": 62.39, "36": 63.24, "37": 64.11, "38": 65.01, "39": 65.92, "40": 66.86, "41": 68.78, "42": 70.81, "43": 72.92, "44": 75.16, "45": 77.5, "46": 79.95, "47": 82.53, "48": 85.24, "49": 88.08, "50": 91.07, "51": 94.21, "52": 97.5, "53": 100.96, "54": 104.58, "55": 108.4, "56": 112.4, "57": 116.6, "58": 121.01, "59": 125.64, "60": 130.51, "61": 135.62, "62": 140.97, "63": 146.61, "64": 152.53, "65": 158.73, "66": 165.25, "67": 172.09, "68": 179.28, "69": 186.83, "70": 194.75, "71": 203.07, "72": 211.8, "73": 220.97, "74": 230.61, "75": 240.72}, "550002": {"17": 22.81, "18": 23.06, "19": 23.31, "20": 23.57, "21": 23.84, "22": 24.11, "23": 24.39, "24": 24.68, "25": 24.97, "26": 25.28, "27": 25.58, "28": 25.9, "29": 26.22, "30": 26.56, "31": 26.9, "32": 27.25, "33": 27.62, "34": 27.98, "35": 28.36, "36": 28.74, "37": 29.14, "38": 29.55, "39": 29.97, "40": 30.39, "41": 31.27, "42": 32.18, "43": 33.15, "44": 34.16, "45": 35.23, "46": 36.34, "47": 37.52, "48": 38.74, "49": 40.04, "50": 41.39, "51": 42.82, "52": 44.32, "53": 45.89, "54": 47.54, "55": 49.27, "56": 51.09, "57": 53.0, "58": 55.01, "59": 57.11, "60": 59.32, "61": 61.64, "62": 64.08, "63": 66.64, "64": 69.33, "65": 72.15, "66": 75.12, "67": 78.23, "68": 81.49, "69": 84.92, "70": 88.52, "71": 92.3, "72": 96.27, "73": 100.44, "74": 104.82, "75": 109.42}, "550006": {"17": 19.38, "18": 19.6, "19": 19.82, "20": 20.03, "21": 20.26, "22": 20.49, "23": 20.73, "24": 20.97, "25": 21.22, "26": 21.48, "27": 21.75, "28": 22.02, "29": 22.29, "30": 22.57, "31": 22.87, "32": 23.17, "33": 23.47, "34": 23.78, "35": 24.11, "36": 24.43, "37": 24.77, "38": 25.12, "39": 25.47, "40": 25.83, "41": 26.57, "42": 27.36, "43": 28.18, "44": 29.04, "45": 29.94, "46": 30.89, "47": 31.88, "48": 32.93, "49": 34.03, "50": 35.18, "51": 36.4, "52": 37.67, "53": 39.01, "54": 40.41, "55": 41.88, "56": 43.43, "57": 45.05, "58": 46.76, "59": 48.54, "60": 50.43, "61": 52.4, "62": 54.47, "63": 56.64, "64": 58.93, "65": 61.32, "66": 63.84, "67": 66.49, "68": 69.27, "69": 72.18, "70": 75.24, "71": 78.46, "72": 81.83, "73": 85.38, "74": 89.1, "75": 93.01}, "550008": {"17": 42.65, "18": 43.12, "19": 43.59, "20": 44.07, "21": 44.57, "22": 45.09, "23": 45.62, "24": 46.15, "25": 46.7, "26": 47.27, "27": 47.84, "28": 48.44, "29": 49.05, "30": 49.67, "31": 50.31, "32": 50.97, "33": 51.63, "34": 52.32, "35": 53.03, "36": 53.75, "37": 54.49, "38": 55.25, "39": 56.03, "40": 56.83, "41": 58.47, "42": 60.18, "43": 61.99, "44": 63.88, "45": 65.88, "46": 67.96, "47": 70.15, "48": 72.46, "49": 74.88, "50": 77.41, "51": 80.08, "52": 82.88, "53": 85.81, "54": 88.9, "55": 92.13, "56": 95.54, "57": 99.11, "58": 102.86, "59": 106.8, "60": 110.93, "61": 115.27, "62": 119.83, "63": 124.62, "64": 129.64, "65": 134.92, "66": 140.46, "67": 146.28, "68": 152.38, "69": 158.8, "70": 165.53, "71": 172.61, "72": 180.03, "73": 187.83, "74": 196.02, "75": 204.61}, "550020": {"17": 42.65, "18": 43.12, "19": 43.59, "20": 44.07, "21": 44.57, "22": 45.09, "23": 45.62, "24": 46.15, "25": 46.7, "26": 47.27, "27": 47.84, "28": 48.44, "29": 49.05, "30": 49.67, "31": 50.31, "32": 50.97, "33": 51.63, "34": 52.32, "35": 53.03, "36": 53.75, "37": 54.49, "38": 55.25, "39": 56.03, "40": 56.83, "41": 58.47, "42": 60.18, "43": 61.99, "44": 63.88, "45": 65.88, "46": 67.96, "47": 70.15, "48": 72.46, "49": 74.88, "50": 77.41, "51": 80.08, "52": 82.88, "53": 85.81, "54": 88.9, "55": 92.13, "56": 95.54, "57": 99.11, "58": 102.86, "59": 106.8, "60": 110.93, "61": 115.27, "62": 119.83, "63": 124.62, "64": 129.64, "65": 134.92, "66": 140.46, "67": 146.28, "68": 152.38, "69": 158.8, "70": 165.53, "71": 172.61, "72": 180.03, "73": 187.83, "74": 196.02, "75": 204.61}}, "EXCELLENCE": {"550001": {"17": 70.71, "18": 71.27, "19": 71.86, "20": 72.46, "21": 73.08, "22": 73.7, "23": 74.35, "24": 75.01, "25": 75.68, "26": 76.38, "27": 77.09, "28": 77.83, "29": 78.58, "30": 79.34, "31": 80.12, "32": 80.93, "33": 81.76, "34": 82.6, "35": 83.47, "36": 84.36, "37": 85.27, "38": 86.21, "39": 87.17, "40": 88.14, "41": 90.56, "42": 93.12, "43": 95.83, "44": 98.71, "45": 101.76, "46": 104.99, "47": 108.42, "48": 112.05, "49": 115.89, "50": 119.98, "51": 124.3, "52": 128.88, "53": 133.74, "54": 138.89, "55": 144.35, "56": 150.14, "57": 156.28, "58": 162.78, "59": 169.67, "60": 176.97, "61": 184.72, "62": 192.93, "63": 201.63, "64": 210.86, "65": 220.63, "66": 231.0, "67": 241.98, "68": 253.63, "69": 265.97, "70": 279.06, "71": 292.93, "72": 307.63, "73": 323.22, "74": 339.73, "75": 357.24}, "550002": {"17": 30.74, "18": 30.99, "19": 31.24, "20": 31.5, "21": 31.78, "22": 32.04, "23": 32.32, "24": 32.62, "25": 32.91, "26": 33.21, "27": 33.52, "28": 33.83, "29": 34.16, "30": 34.49, "31": 34.83, "32": 35.18, "33": 35.55, "34": 35.92, "35": 36.29, "36": 36.68, "37": 37.07, "38": 37.48, "39": 37.9, "40": 38.32, "41": 39.38, "42": 40.48, "43": 41.67, "44": 42.92, "45": 44.24, "46": 45.65, "47": 47.13, "48": 48.72, "49": 50.39, "50": 52.17, "51": 54.04, "52": 56.03, "53": 58.15, "54": 60.39, "55": 62.77, "56": 65.27, "57": 67.95, "58": 70.77, "59": 73.77, "60": 76.95, "61": 80.32, "62": 83.88, "63": 87.67, "64": 91.67, "65": 95.92, "66": 100.43, "67": 105.21, "68": 110.27, "69": 115.64, "70": 121.33, "71": 127.36, "72": 133.75, "73": 140.53, "74": 147.71, "75": 155.33}, "550006": {"17": 26.13, "18": 26.34, "19": 26.56, "20": 26.78, "21": 27.01, "22": 27.24, "23": 27.47, "24": 27.72, "25": 27.97, "26": 28.22, "27": 28.49, "28": 28.76, "29": 29.04, "30": 29.32, "31": 29.61, "32": 29.91, "33": 30.22, "34": 30.53, "35": 30.85, "36": 31.18, "37": 31.52, "38": 31.86, "39": 32.22, "40": 32.57, "41": 33.47, "42": 34.42, "43": 35.42, "44": 36.48, "45": 37.61, "46": 38.8, "47": 40.07, "48": 41.41, "49": 42.83, "50": 44.34, "51": 45.93, "52": 47.63, "53": 49.43, "54": 51.33, "55": 53.35, "56": 55.48, "57": 57.75, "58": 60.16, "59": 62.71, "60": 65.41, "61": 68.27, "62": 71.3, "63": 74.52, "64": 77.92, "65": 81.54, "66": 85.37, "67": 89.43, "68": 93.73, "69": 98.29, "70": 103.13, "71": 108.26, "72": 113.69, "73": 119.45, "74": 125.56, "75": 132.03}, "550008": {"17": 60.1, "18": 60.58, "19": 61.08, "20": 61.59, "21": 62.12, "22": 62.65, "23": 63.2, "24": 63.76, "25": 64.33, "26": 64.92, "27": 65.53, "28": 66.15, "29": 66.78, "30": 67.44, "31": 68.11, "32": 68.79, "33": 69.49, "34": 70.22, "35": 70.95, "36": 71.71, "37": 72.48, "38": 73.27, "39": 74.09, "40": 74.92, "41": 76.98, "42": 79.15, "43": 81.46, "44": 83.9, "45": 86.49, "46": 89.24, "47": 92.15, "48": 95.24, "49": 98.51, "50": 101.98, "51": 105.66, "52": 109.55, "53": 113.68, "54": 118.06, "55": 122.7, "56": 127.62, "57": 132.83, "58": 138.36, "59": 144.22, "60": 150.43, "61": 157.02, "62": 163.99, "63": 171.39, "64": 179.23, "65": 187.54, "66": 196.35, "67": 205.69, "68": 215.58, "69": 226.08, "70": 237.2, "71": 248.99, "72": 261.48, "73": 274.73, "74": 288.78, "75": 303.66}, "550020": {"17": 60.1, "18": 60.58, "19": 61.08, "20": 61.59, "21": 62.12, "22": 62.65, "23": 63.2, "24": 63.76, "25": 64.33, "26": 64.92, "27": 65.53, "28": 66.15, "29": 66.78, "30": 67.44, "31": 68.11, "32": 68.79, "33": 69.49, "34": 70.22, "35": 70.95, "36": 71.71, "37": 72.48, "38": 73.27, "39": 74.09, "40": 74.92, "41": 76.98, "42": 79.15, "43": 81.46, "44": 83.9, "45": 86.49, "46": 89.24, "47": 92.15, "48": 95.24, "49": 98.51, "50": 101.98, "51": 105.66, "52": 109.55, "53": 113.68, "54": 118.06, "55": 122.7, "56": 127.62, "57": 132.83, "58": 138.36, "59": 144.22, "60": 150.43, "61": 157.02, "62": 163.99, "63": 171.39, "64": 179.23, "65": 187.54, "66": 196.35, "67": 205.69, "68": 215.58, "69": 226.08, "70": 237.2, "71": 248.99, "72": 261.48, "73": 274.73, "74": 288.78, "75": 303.66}}, "SERENITE": {"550001": {"17": 60.24, "18": 60.8, "19": 61.38, "20": 61.96, "21": 62.56, "22": 63.18, "23": 63.81, "24": 64.45, "25": 65.12, "26": 65.8, "27": 66.49, "28": 67.21, "29": 67.94, "30": 68.69, "31": 69.46, "32": 70.25, "33": 71.06, "34": 71.88, "35": 72.73, "36": 73.6, "37": 74.49, "38": 75.41, "39": 76.34, "40": 77.3, "41": 79.27, "42": 81.34, "43": 83.51, "44": 85.79, "45": 88.18, "46": 90.69, "47": 93.33, "48": 96.1, "49": 99.01, "50": 102.07, "51": 105.27, "52": 108.64, "53": 112.17, "54": 115.88, "55": 119.78, "56": 123.88, "57": 128.17, "58": 132.68, "59": 137.42, "60": 142.4, "61": 147.62, "62": 153.11, "63": 158.87, "64": 164.92, "65": 171.26, "66": 177.92, "67": 184.92, "68": 192.28, "69": 199.99, "70": 208.1, "71": 216.61, "72": 225.54, "73": 234.92, "74": 244.77, "75": 255.12}, "550002": {"17": 26.78, "18": 27.03, "19": 27.28, "20": 27.53, "21": 27.81, "22": 28.07, "23": 28.36, "24": 28.65, "25": 28.94, "26": 29.24, "27": 29.55, "28": 29.87, "29": 30.19, "30": 30.53, "31": 30.87, "32": 31.22, "33": 31.58, "34": 31.95, "35": 32.32, "36": 32.71, "37": 33.11, "38": 33.52, "39": 33.93, "40": 34.36, "41": 35.23, "42": 36.15, "43": 37.12, "44": 38.12, "45": 39.19, "46": 40.31, "47": 41.48, "48": 42.71, "49": 44.01, "50": 45.36, "51": 46.79, "52": 48.28, "53": 49.86, "54": 51.51, "55": 53.24, "56": 55.06, "57": 56.97, "58": 58.98, "59": 61.07, "60": 63.29, "61": 65.61, "62": 68.05, "63": 70.61, "64": 73.29, "65": 76.12, "66": 79.08, "67": 82.19, "68": 85.46, "69": 88.88, "70": 92.49, "71": 96.27, "72": 100.24, "73": 104.41, "74": 108.78, "75": 113.38}, "550006": {"17": 22.76, "18": 22.97, "19": 23.18, "20": 23.41, "21": 23.63, "22": 23.87, "23": 24.11, "24": 24.35, "25": 24.6, "26": 24.86, "27": 25.12, "28": 25.39, "29": 25.67, "30": 25.95, "31": 26.24, "32": 26.54, "33": 26.84, "34": 27.16, "35": 27.47, "36": 27.81, "37": 28.14, "38": 28.48, "39": 28.84, "40": 29.2, "41": 29.95, "42": 30.72, "43": 31.55, "44": 32.41, "45": 33.32, "46": 34.26, "47": 35.26, "48": 36.31, "49": 37.41, "50": 38.56, "51": 39.77, "52": 41.04, "53": 42.38, "54": 43.78, "55": 45.25, "56": 46.8, "57": 48.43, "58": 50.12, "59": 51.92, "60": 53.79, "61": 55.77, "62": 57.84, "63": 60.02, "64": 62.3, "65": 64.7, "66": 67.22, "67": 69.86, "68": 72.64, "69": 75.55, "70": 78.62, "71": 81.83, "72": 85.21, "73": 88.75, "74": 92.47, "75": 96.38}, "550008": {"17": 51.21, "18": 51.68, "19": 52.17, "20": 52.67, "21": 53.18, "22": 53.7, "23": 54.23, "24": 54.78, "25": 55.35, "26": 55.93, "27": 56.52, "28": 57.12, "29": 57.75, "30": 58.38, "31": 59.04, "32": 59.71, "33": 60.4, "34": 61.1, "35": 61.82, "36": 62.56, "37": 63.32, "38": 64.1, "39": 64.89, "40": 65.71, "41": 67.38, "42": 69.14, "43": 70.98, "44": 72.92, "45": 74.96, "46": 77.09, "47": 79.33, "48": 81.68, "49": 84.16, "50": 86.76, "51": 89.48, "52": 92.34, "53": 95.35, "54": 98.5, "55": 101.82, "56": 105.29, "57": 108.95, "58": 112.78, "59": 116.81, "60": 121.04, "61": 125.48, "62": 130.14, "63": 135.03, "64": 140.17, "65": 145.58, "66": 151.24, "67": 157.19, "68": 163.43, "69": 170.0, "70": 176.88, "71": 184.12, "72": 191.71, "73": 199.68, "74": 208.06, "75": 216.84}, "550020": {"17": 51.21, "18": 51.68, "19": 52.17, "20": 52.67, "21": 53.18, "22": 53.7, "23": 54.23, "24": 54.78, "25": 55.35, "26": 55.93, "27": 56.52, "28": 57.12, "29": 57.75, "30": 58.38, "31": 59.04, "32": 59.71, "33": 60.4, "34": 61.1, "35": 61.82, "36": 62.56, "37": 63.32, "38": 64.1, "39": 64.89, "40": 65.71, "41": 67.38, "42": 69.14, "43": 70.98, "44": 72.92, "45": 74.96, "46": 77.09, "47": 79.33, "48": 81.68, "49": 84.16, "50": 86.76, "51": 89.48, "52": 92.34, "53": 95.35, "54": 98.5, "55": 101.82, "56": 105.29, "57": 108.95, "58": 112.78, "59": 116.81, "60": 121.04, "61": 125.48, "62": 130.14, "63": 135.03, "64": 140.17, "65": 145.58, "66": 151.24, "67": 157.19, "68": 163.43, "69": 170.0, "70": 176.88, "71": 184.12, "72": 191.71, "73": 199.68, "74": 208.06, "75": 216.84}}, "ZEN": {"550001": {"17": 31.86, "18": 32.33, "19": 32.81, "20": 33.3, "21": 33.81, "22": 34.33, "23": 34.85, "24": 35.4, "25": 35.95, "26": 36.52, "27": 37.11, "28": 37.71, "29": 38.32, "30": 38.95, "31": 39.6, "32": 40.27, "33": 40.94, "34": 41.64, "35": 42.35, "36": 43.09, "37": 43.83, "38": 44.6, "39": 45.39, "40": 46.19, "41": 47.19, "42": 48.2, "43": 49.26, "44": 50.35, "45": 51.46, "46": 52.61, "47": 53.79, "48": 55.02, "49": 56.27, "50": 57.57, "51": 58.91, "52": 60.27, "53": 61.69, "54": 63.15, "55": 64.64, "56": 66.19, "57": 67.79, "58": 69.42, "59": 71.11, "60": 72.85, "61": 74.65, "62": 76.49, "63": 78.39, "64": 80.35, "65": 82.36, "66": 84.45, "67": 86.58, "68": 88.79, "69": 91.06, "70": 93.4, "71": 95.8, "72": 98.29, "73": 100.84, "74": 103.47, "75": 106.18}, "550002": {"17": 17.7, "18": 17.96, "19": 18.23, "20": 18.5, "21": 18.79, "22": 19.07, "23": 19.36, "24": 19.67, "25": 19.98, "26": 20.29, "27": 20.61, "28": 20.95, "29": 21.29, "30": 21.64, "31": 22.0, "32": 22.36, "33": 22.75, "34": 23.14, "35": 23.53, "36": 23.93, "37": 24.35, "38": 24.78, "39": 25.28, "40": 25.66, "41": 26.21, "42": 26.78, "43": 27.37, "44": 27.96, "45": 28.59, "46": 29.22, "47": 29.89, "48": 30.56, "49": 31.26, "50": 31.98, "51": 32.73, "52": 33.49, "53": 34.27, "54": 35.08, "55": 35.92, "56": 36.78, "57": 37.66, "58": 38.57, "59": 39.51, "60": 40.48, "61": 41.47, "62": 42.5, "63": 43.55, "64": 44.64, "65": 45.76, "66": 46.92, "67": 48.1, "68": 49.32, "69": 50.59, "70": 51.89, "71": 53.23, "72": 54.6, "73": 56.03, "74": 57.49, "75": 58.99}, "550006": {"17": 15.05, "18": 15.27, "19": 15.5, "20": 15.72, "21": 15.97, "22": 16.21, "23": 16.46, "24": 16.71, "25": 16.97, "26": 17.25, "27": 17.53, "28": 17.81, "29": 18.09, "30": 18.39, "31": 18.7, "32": 19.01, "33": 19.34, "34": 19.66, "35": 20.0, "36": 20.34, "37": 20.7, "38": 21.06, "39": 21.43, "40": 21.81, "41": 22.29, "42": 22.77, "43": 23.26, "44": 23.77, "45": 24.3, "46": 24.84, "47": 25.4, "48": 25.98, "49": 26.57, "50": 27.19, "51": 27.82, "52": 28.46, "53": 29.13, "54": 29.82, "55": 30.53, "56": 31.25, "57": 32.01, "58": 32.79, "59": 33.58, "60": 34.41, "61": 35.24, "62": 36.12, "63": 37.02, "64": 37.94, "65": 38.89, "66": 39.87, "67": 40.89, "68": 41.93, "69": 43.0, "70": 44.1, "71": 45.24, "72": 46.41, "73": 47.62, "74": 48.86, "75": 50.15}, "550008": {"17": 27.08, "18": 27.48, "19": 27.89, "20": 28.31, "21": 28.73, "22": 29.17, "23": 29.63, "24": 30.09, "25": 30.56, "26": 31.05, "27": 31.54, "28": 32.05, "29": 32.58, "30": 33.11, "31": 33.66, "32": 34.22, "33": 34.8, "34": 35.39, "35": 36.0, "36": 36.62, "37": 37.26, "38": 37.91, "39": 38.58, "40": 39.26, "41": 40.11, "42": 40.98, "43": 41.87, "44": 42.8, "45": 43.74, "46": 44.72, "47": 45.73, "48": 46.76, "49": 47.84, "50": 48.93, "51": 50.07, "52": 51.23, "53": 52.44, "54": 53.67, "55": 54.95, "56": 56.26, "57": 57.62, "58": 59.01, "59": 60.45, "60": 61.92, "61": 63.45, "62": 65.02, "63": 66.63, "64": 68.3, "65": 70.01, "66": 71.78, "67": 73.6, "68": 75.47, "69": 77.4, "70": 79.39, "71": 81.44, "72": 83.55, "73": 85.71, "74": 87.95, "75": 90.26}, "550020": {"17": 27.08, "18": 27.48, "19": 27.89, "20": 28.31, "21": 28.73, "22": 29.17, "23": 29.63, "24": 30.09, "25": 30.56, "26": 31.05, "27": 31.54, "28": 32.05, "29": 32.58, "30": 33.11, "31": 33.66, "32": 34.22, "33": 34.8, "34": 35.39, "35": 36.0, "36": 36.62, "37": 37.26, "38": 37.91, "39": 38.58, "40": 39.26, "41": 40.11, "42": 40.98, "43": 41.87, "44": 42.8, "45": 43.74, "46": 44.72, "47": 45.73, "48": 46.76, "49": 47.84, "50": 48.93, "51": 50.07, "52": 51.23, "53": 52.44, "54": 53.67, "55": 54.95, "56": 56.26, "57": 57.62, "58": 59.01, "59": 60.45, "60": 61.92, "61": 63.45, "62": 65.02, "63": 66.63, "64": 68.3, "65": 70.01, "66": 71.78, "67": 73.6, "68": 75.47, "69": 77.4, "70": 79.39, "71": 81.44, "72": 83.55, "73": 85.71, "74": 87.95, "75": 90.26}}}, "MALJ_SENIOR_2026": {"ECO": {"550001": {"64": 56.12, "65": 58.93, "66": 61.88, "67": 64.98, "68": 68.22, "69": 71.63, "70": 75.22, "71": 78.98, "72": 82.92, "73": 87.07, "74": 91.42, "75": 95.99, "76": 100.79, "77": 105.83, "78": 111.12, "79": 116.68, "80": 122.52, "81": 128.64, "82": 135.08, "83": 141.83, "84": 148.92, "85": 156.36, "86": 164.18, "87": 172.39, "88": 181.01, "89": 190.06, "90": 199.56}, "550002": {"64": 37.42, "65": 39.29, "66": 41.25, "67": 43.32, "68": 45.48, "69": 47.76, "70": 50.14, "71": 52.65, "72": 55.28, "73": 58.04, "74": 60.95, "75": 63.99, "76": 67.19, "77": 70.56, "78": 74.08, "79": 77.78, "80": 81.67, "81": 85.76, "82": 90.05, "83": 94.55, "84": 99.27, "85": 104.24, "86": 109.45, "87": 114.93, "88": 120.67, "89": 126.71, "90": 133.04}, "550006": {"64": 31.81, "65": 33.39, "66": 35.07, "67": 36.82, "68": 38.66, "69": 40.59, "70": 42.62, "71": 44.75, "72": 46.99, "73": 49.34, "74": 51.81, "75": 54.4, "76": 57.12, "77": 59.98, "78": 62.97, "79": 66.12, "80": 69.42, "81": 72.89, "82": 76.54, "83": 80.37, "84": 84.38, "85": 88.61, "86": 93.03, "87": 97.68, "88": 102.58, "89": 107.7, "90": 113.08}, "550008": {"64": 47.71, "65": 50.09, "66": 52.59, "67": 55.23, "68": 57.98, "69": 60.89, "70": 63.93, "71": 67.13, "72": 70.49, "73": 74.01, "74": 77.71, "75": 81.59, "76": 85.67, "77": 89.96, "78": 94.46, "79": 99.18, "80": 104.14, "81": 109.35, "82": 114.81, "83": 120.55, "84": 126.58, "85": 132.91, "86": 139.55, "87": 146.53, "88": 153.86, "89": 161.55, "90": 169.62}, "550020": {"64": 47.71, "65": 50.09, "66": 52.59, "67": 55.23, "68": 57.98, "69": 60.89, "70": 63.93, "71": 67.13, "72": 70.49, "73": 74.01, "74": 77.71, "75": 81.59, "76": 85.67, "77": 89.96, "78": 94.46, "79": 99.18, "80": 104.14, "81": 109.35, "82": 114.81, "83": 120.55, "84": 126.58, "85": 132.91, "86": 139.55, "87": 146.53, "88": 153.86, "89": 161.55, "90": 169.62}}, "EQUILIBRE": {"550001": {"64": 101.02, "65": 104.95, "66": 109.16, "67": 113.66, "68": 118.47, "69": 123.62, "70": 129.12, "71": 135.03, "72": 141.33, "73": 148.08, "74": 155.31, "75": 163.03, "76": 171.31, "77": 180.15, "78": 189.62, "79": 199.75, "80": 210.59, "81": 222.19, "82": 234.6, "83": 247.88, "84": 262.08, "85": 277.29, "86": 293.56, "87": 310.96, "88": 329.58, "89": 349.52, "90": 370.84}, "550002": {"64": 67.35, "65": 69.97, "66": 72.77, "67": 75.77, "68": 78.98, "69": 82.41, "70": 86.08, "71": 90.02, "72": 94.23, "73": 98.73, "74": 103.54, "75": 108.69, "76": 114.2, "77": 120.1, "78": 126.42, "79": 133.17, "80": 140.39, "81": 148.12, "82": 156.4, "83": 165.25, "84": 174.72, "85": 184.86, "86": 195.7, "87": 207.31, "88": 219.72, "89": 233.01, "90": 247.22}, "550006": {"64": 57.25, "65": 59.47, "66": 61.86, "67": 64.4, "68": 67.13, "69": 70.05, "70": 73.17, "71": 76.51, "72": 80.09, "73": 83.92, "74": 88.01, "75": 92.39, "76": 97.07, "77": 102.08, "78": 107.45, "79": 113.19, "80": 119.33, "81": 125.91, "82": 132.94, "83": 140.46, "84": 148.52, "85": 157.13, "86": 166.35, "87": 176.21, "88": 186.77, "89": 198.06, "90": 210.14}, "550008": {"64": 85.87, "65": 89.21, "66": 92.79, "67": 96.61, "68": 100.7, "69": 105.07, "70": 109.76, "71": 114.77, "72": 120.13, "73": 125.87, "74": 132.01, "75": 138.58, "76": 145.61, "77": 153.13, "78": 161.17, "79": 169.79, "80": 179.0, "81": 188.86, "82": 199.41, "83": 210.69, "84": 222.77, "85": 235.7, "86": 249.53, "87": 264.32, "88": 280.15, "89": 297.08, "90": 315.21}, "550020": {"64": 85.87, "65": 89.21, "66": 92.79, "67": 96.61, "68": 100.7, "69": 105.07, "70": 109.76, "71": 114.77, "72": 120.13, "73": 125.87, "74": 132.01, "75": 138.58, "76": 145.61, "77": 153.13, "78": 161.17, "79": 169.79, "80": 179.0, "81": 188.86, "82": 199.41, "83": 210.69, "84": 222.77, "85": 235.7, "86": 249.53, "87": 264.32, "88": 280.15, "89": 297.08, "90": 315.21}}, "EXCELLENCE": {"550001": {"64": 161.64, "65": 165.18, "66": 168.96, "67": 173.01, "68": 177.34, "69": 181.97, "70": 186.93, "71": 192.24, "72": 197.92, "73": 203.99, "74": 210.49, "75": 217.45, "76": 224.89, "77": 232.86, "78": 241.38, "79": 250.49, "80": 260.25, "81": 270.69, "82": 281.86, "83": 293.81, "84": 306.59, "85": 320.28, "86": 334.92, "87": 350.58, "88": 367.34, "89": 385.28, "90": 404.47}, "550002": {"64": 107.76, "65": 110.12, "66": 112.64, "67": 115.34, "68": 118.23, "69": 121.32, "70": 124.62, "71": 128.16, "72": 131.94, "73": 136.0, "74": 140.33, "75": 144.97, "76": 149.93, "77": 155.24, "78": 160.92, "79": 167.0, "80": 173.5, "81": 180.46, "82": 187.9, "83": 195.87, "84": 204.4, "85": 213.52, "86": 223.28, "87": 233.72, "88": 244.9, "89": 256.85, "90": 269.65}, "550006": {"64": 91.6, "65": 93.6, "66": 95.74, "67": 98.04, "68": 100.49, "69": 103.12, "70": 105.93, "71": 108.94, "72": 112.15, "73": 115.6, "74": 119.28, "75": 123.22, "76": 127.44, "77": 131.95, "78": 136.78, "79": 141.95, "80": 147.47, "81": 153.39, "82": 159.72, "83": 166.49, "84": 173.74, "85": 181.49, "86": 189.79, "87": 198.67, "88": 208.16, "89": 218.33, "90": 229.2}, "550008": {"64": 137.39, "65": 140.4, "66": 143.62, "67": 147.06, "68": 150.74, "69": 154.68, "70": 158.89, "71": 163.4, "72": 168.23, "73": 173.39, "74": 178.92, "75": 184.83, "76": 191.16, "77": 197.93, "78": 205.17, "79": 212.92, "80": 221.21, "81": 230.08, "82": 239.58, "83": 249.74, "84": 260.61, "85": 272.24, "86": 284.68, "87": 298.0, "88": 312.24, "89": 327.49, "90": 343.8}, "550020": {"64": 137.39, "65": 140.4, "66": 143.62, "67": 147.06, "68": 150.74, "69": 154.68, "70": 158.89, "71": 163.4, "72": 168.23, "73": 173.39, "74": 178.92, "75": 184.83, "76": 191.16, "77": 197.93, "78": 205.17, "79": 212.92, "80": 221.21, "81": 230.08, "82": 239.58, "83": 249.74, "84": 260.61, "85": 272.24, "86": 284.68, "87": 298.0, "88": 312.24, "89": 327.49, "90": 343.8}}, "SERENITE": {"550001": {"64": 128.81, "65": 132.15, "66": 135.72, "67": 139.54, "68": 143.64, "69": 148.01, "70": 152.7, "71": 157.7, "72": 163.07, "73": 168.81, "74": 174.94, "75": 181.52, "76": 188.54, "77": 196.07, "78": 204.11, "79": 212.73, "80": 221.93, "81": 231.79, "82": 242.34, "83": 253.63, "84": 265.71, "85": 278.63, "86": 292.46, "87": 307.25, "88": 323.08, "89": 340.02, "90": 358.15}, "550002": {"64": 85.87, "65": 88.1, "66": 90.48, "67": 93.03, "68": 95.75, "69": 98.67, "70": 101.8, "71": 105.14, "72": 108.71, "73": 112.54, "74": 116.63, "75": 121.01, "76": 125.69, "77": 130.71, "78": 136.08, "79": 141.82, "80": 147.96, "81": 154.53, "82": 161.56, "83": 169.09, "84": 177.14, "85": 185.75, "86": 194.97, "87": 204.84, "88": 215.39, "89": 226.68, "90": 238.76}, "550006": {"64": 72.99, "65": 74.88, "66": 76.91, "67": 79.07, "68": 81.39, "69": 83.87, "70": 86.53, "71": 89.37, "72": 92.41, "73": 95.66, "74": 99.14, "75": 102.86, "76": 106.84, "77": 111.1, "78": 115.67, "79": 120.54, "80": 125.76, "81": 131.35, "82": 137.33, "83": 143.72, "84": 150.57, "85": 157.89, "86": 165.73, "87": 174.11, "88": 183.08, "89": 192.68, "90": 202.95}, "550008": {"64": 109.49, "65": 112.33, "66": 115.36, "67": 118.61, "68": 122.09, "69": 125.81, "70": 129.79, "71": 134.05, "72": 138.61, "73": 143.49, "74": 148.7, "75": 154.29, "76": 160.26, "77": 166.66, "78": 173.5, "79": 180.82, "80": 188.64, "81": 197.03, "82": 205.99, "83": 215.59, "84": 225.85, "85": 236.84, "86": 248.59, "87": 261.16, "88": 274.62, "89": 289.02, "90": 304.43}, "550020": {"64": 109.49, "65": 112.33, "66": 115.36, "67": 118.61, "68": 122.09, "69": 125.81, "70": 129.79, "71": 134.05, "72": 138.61, "73": 143.49, "74": 148.7, "75": 154.29, "76": 160.26, "77": 166.66, "78": 173.5, "79": 180.82, "80": 188.64, "81": 197.03, "82": 205.99, "83": 215.59, "84": 225.85, "85": 236.84, "86": 248.59, "87": 261.16, "88": 274.62, "89": 289.02}}, "ZEN": {"550001": {"64": 84.19, "65": 88.12, "66": 92.32, "67": 96.82, "68": 101.63, "69": 106.78, "70": 112.29, "71": 118.18, "72": 124.49, "73": 131.25, "74": 138.47, "75": 146.2, "76": 154.47, "77": 163.32, "78": 172.78, "79": 182.92, "80": 193.75, "81": 205.35, "82": 217.76, "83": 231.04, "84": 245.25, "85": 260.45, "86": 276.72, "87": 294.12, "88": 312.75, "89": 332.68, "90": 354.0}, "550002": {"64": 56.12, "65": 58.74, "66": 61.55, "67": 64.54, "68": 67.75, "69": 71.18, "70": 74.86, "71": 78.79, "72": 83.0, "73": 87.5, "74": 92.32, "75": 97.47, "76": 102.98, "77": 108.88, "78": 115.19, "79": 121.94, "80": 129.17, "81": 136.9, "82": 145.17, "83": 154.03, "84": 163.5, "85": 173.63, "86": 184.48, "87": 196.08, "88": 208.5, "89": 221.78, "90": 236.0}, "550006": {"64": 47.71, "65": 49.93, "66": 52.32, "67": 54.86, "68": 57.59, "69": 60.51, "70": 63.63, "71": 66.97, "72": 70.55, "73": 74.38, "74": 78.47, "75": 82.85, "76": 87.53, "77": 92.54, "78": 97.91, "79": 103.65, "80": 109.79, "81": 116.37, "82": 123.4, "83": 130.92, "84": 138.97, "85": 147.59, "86": 156.81, "87": 166.67, "88": 177.22, "89": 188.52, "90": 200.6}, "550008": {"64": 71.56, "65": 74.9, "66": 78.47, "67": 82.29, "68": 86.39, "69": 90.77, "70": 95.45, "71": 100.46, "72": 105.82, "73": 111.56, "74": 117.7, "75": 124.27, "76": 131.3, "77": 138.82, "78": 146.87, "79": 155.48, "80": 164.69, "81": 174.55, "82": 185.09, "83": 196.39, "84": 208.46, "85": 221.38, "86": 235.21, "87": 250.01, "88": 265.83, "89": 282.78, "90": 300.9}, "550020": {"64": 71.56, "65": 74.9, "66": 78.47, "67": 82.29, "68": 86.39, "69": 90.77, "70": 95.45, "71": 100.46, "72": 105.82, "73": 111.56, "74": 117.7, "75": 124.27, "76": 131.3, "77": 138.82, "78": 146.87, "79": 155.48, "80": 164.69, "81": 174.55, "82": 185.09, "83": 196.39, "84": 208.46, "85": 221.38, "86": 235.21, "87": 250.01, "88": 265.83, "89": 282.78, "90": 300.9}}}};
+
+const INIZYS_PRICING = {"ECO": {"label": "\u00c9conomique", "soins_percent": 100, "pricing": {"18": {"1": 30.53, "2": 54.15, "3": 77.77, "4": 61.07, "5": 84.68, "6": 108.3}, "19": {"1": 31.0, "2": 54.62, "3": 78.23, "4": 62.0, "5": 85.61, "6": 109.23}, "20": {"1": 31.47, "2": 55.09, "3": 78.71, "4": 62.94, "5": 86.56, "6": 110.17}, "21": {"1": 31.95, "2": 55.57, "3": 79.18, "4": 63.9, "5": 87.52, "6": 111.13}, "22": {"1": 32.44, "2": 56.05, "3": 79.67, "4": 64.87, "5": 88.49, "6": 112.11}, "23": {"1": 32.93, "2": 56.55, "3": 80.17, "4": 65.86, "5": 89.48, "6": 113.09}, "24": {"1": 33.43, "2": 57.05, "3": 80.67, "4": 66.86, "5": 90.48, "6": 114.1}, "25": {"1": 33.94, "2": 57.56, "3": 81.18, "4": 67.88, "5": 91.5, "6": 115.12}, "26": {"1": 34.46, "2": 58.07, "3": 81.69, "4": 68.91, "5": 92.53, "6": 116.15}, "27": {"1": 34.98, "2": 58.6, "3": 82.22, "4": 69.96, "5": 93.58, "6": 117.2}, "28": {"1": 35.51, "2": 59.13, "3": 82.75, "4": 71.03, "5": 94.65, "6": 118.26}, "29": {"1": 36.05, "2": 59.67, "3": 83.29, "4": 72.11, "5": 95.73, "6": 119.35}, "30": {"1": 36.6, "2": 60.22, "3": 83.84, "4": 73.21, "5": 96.83, "6": 120.44}, "31": {"1": 37.16, "2": 60.78, "3": 84.4, "4": 74.32, "5": 97.94, "6": 121.56}, "32": {"1": 37.73, "2": 61.35, "3": 84.96, "4": 75.45, "5": 99.07, "6": 122.69}, "33": {"1": 38.3, "2": 61.92, "3": 85.54, "4": 76.6, "5": 100.22, "6": 123.84}, "34": {"1": 38.89, "2": 62.5, "3": 86.12, "4": 77.77, "5": 101.39, "6": 125.01}, "35": {"1": 39.48, "2": 63.1, "3": 86.71, "4": 78.95, "5": 102.57, "6": 126.19}, "36": {"1": 40.08, "2": 63.7, "3": 87.31, "4": 80.16, "5": 103.77, "6": 127.39}, "37": {"1": 40.69, "2": 64.31, "3": 87.92, "4": 81.38, "5": 105.0, "6": 128.61}, "38": {"1": 41.31, "2": 64.93, "3": 88.54, "4": 82.62, "5": 106.23, "6": 129.85}, "39": {"1": 41.94, "2": 65.56, "3": 89.17, "4": 83.88, "5": 107.49, "6": 131.11}, "40": {"1": 42.58, "2": 66.19, "3": 89.81, "4": 85.15, "5": 108.77, "6": 132.39}, "41": {"1": 43.22, "2": 66.84, "3": 90.46, "4": 86.45, "5": 110.07, "6": 133.68}, "42": {"1": 43.88, "2": 67.5, "3": 91.12, "4": 87.77, "5": 111.38, "6": 135.0}, "43": {"1": 44.55, "2": 68.17, "3": 91.79, "4": 89.1, "5": 112.72, "6": 136.34}, "44": {"1": 45.23, "2": 68.85, "3": 92.47, "4": 90.46, "5": 114.08, "6": 137.69}, "45": {"1": 45.92, "2": 69.54, "3": 93.15, "4": 91.84, "5": 115.45, "6": 139.07}, "46": {"1": 46.62, "2": 70.24, "3": 93.85, "4": 93.24, "5": 116.85, "6": 140.47}, "47": {"1": 47.33, "2": 70.95, "3": 94.56, "4": 94.65, "5": 118.27, "6": 141.89}, "48": {"1": 48.05, "2": 71.67, "3": 95.28, "4": 96.1, "5": 119.71, "6": 143.33}, "49": {"1": 48.78, "2": 72.4, "3": 96.02, "4": 97.56, "5": 121.18, "6": 144.8}, "50": {"1": 49.52, "2": 73.14, "3": 96.76, "4": 99.05, "5": 122.66, "6": 146.28}, "51": {"1": 50.28, "2": 73.89, "3": 97.51, "4": 100.55, "5": 124.17, "6": 147.79}, "52": {"1": 51.04, "2": 74.66, "3": 98.28, "4": 102.08, "5": 125.7, "6": 149.32}, "53": {"1": 51.82, "2": 75.44, "3": 99.06, "4": 103.64, "5": 127.26, "6": 150.88}, "54": {"1": 52.61, "2": 76.23, "3": 99.84, "4": 105.22, "5": 128.84, "6": 152.45}, "55": {"1": 53.41, "2": 77.03, "3": 100.65, "4": 106.82, "5": 130.44, "6": 154.06}, "56": {"1": 54.48, "2": 78.1, "3": 101.71, "4": 108.96, "5": 132.57, "6": 156.19}, "57": {"1": 55.57, "2": 79.19, "3": 102.8, "4": 111.14, "5": 134.75, "6": 158.37}, "58": {"1": 56.68, "2": 80.3, "3": 103.91, "4": 113.36, "5": 136.98, "6": 160.59}, "59": {"1": 57.81, "2": 81.43, "3": 105.05, "4": 115.63, "5": 139.24, "6": 162.86}, "60": {"1": 58.97, "2": 82.59, "3": 106.2, "4": 117.94, "5": 141.56, "6": 165.17}, "61": {"1": 60.15, "2": 83.77, "3": 107.38, "4": 120.3, "5": 143.91, "6": 167.53}, "62": {"1": 61.35, "2": 84.97, "3": 108.59, "4": 122.7, "5": 146.32, "6": 169.94}, "63": {"1": 62.58, "2": 86.2, "3": 109.81, "4": 125.16, "5": 148.77, "6": 172.39}, "64": {"1": 63.83, "2": 87.45, "3": 111.07, "4": 127.66, "5": 151.28, "6": 174.9}, "65": {"1": 65.59, "2": 89.2, "3": 112.82, "4": 131.17, "5": 154.79, "6": 178.41}, "66": {"1": 67.39, "2": 91.01, "3": 114.62, "4": 134.78, "5": 158.4, "6": 182.01}, "67": {"1": 69.24, "2": 92.86, "3": 116.48, "4": 138.48, "5": 162.1, "6": 185.72}, "68": {"1": 71.15, "2": 94.76, "3": 118.38, "4": 142.29, "5": 165.91, "6": 189.53}, "69": {"1": 73.1, "2": 96.72, "3": 120.34, "4": 146.21, "5": 169.82, "6": 193.44}, "70": {"1": 75.11, "2": 98.73, "3": 122.35, "4": 150.23, "5": 173.84, "6": 197.46}, "71": {"1": 77.18, "2": 100.8, "3": 124.41, "4": 154.36, "5": 177.98, "6": 201.59}, "72": {"1": 79.3, "2": 102.92, "3": 126.54, "4": 158.6, "5": 182.22, "6": 205.84}, "73": {"1": 81.48, "2": 105.1, "3": 128.72, "4": 162.96, "5": 186.58, "6": 210.2}, "74": {"1": 83.72, "2": 107.34, "3": 130.96, "4": 167.45, "5": 191.06, "6": 214.68}, "75": {"1": 86.03, "2": 109.64, "3": 133.26, "4": 172.05, "5": 195.67, "6": 219.29}, "76": {"1": 88.39, "2": 112.01, "3": 135.63, "4": 176.78, "5": 200.4, "6": 224.02}, "77": {"1": 90.82, "2": 114.44, "3": 138.06, "4": 181.64, "5": 205.26, "6": 228.88}, "78": {"1": 93.32, "2": 116.94, "3": 140.55, "4": 186.64, "5": 210.26, "6": 233.87}, "79": {"1": 95.89, "2": 119.5, "3": 143.12, "4": 191.77, "5": 215.39, "6": 239.01}, "80": {"1": 98.52, "2": 122.14, "3": 145.76, "4": 197.04, "5": 220.66, "6": 244.28}, "81": {"1": 101.23, "2": 124.85, "3": 148.47, "4": 202.46, "5": 226.08, "6": 249.7}, "82": {"1": 104.02, "2": 127.63, "3": 151.25, "4": 208.03, "5": 231.65, "6": 255.27}, "83": {"1": 106.88, "2": 130.49, "3": 154.11, "4": 213.75, "5": 237.37, "6": 260.99}, "84": {"1": 109.81, "2": 133.43, "3": 157.05, "4": 219.63, "5": 243.25, "6": 266.87}, "85": {"1": 112.83, "2": 136.45, "3": 160.07, "4": 225.67, "5": 249.29, "6": 272.91}, "86": {"1": 115.94, "2": 139.56, "3": 163.17, "4": 231.88, "5": 255.49, "6": 279.11}, "87": {"1": 119.13, "2": 142.74, "3": 166.36, "4": 238.25, "5": 261.87, "6": 285.49}, "88": {"1": 122.4, "2": 146.02, "3": 169.64, "4": 244.8, "5": 268.42, "6": 292.04}, "89": {"1": 125.77, "2": 149.39, "3": 173.0, "4": 251.54, "5": 275.15, "6": 298.77}, "90": {"1": 129.23, "2": 152.84, "3": 176.46, "4": 258.45, "5": 282.07, "6": 305.69}}}, "ECO_PLUS": {"label": "\u00c9co+", "soins_percent": 120, "pricing": {"18": {"1": 34.86, "2": 61.83, "3": 88.8, "4": 69.72, "5": 96.69, "6": 123.66}, "19": {"1": 35.39, "2": 62.36, "3": 89.33, "4": 70.79, "5": 97.75, "6": 124.72}, "20": {"1": 35.93, "2": 62.9, "3": 89.87, "4": 71.86, "5": 98.83, "6": 125.8}, "21": {"1": 36.48, "2": 63.45, "3": 90.41, "4": 72.96, "5": 99.93, "6": 126.89}, "22": {"1": 37.03, "2": 64.0, "3": 90.97, "4": 74.07, "5": 101.04, "6": 128.0}, "23": {"1": 37.6, "2": 64.57, "3": 91.53, "4": 75.2, "5": 102.16, "6": 129.13}, "24": {"1": 38.17, "2": 65.14, "3": 92.11, "4": 76.34, "5": 103.31, "6": 130.28}, "25": {"1": 38.75, "2": 65.72, "3": 92.69, "4": 77.5, "5": 104.47, "6": 131.44}, "26": {"1": 39.34, "2": 66.31, "3": 93.28, "4": 78.68, "5": 105.65, "6": 132.62}, "27": {"1": 39.94, "2": 66.91, "3": 93.88, "4": 79.88, "5": 106.85, "6": 133.82}, "28": {"1": 40.55, "2": 67.52, "3": 94.49, "4": 81.1, "5": 108.07, "6": 135.04}, "29": {"1": 41.17, "2": 68.14, "3": 95.1, "4": 82.33, "5": 109.3, "6": 136.27}, "30": {"1": 41.79, "2": 68.76, "3": 95.73, "4": 83.59, "5": 110.56, "6": 137.52}, "31": {"1": 42.43, "2": 69.4, "3": 96.37, "4": 84.86, "5": 111.83, "6": 138.8}, "32": {"1": 43.08, "2": 70.04, "3": 97.01, "4": 86.15, "5": 113.12, "6": 140.09}, "33": {"1": 43.73, "2": 70.7, "3": 97.67, "4": 87.47, "5": 114.43, "6": 141.4}, "34": {"1": 44.4, "2": 71.37, "3": 98.33, "4": 88.8, "5": 115.77, "6": 142.73}, "35": {"1": 45.07, "2": 72.04, "3": 99.01, "4": 90.15, "5": 117.12, "6": 144.09}, "36": {"1": 45.76, "2": 72.73, "3": 99.7, "4": 91.52, "5": 118.49, "6": 145.46}, "37": {"1": 46.46, "2": 73.43, "3": 100.39, "4": 92.92, "5": 119.88, "6": 146.85}, "38": {"1": 47.17, "2": 74.13, "3": 101.1, "4": 94.33, "5": 121.3, "6": 148.27}, "39": {"1": 47.88, "2": 74.85, "3": 101.82, "4": 95.77, "5": 122.74, "6": 149.7}, "40": {"1": 48.61, "2": 75.58, "3": 102.55, "4": 97.23, "5": 124.19, "6": 151.16}, "41": {"1": 49.35, "2": 76.32, "3": 103.29, "4": 98.71, "5": 125.67, "6": 152.64}, "42": {"1": 50.1, "2": 77.07, "3": 104.04, "4": 100.21, "5": 127.18, "6": 154.15}, "43": {"1": 50.87, "2": 77.84, "3": 104.8, "4": 101.74, "5": 128.7, "6": 155.67}, "44": {"1": 51.64, "2": 78.61, "3": 105.58, "4": 103.29, "5": 130.25, "6": 157.22}, "45": {"1": 52.43, "2": 79.4, "3": 106.36, "4": 104.86, "5": 131.83, "6": 158.79}, "46": {"1": 53.23, "2": 80.2, "3": 107.16, "4": 106.45, "5": 133.42, "6": 160.39}, "47": {"1": 54.04, "2": 81.01, "3": 107.97, "4": 108.08, "5": 135.04, "6": 162.01}, "48": {"1": 54.86, "2": 81.83, "3": 108.8, "4": 109.72, "5": 136.69, "6": 163.66}, "49": {"1": 55.7, "2": 82.66, "3": 109.63, "4": 111.39, "5": 138.36, "6": 165.33}, "50": {"1": 56.54, "2": 83.51, "3": 110.48, "4": 113.09, "5": 140.06, "6": 167.02}, "51": {"1": 57.41, "2": 84.37, "3": 111.34, "4": 114.81, "5": 141.78, "6": 168.75}, "52": {"1": 58.28, "2": 85.25, "3": 112.22, "4": 116.56, "5": 143.53, "6": 170.5}, "53": {"1": 59.17, "2": 86.14, "3": 113.1, "4": 118.33, "5": 145.3, "6": 172.27}, "54": {"1": 60.07, "2": 87.04, "3": 114.0, "4": 120.14, "5": 147.1, "6": 174.07}, "55": {"1": 60.98, "2": 87.95, "3": 114.92, "4": 121.97, "5": 148.93, "6": 175.9}, "56": {"1": 62.2, "2": 89.17, "3": 116.14, "4": 124.41, "5": 151.37, "6": 178.34}, "57": {"1": 63.45, "2": 90.41, "3": 117.38, "4": 126.89, "5": 153.86, "6": 180.83}, "58": {"1": 64.72, "2": 91.68, "3": 118.65, "4": 129.43, "5": 156.4, "6": 183.37}, "59": {"1": 66.01, "2": 92.98, "3": 119.95, "4": 132.02, "5": 158.99, "6": 185.96}, "60": {"1": 67.33, "2": 94.3, "3": 121.27, "4": 134.66, "5": 161.63, "6": 188.6}, "61": {"1": 68.68, "2": 95.64, "3": 122.61, "4": 137.35, "5": 164.32, "6": 191.29}, "62": {"1": 70.05, "2": 97.02, "3": 123.99, "4": 140.1, "5": 167.07, "6": 194.04}, "63": {"1": 71.45, "2": 98.42, "3": 125.39, "4": 142.9, "5": 169.87, "6": 196.84}, "64": {"1": 72.88, "2": 99.85, "3": 126.82, "4": 145.76, "5": 172.73, "6": 199.7}, "65": {"1": 74.34, "2": 101.31, "3": 128.27, "4": 148.68, "5": 175.64, "6": 202.61}, "66": {"1": 75.82, "2": 102.79, "3": 129.76, "4": 151.65, "5": 178.62, "6": 205.59}, "67": {"1": 77.34, "2": 104.31, "3": 131.28, "4": 154.68, "5": 181.65, "6": 208.62}, "68": {"1": 78.89, "2": 105.86, "3": 132.82, "4": 157.78, "5": 184.74, "6": 211.71}, "69": {"1": 80.47, "2": 107.43, "3": 134.4, "4": 160.93, "5": 187.9, "6": 214.87}, "70": {"1": 82.08, "2": 109.04, "3": 136.01, "4": 164.15, "5": 191.12, "6": 218.09}, "71": {"1": 84.33, "2": 111.3, "3": 138.27, "4": 168.66, "5": 195.63, "6": 222.6}, "72": {"1": 86.65, "2": 113.62, "3": 140.59, "4": 173.3, "5": 200.27, "6": 227.24}, "73": {"1": 89.03, "2": 116.0, "3": 142.97, "4": 178.07, "5": 205.04, "6": 232.0}, "74": {"1": 91.48, "2": 118.45, "3": 145.42, "4": 182.97, "5": 209.93, "6": 236.9}, "75": {"1": 94.0, "2": 120.97, "3": 147.93, "4": 188.0, "5": 214.96, "6": 241.93}, "76": {"1": 96.58, "2": 123.55, "3": 150.52, "4": 193.17, "5": 220.13, "6": 247.1}, "77": {"1": 99.24, "2": 126.21, "3": 153.18, "4": 198.48, "5": 225.45, "6": 252.41}, "78": {"1": 101.97, "2": 128.94, "3": 155.9, "4": 203.94, "5": 230.91, "6": 257.87}, "79": {"1": 104.77, "2": 131.74, "3": 158.71, "4": 209.55, "5": 236.51, "6": 263.48}, "80": {"1": 107.65, "2": 134.62, "3": 161.59, "4": 215.31, "5": 242.28, "6": 269.24}, "81": {"1": 110.61, "2": 137.58, "3": 164.55, "4": 221.23, "5": 248.2, "6": 275.16}, "82": {"1": 113.66, "2": 140.62, "3": 167.59, "4": 227.31, "5": 254.28, "6": 281.25}, "83": {"1": 116.78, "2": 143.75, "3": 170.72, "4": 233.56, "5": 260.53, "6": 287.5}, "84": {"1": 119.99, "2": 146.96, "3": 173.93, "4": 239.99, "5": 266.95, "6": 293.92}, "85": {"1": 123.29, "2": 150.26, "3": 177.23, "4": 246.59, "5": 273.55, "6": 300.52}, "86": {"1": 126.68, "2": 153.65, "3": 180.62, "4": 253.37, "5": 280.34, "6": 307.3}, "87": {"1": 130.17, "2": 157.14, "3": 184.1, "4": 260.34, "5": 287.3, "6": 314.27}, "88": {"1": 133.75, "2": 160.72, "3": 187.68, "4": 267.49, "5": 294.46, "6": 321.43}, "89": {"1": 137.43, "2": 164.39, "3": 191.36, "4": 274.85, "5": 301.82, "6": 328.79}, "90": {"1": 141.2, "2": 168.17, "3": 195.14, "4": 282.41, "5": 309.38, "6": 336.34}}}, "EQUILIBRE": {"label": "\u00c9quilibr\u00e9e", "soins_percent": 140, "pricing": {"18": {"1": 45.63, "2": 80.67, "3": 115.69, "4": 91.28, "5": 126.31, "6": 161.33}, "19": {"1": 45.63, "2": 80.67, "3": 115.69, "4": 91.28, "5": 126.31, "6": 161.33}, "20": {"1": 45.63, "2": 80.67, "3": 115.69, "4": 91.28, "5": 126.31, "6": 161.33}, "21": {"1": 46.35, "2": 81.38, "3": 116.4, "4": 92.7, "5": 127.72, "6": 162.75}, "22": {"1": 47.05, "2": 82.08, "3": 117.11, "4": 94.12, "5": 129.15, "6": 164.17}, "23": {"1": 47.77, "2": 82.79, "3": 117.82, "4": 95.53, "5": 130.56, "6": 165.59}, "24": {"1": 48.48, "2": 83.51, "3": 118.53, "4": 96.96, "5": 131.99, "6": 167.01}, "25": {"1": 49.22, "2": 84.24, "3": 119.27, "4": 98.44, "5": 133.46, "6": 168.49}, "26": {"1": 49.98, "2": 85.01, "3": 120.03, "4": 99.96, "5": 134.99, "6": 170.01}, "27": {"1": 50.74, "2": 85.77, "3": 120.79, "4": 101.5, "5": 136.52, "6": 171.55}, "28": {"1": 51.53, "2": 86.56, "3": 121.58, "4": 103.05, "5": 138.08, "6": 173.1}, "29": {"1": 52.31, "2": 87.33, "3": 122.36, "4": 104.61, "5": 139.64, "6": 174.66}, "30": {"1": 53.09, "2": 88.12, "3": 123.14, "4": 106.2, "5": 141.23, "6": 176.25}, "31": {"1": 53.92, "2": 88.94, "3": 123.97, "4": 107.84, "5": 142.86, "6": 177.89}, "32": {"1": 54.74, "2": 89.77, "3": 124.8, "4": 109.49, "5": 144.5, "6": 179.53}, "33": {"1": 55.58, "2": 90.6, "3": 125.62, "4": 111.15, "5": 146.18, "6": 181.2}, "34": {"1": 56.41, "2": 91.43, "3": 126.46, "4": 112.83, "5": 147.85, "6": 182.87}, "35": {"1": 57.27, "2": 92.3, "3": 127.32, "4": 114.55, "5": 149.57, "6": 184.59}, "36": {"1": 58.15, "2": 93.17, "3": 128.2, "4": 116.3, "5": 151.33, "6": 186.36}, "37": {"1": 59.02, "2": 94.05, "3": 129.07, "4": 118.06, "5": 153.08, "6": 188.11}, "38": {"1": 59.93, "2": 94.96, "3": 129.98, "4": 119.87, "5": 154.89, "6": 189.91}, "39": {"1": 60.82, "2": 95.85, "3": 130.87, "4": 121.64, "5": 156.67, "6": 191.69}, "40": {"1": 61.77, "2": 96.8, "3": 131.82, "4": 123.53, "5": 158.56, "6": 193.58}, "41": {"1": 62.7, "2": 97.72, "3": 132.75, "4": 125.41, "5": 160.42, "6": 195.45}, "42": {"1": 63.66, "2": 98.69, "3": 133.71, "4": 127.32, "5": 162.35, "6": 197.37}, "43": {"1": 64.62, "2": 99.65, "3": 134.67, "4": 129.25, "5": 164.27, "6": 199.3}, "44": {"1": 65.59, "2": 100.61, "3": 135.62, "4": 131.16, "5": 166.19, "6": 201.21}, "45": {"1": 66.56, "2": 101.57, "3": 136.6, "4": 133.11, "5": 168.14, "6": 203.16}, "46": {"1": 67.57, "2": 102.6, "3": 137.63, "4": 135.15, "5": 170.16, "6": 205.19}, "47": {"1": 68.57, "2": 103.6, "3": 138.63, "4": 137.15, "5": 172.18, "6": 207.2}, "48": {"1": 69.6, "2": 104.63, "3": 139.65, "4": 139.2, "5": 174.23, "6": 209.25}, "49": {"1": 70.65, "2": 105.68, "3": 140.7, "4": 141.29, "5": 176.31, "6": 211.34}, "50": {"1": 71.71, "2": 106.74, "3": 141.76, "4": 143.44, "5": 178.47, "6": 213.49}, "51": {"1": 72.8, "2": 107.83, "3": 142.85, "4": 145.6, "5": 180.63, "6": 215.65}, "52": {"1": 73.88, "2": 108.9, "3": 143.93, "4": 147.75, "5": 182.78, "6": 217.8}, "53": {"1": 74.99, "2": 110.02, "3": 145.04, "4": 149.98, "5": 185.0, "6": 220.03}, "54": {"1": 76.13, "2": 111.15, "3": 146.18, "4": 152.26, "5": 187.28, "6": 222.31}, "55": {"1": 77.28, "2": 112.3, "3": 147.33, "4": 154.57, "5": 189.59, "6": 224.62}, "56": {"1": 78.42, "2": 113.44, "3": 148.45, "4": 156.82, "5": 191.84, "6": 226.87}, "57": {"1": 79.59, "2": 114.62, "3": 149.64, "4": 159.18, "5": 194.21, "6": 229.23}, "58": {"1": 81.19, "2": 116.22, "3": 151.24, "4": 162.38, "5": 197.41, "6": 232.43}, "59": {"1": 82.81, "2": 117.83, "3": 152.86, "4": 165.62, "5": 200.64, "6": 235.66}, "60": {"1": 84.47, "2": 119.49, "3": 154.52, "4": 168.92, "5": 203.95, "6": 238.97}, "61": {"1": 86.14, "2": 121.17, "3": 156.19, "4": 172.3, "5": 207.33, "6": 242.35}, "62": {"1": 87.87, "2": 122.89, "3": 157.92, "4": 175.75, "5": 210.78, "6": 245.79}, "63": {"1": 89.65, "2": 124.67, "3": 159.68, "4": 179.28, "5": 214.3, "6": 249.33}, "64": {"1": 91.43, "2": 126.46, "3": 161.48, "4": 182.87, "5": 217.89, "6": 252.92}, "65": {"1": 93.26, "2": 128.28, "3": 163.31, "4": 186.52, "5": 221.54, "6": 256.57}, "66": {"1": 95.12, "2": 130.15, "3": 165.17, "4": 190.24, "5": 225.27, "6": 260.29}, "67": {"1": 97.04, "2": 132.05, "3": 167.07, "4": 194.06, "5": 229.08, "6": 264.11}, "68": {"1": 98.97, "2": 134.0, "3": 169.02, "4": 197.96, "5": 232.98, "6": 268.01}, "69": {"1": 100.94, "2": 135.96, "3": 170.99, "4": 201.89, "5": 236.9, "6": 271.92}, "70": {"1": 102.96, "2": 137.99, "3": 173.0, "4": 205.91, "5": 240.94, "6": 275.96}, "71": {"1": 105.01, "2": 140.04, "3": 175.06, "4": 210.04, "5": 245.06, "6": 280.08}, "72": {"1": 107.11, "2": 142.14, "3": 177.16, "4": 214.24, "5": 249.27, "6": 284.29}, "73": {"1": 109.26, "2": 144.29, "3": 179.32, "4": 218.52, "5": 253.54, "6": 288.57}, "74": {"1": 111.44, "2": 146.47, "3": 181.49, "4": 222.89, "5": 257.92, "6": 292.94}, "75": {"1": 113.67, "2": 148.69, "3": 183.72, "4": 227.35, "5": 262.37, "6": 297.4}, "76": {"1": 115.94, "2": 150.97, "3": 185.99, "4": 231.88, "5": 266.91, "6": 301.93}, "77": {"1": 118.61, "2": 153.63, "3": 188.67, "4": 237.21, "5": 272.24, "6": 307.27}, "78": {"1": 121.33, "2": 156.37, "3": 191.39, "4": 242.68, "5": 277.7, "6": 312.73}, "79": {"1": 124.12, "2": 159.16, "3": 194.18, "4": 248.25, "5": 283.28, "6": 318.3}, "80": {"1": 126.98, "2": 162.01, "3": 197.03, "4": 253.96, "5": 288.99, "6": 324.02}, "81": {"1": 133.96, "2": 169.0, "3": 204.02, "4": 267.94, "5": 302.96, "6": 337.99}, "82": {"1": 141.33, "2": 176.36, "3": 211.39, "4": 282.67, "5": 317.69, "6": 352.72}, "83": {"1": 149.1, "2": 184.13, "3": 219.17, "4": 298.21, "5": 333.23, "6": 368.27}, "84": {"1": 157.31, "2": 192.33, "3": 227.36, "4": 314.61, "5": 349.64, "6": 384.67}, "85": {"1": 161.23, "2": 196.27, "3": 231.3, "4": 322.48, "5": 357.51, "6": 392.53}, "86": {"1": 165.27, "2": 200.3, "3": 235.32, "4": 330.55, "5": 365.57, "6": 400.6}, "87": {"1": 169.4, "2": 204.42, "3": 239.46, "4": 338.8, "5": 373.84, "6": 408.86}, "88": {"1": 173.64, "2": 208.66, "3": 243.69, "4": 347.28, "5": 382.3, "6": 417.33}, "89": {"1": 177.98, "2": 213.0, "3": 248.04, "4": 355.95, "5": 390.98, "6": 426.02}, "90": {"1": 182.43, "2": 217.45, "3": 252.48, "4": 364.86, "5": 399.88, "6": 434.91}}}, "PRIVILEGE": {"label": "Privil\u00e8ge", "soins_percent": 200, "pricing": {"18": {"1": 50.44, "2": 89.13, "3": 127.81, "4": 100.88, "5": 139.56, "6": 178.24}, "19": {"1": 52.96, "2": 93.58, "3": 134.2, "4": 105.93, "5": 146.54, "6": 187.16}, "20": {"1": 52.96, "2": 93.58, "3": 134.2, "4": 105.93, "5": 146.54, "6": 187.16}, "21": {"1": 53.78, "2": 94.4, "3": 135.01, "4": 107.56, "5": 148.18, "6": 188.79}, "22": {"1": 54.59, "2": 95.21, "3": 135.82, "4": 109.18, "5": 149.79, "6": 190.42}, "23": {"1": 55.42, "2": 96.05, "3": 136.66, "4": 110.85, "5": 151.47, "6": 192.08}, "24": {"1": 56.27, "2": 96.89, "3": 137.51, "4": 112.54, "5": 153.17, "6": 193.78}, "25": {"1": 57.12, "2": 97.74, "3": 138.36, "4": 114.24, "5": 154.86, "6": 195.48}, "26": {"1": 58.0, "2": 98.61, "3": 139.24, "4": 115.99, "5": 156.62, "6": 197.23}, "27": {"1": 58.87, "2": 99.5, "3": 140.11, "4": 117.76, "5": 158.37, "6": 198.98}, "28": {"1": 59.76, "2": 100.39, "3": 141.0, "4": 119.53, "5": 160.15, "6": 200.76}, "29": {"1": 60.68, "2": 101.3, "3": 141.91, "4": 121.37, "5": 161.98, "6": 202.6}, "30": {"1": 61.6, "2": 102.22, "3": 142.84, "4": 123.21, "5": 163.82, "6": 204.44}, "31": {"1": 62.56, "2": 103.18, "3": 143.8, "4": 125.12, "5": 165.75, "6": 206.36}, "32": {"1": 63.51, "2": 104.13, "3": 144.74, "4": 127.02, "5": 167.64, "6": 208.25}, "33": {"1": 64.47, "2": 105.09, "3": 145.7, "4": 128.93, "5": 169.55, "6": 210.18}, "34": {"1": 65.44, "2": 106.06, "3": 146.68, "4": 130.89, "5": 171.5, "6": 212.13}, "35": {"1": 66.44, "2": 107.05, "3": 147.67, "4": 132.86, "5": 173.48, "6": 214.1}, "36": {"1": 67.46, "2": 108.08, "3": 148.69, "4": 134.92, "5": 175.54, "6": 216.15}, "37": {"1": 68.49, "2": 109.1, "3": 149.73, "4": 136.97, "5": 177.6, "6": 218.22}, "38": {"1": 69.53, "2": 110.14, "3": 150.75, "4": 139.04, "5": 179.65, "6": 220.28}, "39": {"1": 70.58, "2": 111.19, "3": 151.82, "4": 141.15, "5": 181.78, "6": 222.39}, "40": {"1": 71.66, "2": 112.28, "3": 152.89, "4": 143.33, "5": 183.94, "6": 224.56}, "41": {"1": 72.76, "2": 113.38, "3": 153.99, "4": 145.53, "5": 186.14, "6": 226.76}, "42": {"1": 73.86, "2": 114.48, "3": 155.09, "4": 147.72, "5": 188.34, "6": 228.96}, "43": {"1": 74.96, "2": 115.58, "3": 156.19, "4": 149.92, "5": 190.54, "6": 231.16}, "44": {"1": 76.1, "2": 116.72, "3": 157.33, "4": 152.21, "5": 192.82, "6": 233.44}, "45": {"1": 77.23, "2": 117.84, "3": 158.47, "4": 154.46, "5": 195.07, "6": 235.7}, "46": {"1": 78.38, "2": 119.01, "3": 159.62, "4": 156.77, "5": 197.38, "6": 238.0}, "47": {"1": 79.57, "2": 120.18, "3": 160.81, "4": 159.13, "5": 199.75, "6": 240.38}, "48": {"1": 80.77, "2": 121.38, "3": 162.0, "4": 161.52, "5": 202.15, "6": 242.76}, "49": {"1": 81.95, "2": 122.58, "3": 163.2, "4": 163.92, "5": 204.54, "6": 245.15}, "50": {"1": 83.18, "2": 123.81, "3": 164.42, "4": 166.37, "5": 206.99, "6": 247.6}, "51": {"1": 84.46, "2": 125.07, "3": 165.69, "4": 168.9, "5": 209.51, "6": 250.14}, "52": {"1": 85.72, "2": 126.33, "3": 166.95, "4": 171.44, "5": 212.05, "6": 252.67}, "53": {"1": 87.01, "2": 127.63, "3": 168.25, "4": 174.03, "5": 214.64, "6": 255.26}, "54": {"1": 88.29, "2": 128.91, "3": 169.52, "4": 176.58, "5": 217.2, "6": 257.82}, "55": {"1": 89.65, "2": 130.26, "3": 170.87, "4": 179.28, "5": 219.91, "6": 260.52}, "56": {"1": 90.97, "2": 131.6, "3": 172.21, "4": 181.95, "5": 222.57, "6": 263.18}, "57": {"1": 92.32, "2": 132.95, "3": 173.56, "4": 184.65, "5": 225.27, "6": 265.88}, "58": {"1": 94.2, "2": 134.81, "3": 175.43, "4": 188.38, "5": 229.0, "6": 269.62}, "59": {"1": 96.07, "2": 136.69, "3": 177.3, "4": 192.14, "5": 232.76, "6": 273.37}, "60": {"1": 97.99, "2": 138.61, "3": 179.23, "4": 195.98, "5": 236.6, "6": 277.21}, "61": {"1": 99.96, "2": 140.59, "3": 181.2, "4": 199.94, "5": 240.55, "6": 281.16}, "62": {"1": 101.95, "2": 142.58, "3": 183.19, "4": 203.91, "5": 244.53, "6": 285.14}, "63": {"1": 104.0, "2": 144.62, "3": 185.24, "4": 208.0, "5": 248.62, "6": 289.24}, "64": {"1": 106.08, "2": 146.69, "3": 187.31, "4": 212.15, "5": 252.77, "6": 293.38}, "65": {"1": 108.19, "2": 148.8, "3": 189.43, "4": 216.38, "5": 256.99, "6": 297.62}, "66": {"1": 110.37, "2": 150.98, "3": 191.59, "4": 220.72, "5": 261.33, "6": 301.96}, "67": {"1": 112.58, "2": 153.19, "3": 193.81, "4": 225.14, "5": 265.76, "6": 306.39}, "68": {"1": 114.83, "2": 155.44, "3": 196.06, "4": 229.66, "5": 270.27, "6": 310.89}, "69": {"1": 117.11, "2": 157.73, "3": 198.35, "4": 234.22, "5": 274.84, "6": 315.45}, "70": {"1": 119.44, "2": 160.07, "3": 200.69, "4": 238.9, "5": 279.51, "6": 320.13}, "71": {"1": 121.84, "2": 162.46, "3": 203.07, "4": 243.68, "5": 284.3, "6": 324.92}, "72": {"1": 124.27, "2": 164.9, "3": 205.51, "4": 248.55, "5": 289.17, "6": 329.78}, "73": {"1": 128.01, "2": 168.62, "3": 209.24, "4": 256.01, "5": 296.63, "6": 337.25}, "74": {"1": 130.56, "2": 171.19, "3": 211.8, "4": 261.13, "5": 301.75, "6": 342.36}, "75": {"1": 133.19, "2": 173.8, "3": 214.42, "4": 266.36, "5": 306.97, "6": 347.6}, "76": {"1": 135.84, "2": 176.45, "3": 217.08, "4": 271.67, "5": 312.3, "6": 352.92}, "77": {"1": 140.25, "2": 180.87, "3": 221.49, "4": 280.5, "5": 321.12, "6": 361.74}, "78": {"1": 144.8, "2": 185.43, "3": 226.04, "4": 289.61, "5": 330.23, "6": 370.85}, "79": {"1": 149.5, "2": 190.13, "3": 230.75, "4": 299.01, "5": 339.64, "6": 380.25}, "80": {"1": 154.36, "2": 194.98, "3": 235.6, "4": 308.72, "5": 349.34, "6": 389.97}, "81": {"1": 159.37, "2": 200.0, "3": 240.61, "4": 318.74, "5": 359.37, "6": 399.98}, "82": {"1": 164.55, "2": 205.16, "3": 245.79, "4": 329.09, "5": 369.71, "6": 410.34}, "83": {"1": 169.89, "2": 210.51, "3": 251.13, "4": 339.77, "5": 380.4, "6": 421.02}, "84": {"1": 175.4, "2": 216.03, "3": 256.64, "4": 350.82, "5": 391.43, "6": 432.06}, "85": {"1": 181.1, "2": 221.72, "3": 262.35, "4": 362.21, "5": 402.82, "6": 443.45}, "86": {"1": 186.98, "2": 227.61, "3": 268.22, "4": 373.96, "5": 414.59, "6": 455.2}, "87": {"1": 193.06, "2": 233.67, "3": 274.3, "4": 386.1, "5": 426.73, "6": 467.35}, "88": {"1": 199.32, "2": 239.94, "3": 280.56, "4": 398.65, "5": 439.26, "6": 479.89}, "89": {"1": 205.79, "2": 246.41, "3": 287.03, "4": 411.59, "5": 452.2, "6": 492.83}, "90": {"1": 212.48, "2": 253.09, "3": 293.72, "4": 424.95, "5": 465.57, "6": 506.2}}}, "VIP": {"label": "VIP", "soins_percent": 300, "pricing": {"18": {"1": 57.6, "2": 101.79, "3": 145.97, "4": 115.22, "5": 159.4, "6": 203.59}, "19": {"1": 60.48, "2": 106.88, "3": 153.27, "4": 120.98, "5": 167.37, "6": 213.77}, "20": {"1": 60.48, "2": 106.88, "3": 153.27, "4": 120.98, "5": 167.37, "6": 213.77}, "21": {"1": 61.42, "2": 107.81, "3": 154.21, "4": 122.84, "5": 169.24, "6": 215.63}, "22": {"1": 62.34, "2": 108.73, "3": 155.12, "4": 124.68, "5": 171.07, "6": 217.47}, "23": {"1": 63.3, "2": 109.69, "3": 156.08, "4": 126.6, "5": 172.99, "6": 219.38}, "24": {"1": 64.27, "2": 110.67, "3": 157.06, "4": 128.55, "5": 174.94, "6": 221.33}, "25": {"1": 65.24, "2": 111.63, "3": 158.02, "4": 130.47, "5": 176.86, "6": 223.26}, "26": {"1": 66.25, "2": 112.64, "3": 159.03, "4": 132.5, "5": 178.89, "6": 225.28}, "27": {"1": 67.25, "2": 113.64, "3": 160.03, "4": 134.5, "5": 180.89, "6": 227.28}, "28": {"1": 68.26, "2": 114.65, "3": 161.06, "4": 136.54, "5": 182.93, "6": 229.32}, "29": {"1": 69.3, "2": 115.69, "3": 162.08, "4": 138.59, "5": 184.99, "6": 231.38}, "30": {"1": 70.35, "2": 116.74, "3": 163.13, "4": 140.71, "5": 187.11, "6": 233.5}, "31": {"1": 71.43, "2": 117.82, "3": 164.21, "4": 142.85, "5": 189.24, "6": 235.64}, "32": {"1": 72.53, "2": 118.92, "3": 165.31, "4": 145.05, "5": 191.44, "6": 237.84}, "33": {"1": 73.64, "2": 120.03, "3": 166.42, "4": 147.28, "5": 193.67, "6": 240.06}, "34": {"1": 74.74, "2": 121.13, "3": 167.52, "4": 149.48, "5": 195.87, "6": 242.26}, "35": {"1": 75.89, "2": 122.28, "3": 168.67, "4": 151.78, "5": 198.17, "6": 244.58}, "36": {"1": 77.05, "2": 123.44, "3": 169.84, "4": 154.09, "5": 200.49, "6": 246.88}, "37": {"1": 78.23, "2": 124.62, "3": 171.01, "4": 156.46, "5": 202.85, "6": 249.24}, "38": {"1": 79.42, "2": 125.81, "3": 172.2, "4": 158.82, "5": 205.22, "6": 251.62}, "39": {"1": 80.63, "2": 127.02, "3": 173.41, "4": 161.25, "5": 207.64, "6": 254.03}, "40": {"1": 81.83, "2": 128.22, "3": 174.63, "4": 163.67, "5": 210.06, "6": 256.46}, "41": {"1": 83.11, "2": 129.5, "3": 175.89, "4": 166.2, "5": 212.59, "6": 258.98}, "42": {"1": 84.36, "2": 130.75, "3": 177.14, "4": 168.71, "5": 215.1, "6": 261.5}, "43": {"1": 85.62, "2": 132.01, "3": 178.4, "4": 171.24, "5": 217.63, "6": 264.02}, "44": {"1": 86.89, "2": 133.3, "3": 179.69, "4": 173.8, "5": 220.19, "6": 266.58}, "45": {"1": 88.21, "2": 134.6, "3": 180.99, "4": 176.41, "5": 222.81, "6": 269.2}, "46": {"1": 89.53, "2": 135.92, "3": 182.32, "4": 179.07, "5": 225.46, "6": 271.85}, "47": {"1": 90.87, "2": 137.26, "3": 183.65, "4": 181.73, "5": 228.12, "6": 274.51}, "48": {"1": 92.25, "2": 138.64, "3": 185.03, "4": 184.49, "5": 230.88, "6": 277.28}, "49": {"1": 93.61, "2": 140.0, "3": 186.39, "4": 187.22, "5": 233.61, "6": 280.0}, "50": {"1": 95.02, "2": 141.41, "3": 187.81, "4": 190.06, "5": 236.45, "6": 282.84}, "51": {"1": 96.45, "2": 142.84, "3": 189.23, "4": 192.9, "5": 239.29, "6": 285.68}, "52": {"1": 97.9, "2": 144.29, "3": 190.68, "4": 195.78, "5": 242.18, "6": 288.57}, "53": {"1": 99.37, "2": 145.77, "3": 192.16, "4": 198.73, "5": 245.13, "6": 291.52}, "54": {"1": 100.86, "2": 147.25, "3": 193.65, "4": 201.71, "5": 248.1, "6": 294.49}, "55": {"1": 102.37, "2": 148.77, "3": 195.16, "4": 204.75, "5": 251.14, "6": 297.53}, "56": {"1": 103.91, "2": 150.3, "3": 196.71, "4": 207.84, "5": 254.23, "6": 300.62}, "57": {"1": 105.46, "2": 151.86, "3": 198.25, "4": 210.93, "5": 257.32, "6": 303.71}, "58": {"1": 107.56, "2": 153.96, "3": 200.35, "4": 215.13, "5": 261.52, "6": 307.91}, "59": {"1": 109.74, "2": 156.13, "3": 202.52, "4": 219.47, "5": 265.86, "6": 312.25}, "60": {"1": 111.92, "2": 158.31, "3": 204.7, "4": 223.84, "5": 270.24, "6": 316.63}, "61": {"1": 114.15, "2": 160.55, "3": 206.95, "4": 228.32, "5": 274.71, "6": 321.1}, "62": {"1": 116.43, "2": 162.82, "3": 209.21, "4": 232.86, "5": 279.25, "6": 325.64}, "63": {"1": 118.78, "2": 165.17, "3": 211.56, "4": 237.56, "5": 283.95, "6": 330.35}, "64": {"1": 121.14, "2": 167.54, "3": 213.93, "4": 242.29, "5": 288.68, "6": 335.07}, "65": {"1": 123.6, "2": 169.99, "3": 216.38, "4": 247.19, "5": 293.58, "6": 339.97}, "66": {"1": 126.05, "2": 172.44, "3": 218.83, "4": 252.08, "5": 298.48, "6": 344.88}, "67": {"1": 128.56, "2": 174.95, "3": 221.34, "4": 257.12, "5": 303.51, "6": 349.9}, "68": {"1": 131.12, "2": 177.51, "3": 223.91, "4": 262.25, "5": 308.64, "6": 355.03}, "69": {"1": 133.74, "2": 180.13, "3": 226.52, "4": 267.47, "5": 313.86, "6": 360.26}, "70": {"1": 136.44, "2": 182.83, "3": 229.22, "4": 272.87, "5": 319.27, "6": 365.66}, "71": {"1": 139.16, "2": 185.56, "3": 231.95, "4": 278.33, "5": 324.72, "6": 371.11}, "72": {"1": 141.94, "2": 188.33, "3": 234.72, "4": 283.87, "5": 330.26, "6": 376.65}, "73": {"1": 144.78, "2": 191.17, "3": 237.56, "4": 289.54, "5": 335.93, "6": 382.33}, "74": {"1": 147.67, "2": 194.06, "3": 240.45, "4": 295.33, "5": 341.72, "6": 388.12}, "75": {"1": 150.63, "2": 197.02, "3": 243.41, "4": 301.26, "5": 347.65, "6": 394.04}, "76": {"1": 153.66, "2": 200.05, "3": 246.44, "4": 307.3, "5": 353.69, "6": 400.08}, "77": {"1": 157.79, "2": 204.19, "3": 250.58, "4": 315.6, "5": 361.98, "6": 408.37}, "78": {"1": 162.06, "2": 208.45, "3": 254.83, "4": 324.12, "5": 370.51, "6": 416.89}, "79": {"1": 166.44, "2": 212.83, "3": 259.21, "4": 332.87, "5": 379.26, "6": 425.64}, "80": {"1": 170.92, "2": 217.32, "3": 263.71, "4": 341.86, "5": 388.24, "6": 434.63}, "81": {"1": 175.54, "2": 221.93, "3": 268.32, "4": 351.09, "5": 397.47, "6": 443.86}, "82": {"1": 180.28, "2": 226.67, "3": 273.06, "4": 360.57, "5": 406.96, "6": 453.34}, "83": {"1": 185.15, "2": 231.53, "3": 277.93, "4": 370.3, "5": 416.69, "6": 463.08}, "84": {"1": 190.14, "2": 236.54, "3": 282.93, "4": 380.3, "5": 426.69, "6": 473.07}, "85": {"1": 195.28, "2": 241.68, "3": 288.05, "4": 390.57, "5": 436.96, "6": 483.34}, "86": {"1": 200.56, "2": 246.94, "3": 293.33, "4": 401.11, "5": 447.5, "6": 493.89}, "87": {"1": 205.98, "2": 252.35, "3": 298.75, "4": 411.94, "5": 458.33, "6": 504.72}, "88": {"1": 211.53, "2": 257.92, "3": 304.31, "4": 423.07, "5": 469.46, "6": 515.84}, "89": {"1": 217.24, "2": 263.63, "3": 310.03, "4": 434.48, "5": 480.88, "6": 527.27}, "90": {"1": 223.11, "2": 269.5, "3": 315.89, "4": 446.23, "5": 492.6, "6": 539.0}}}};
+
+// ═══════════════════════════════════════════════════════
+//  GARANTIES PAR FORMULE
+// ═══════════════════════════════════════════════════════
+
+// MALJ Mutuelle Santé (< 65 ans)
+const MALJ_SANTE_GUARANTEES = {
+  ECO:       { soins_optam:100, dentaire:100,  optique_b_simple:50,  optique_b_complexe:100, hospit_optam:100, audio:100 },
+  ZEN:       { soins_optam:150, dentaire:150,  optique_b_simple:150, optique_b_complexe:200, hospit_optam:150, audio:150 },
+  EQUILIBRE: { soins_optam:200, dentaire:200,  optique_b_simple:250, optique_b_complexe:300, hospit_optam:200, audio:200 },
+  SERENITE:  { soins_optam:300, dentaire:250,  optique_b_simple:300, optique_b_complexe:350, hospit_optam:300, audio:250 },
+  EXCELLENCE:{ soins_optam:350, dentaire:300,  optique_b_simple:400, optique_b_complexe:500, hospit_optam:350, audio:300 },
+};
+
+// MALJ Santé Senior (≥ 65 ans)
+const MALJ_SENIOR_GUARANTEES = {
+  ECO:       { soins_optam:100, dentaire:100,  optique_b_simple:50,  optique_b_complexe:100, hospit_optam:100, audio:100 },
+  ZEN:       { soins_optam:150, dentaire:150,  optique_b_simple:150, optique_b_complexe:200, hospit_optam:150, audio:150 },
+  EQUILIBRE: { soins_optam:200, dentaire:200,  optique_b_simple:250, optique_b_complexe:300, hospit_optam:200, audio:200 },
+  SERENITE:  { soins_optam:250, dentaire:250,  optique_b_simple:300, optique_b_complexe:350, hospit_optam:250, audio:250 },
+  EXCELLENCE:{ soins_optam:400, dentaire:350,  optique_b_simple:400, optique_b_complexe:500, hospit_optam:400, audio:350 },
+};
+
+// INIZYS garanties par formule
+const INIZYS_GUARANTEES = {
+  ECO:       { soins_optam:100, dentaire:100,  optique_b_simple:50,  optique_b_complexe:100, hospit_optam:100, audio:100 },
+  ECO_PLUS:  { soins_optam:120, dentaire:120,  optique_b_simple:100, optique_b_complexe:150, hospit_optam:120, audio:100 },
+  EQUILIBRE: { soins_optam:140, dentaire:150,  optique_b_simple:200, optique_b_complexe:250, hospit_optam:150, audio:140 },
+  PRIVILEGE: { soins_optam:200, dentaire:200,  optique_b_simple:260, optique_b_complexe:310, hospit_optam:200, audio:200 },
+  VIP:       { soins_optam:300, dentaire:280,  optique_b_simple:350, optique_b_complexe:420, hospit_optam:300, audio:280 },
+};
+
+// ═══════════════════════════════════════════════════════
+//  FRAIS FIXES MALJ
+// ═══════════════════════════════════════════════════════
+const MALJ_FEES = {
+  MALJ_SANTE_2026:  13 / 12,   // 13€/an → ~1,08€/mois
+  MALJ_SENIOR_2026:  6 / 12,   // 6€/an  → 0,50€/mois
+};
+const MALJ_FEES_ANNUAL = {
+  MALJ_SANTE_2026:  13,
+  MALJ_SENIOR_2026:  6,
+};
+
+// ═══════════════════════════════════════════════════════
+//  NIVEAUX DE GARANTIES
+// ═══════════════════════════════════════════════════════
+const LEVEL_RULES = [
+  { code:'ECO',       label:'Éco',       range:'100%',        min:100, max:100,  color:'var(--eco)' },
+  { code:'ECO_PLUS',  label:'Éco +',     range:'101→125%',   min:101, max:125,  color:'var(--ecoplus)' },
+  { code:'EQUILIBRE', label:'Équilibre', range:'126→155%',   min:126, max:155,  color:'var(--equilibre)' },
+  { code:'CONFORT',   label:'Confort',   range:'156→199%',   min:156, max:199,  color:'var(--confort)' },
+  { code:'PRIVILEGE', label:'Privilège', range:'200→249%',   min:200, max:249,  color:'var(--privilege)' },
+  { code:'VIP',       label:'VIP',       range:'≥ 250%',     min:250, max:9999, color:'var(--vip)' },
+];
+
+const INSURER_COLORS = {
+  'MALJ Mutuelle Santé': 'var(--malj)',
+  'MALJ Santé Senior':   '#c084fc',
+  'INIZYS':              'var(--inizys)',
+  'NEOLIANE':            'var(--neoliane)',
+  'Santé Select':        '#2e7d32',
+  'Santé Protect':       '#1b5e20',
+  'Santé Pro+':          '#4caf50',
+};
+
+// ═══════════════════════════════════════════════════════
+//  ALPTIS — CONFIG & FONCTIONS
+// ═══════════════════════════════════════════════════════
+const ALPTIS_PROXY = 'https://www.leviagergaranti.fr/alptis-proxy.php';
+
+const ALPTIS_SELECT_SOINS   = { 1: 150, 2: 200, 3: 250, 4: 300, 5: 350 };
+const ALPTIS_PROTECT_SOINS  = { 'N1': 150, 'N2': 200, 'N3': 250, 'N4': 300 };
+const ALPTIS_PRO_PLUS_SOINS = { 'NIVEAU_1': 150, 'NIVEAU_2': 200, 'NIVEAU_3': 250, 'NIVEAU_4': 300, 'NIVEAU_5': 350, 'NIVEAU_6': 400 };
+
+const ALPTIS_SELECT_LEVELS   = { 'ECO':[], 'ECO_PLUS':[], 'EQUILIBRE':[], 'CONFORT':[1], 'PRIVILEGE':[2], 'VIP':[3,4,5] };
+const ALPTIS_PROTECT_LEVELS  = { 'ECO':[], 'ECO_PLUS':[], 'EQUILIBRE':[], 'CONFORT':['N1'], 'PRIVILEGE':['N2'], 'VIP':['N3','N4'] };
+const ALPTIS_PRO_PLUS_LEVELS = { 'ECO':[], 'ECO_PLUS':[], 'EQUILIBRE':[], 'CONFORT':['NIVEAU_1'], 'PRIVILEGE':['NIVEAU_2'], 'VIP':['NIVEAU_3','NIVEAU_4','NIVEAU_5','NIVEAU_6'] };
+
+function mapAlptisCSP(regime) {
+  const m = { '550001':'EMPLOYES_AGENTS_DE_MAITRISE', '550002':'EMPLOYES_AGENTS_DE_MAITRISE', '550006':'CADRES_ET_EMPLOYES_DE_LA_FONCTION_PUBLIQUE', '550008':'COMMERCANTS_ET_ASSIMILES', '550020':'RETRAITES' };
+  return m[regime] || 'EMPLOYES_AGENTS_DE_MAITRISE';
+}
+
+function mapAlptisRegime(regime) {
+  const m = { '550001':'SECURITE_SOCIALE', '550002':'ALSACE_MOSELLE', '550006':'SECURITE_SOCIALE', '550008':'SECURITE_SOCIALE_INDEPENDANTS', '550020':'SECURITE_SOCIALE' };
+  return m[regime] || 'SECURITE_SOCIALE';
+}
+
+function buildAlptisProfile(profile, birthdate, birthdatePartner, zipcode, regime, bdChild1, bdChild2) {
+  const p = { date_naissance: birthdate, code_postal: zipcode, regime, csp: mapAlptisCSP(regime) };
+  if (regime === '550008') p.cadre_exercice = 'INDEPENDANT';
+  if (birthdatePartner && ['couple','famille_1e','famille_2e'].includes(profile)) p.date_naissance_conjoint = birthdatePartner;
+  if (bdChild1 && ['famille_1e','famille_2e'].includes(profile)) p.date_naissance_enfant1 = bdChild1;
+  if (bdChild2 && profile === 'famille_2e') p.date_naissance_enfant2 = bdChild2;
+  return p;
+}
+
+function buildAlptisGuarantees(soins) {
+  return { soins_optam: soins, hospit_optam: soins + 100, dentaire: soins, optique_b_simple: soins, optique_b_complexe: soins, audio: 100 };
+}
+
+async function fetchAlptisRaw(action, niveaux, profile, birthdate, birthdatePartner, zipcode, regime, bdChild1, bdChild2) {
+  try {
+    const res = await fetch(ALPTIS_PROXY, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action, niveaux, date_effet: getDateEffect(), profile: buildAlptisProfile(profile, birthdate, birthdatePartner, zipcode, regime, bdChild1, bdChild2) })
+    });
+    const data = await res.json();
+    if (!data.status || !Array.isArray(data.data)) return [];
+    return data.data;
+  } catch(e) { console.error('Erreur Alptis (' + action + '):', e); return []; }
+}
+
+async function fetchAlptisSelect(profile, birthdate, birthdatePartner, zipcode, regime, lvlRule, bdChild1, bdChild2) {
+  const niveaux = ALPTIS_SELECT_LEVELS[currentLevel] || [];
+  if (!niveaux.length) return [];
+  const raw = await fetchAlptisRaw('sante_select', niveaux, profile, birthdate, birthdatePartner, zipcode, regime, bdChild1, bdChild2);
+  return raw.filter(item => item.tarifs).map((item, i) => {
+    const soins = ALPTIS_SELECT_SOINS[niveaux[i]] || 100;
+    return { insurer: 'Santé Select', contract: 'Santé Select', formula: 'Niveau ' + niveaux[i], guarantees: buildAlptisGuarantees(soins), price: item.tarifs.total, level: getSoinsLevel(soins) };
+  });
+}
+
+async function fetchAlptisProtect(profile, birthdate, birthdatePartner, zipcode, regime, lvlRule, bdChild1, bdChild2) {
+  if (ageRevolu(birthdate) < 55) return [];
+  const niveaux = ALPTIS_PROTECT_LEVELS[currentLevel] || [];
+  if (!niveaux.length) return [];
+  const raw = await fetchAlptisRaw('sante_protect', niveaux, profile, birthdate, birthdatePartner, zipcode, regime, bdChild1, bdChild2);
+  return raw.filter(item => item.tarifs).map((item, i) => {
+    const soins = ALPTIS_PROTECT_SOINS[niveaux[i]] || 100;
+    return { insurer: 'Santé Protect', contract: 'Santé Protect', formula: niveaux[i], guarantees: buildAlptisGuarantees(soins), price: item.tarifs.prime_totale_mensuelle, level: getSoinsLevel(soins) };
+  });
+}
+
+async function fetchAlptisProPlus(profile, birthdate, birthdatePartner, zipcode, regime, lvlRule, bdChild1, bdChild2) {
+  if (regime !== '550008') return [];
+  if (ageRevolu(birthdate) >= 68) return [];
+  const niveaux = ALPTIS_PRO_PLUS_LEVELS[currentLevel] || [];
+  if (!niveaux.length) return [];
+  const raw = await fetchAlptisRaw('sante_pro_plus', niveaux, profile, birthdate, birthdatePartner, zipcode, regime, bdChild1, bdChild2);
+  return raw.filter(item => item.tarifs).map((item, i) => {
+    const soins = ALPTIS_PRO_PLUS_SOINS[niveaux[i]] || 100;
+    return { insurer: 'Santé Pro+', contract: 'Santé Pro+', formula: niveaux[i].replace('NIVEAU_', 'Niveau '), guarantees: buildAlptisGuarantees(soins), price: item.tarifs.total_mensuel, level: getSoinsLevel(soins) };
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+//  NEOLIANE — CONFIG API
+// ═══════════════════════════════════════════════════════
+const NEOLIANE_PROXY = 'https://www.leviagergaranti.fr/neoliane-proxy.php';
+
+// Mapping warrantyId=112 (Soins courants) → valeur numérique
+function parseSoins(val) {
+  if (!val) return 0;
+  const m = String(val).match(/(\d+)/);
+  return m ? parseInt(m[1]) : 0;
+}
+
+// Extraire valeur numérique d'une garantie (% ou €)
+function parseWarranty(val) {
+  if (!val || val === 'Néant' || val === 'Non') return 0;
+  const m = String(val).match(/(\d+)/);
+  return m ? parseInt(m[1]) : 0;
+}
+
+// Mapping régime comparateur → Neoliane socialSecurityScheme
+function getNeolianeRegime(regimeCode) {
+  const map = {
+    '550001': 'employee',       // Salarié
+    '550002': 'employee',       // Alsace-Moselle → employee
+    '550006': 'civil_servant',  // Fonctionnaire
+    '550008': 'self_employed',  // TNS
+    '550020': 'retired',        // Retraité
+  };
+  return map[regimeCode] || 'employee';
+}
+
+// Construire profileHealth selon le profil sélectionné
+function buildNeolianeProfile(profile, birthdate, birthdatePartner, regime, bdChild1, bdChild2) {
+  const scheme = getNeolianeRegime(regime);
+  const birthYear = new Date(birthdate).getFullYear().toString();
+  const members = [{ socialSecurityScheme: scheme, birthYear, familyMember: 'holder' }];
+
+  if (['couple', 'famille_1e', 'famille_2e'].includes(profile) && birthdatePartner) {
+    const partnerYear = new Date(birthdatePartner).getFullYear().toString();
+    members.push({ socialSecurityScheme: scheme, birthYear: partnerYear, familyMember: 'spouse' });
+  }
+  if (['famille_1e', 'famille_2e'].includes(profile)) {
+    const c1Year = bdChild1 ? new Date(bdChild1).getFullYear().toString() : '2015';
+    members.push({ socialSecurityScheme: 'student', birthYear: c1Year, familyMember: 'child' });
+  }
+  if (profile === 'famille_2e') {
+    const c2Year = bdChild2 ? new Date(bdChild2).getFullYear().toString() : '2018';
+    members.push({ socialSecurityScheme: 'student', birthYear: c2Year, familyMember: 'child' });
+  }
+  return members;
+}
+
+// Date d'effet = 1er du mois prochain
+function getDateEffect() {
+  const d = new Date();
+  d.setMonth(d.getMonth() + 1);
+  d.setDate(1);
+  return d.toISOString().split('T')[0];
+}
+
+// Appel API Neoliane complet → retourne liste d'offres formatées
+async function fetchNeoliane(profile, birthdate, birthdatePartner, zipcode, regime, lvlRule, bdChild1, bdChild2) {
+  try {
+    const res = await fetch(NEOLIANE_PROXY, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'get_prices',
+        zipCode: zipcode,
+        dateEffect: getDateEffect(),
+        profileHealth: buildNeolianeProfile(profile, birthdate, birthdatePartner, regime, bdChild1, bdChild2)
+      })
+    });
+    const data = await res.json();
+    if (!data.status || !data.products) return [];
+
+    const offers = [];
+    data.products.forEach(p => {
+      const warranties = p.pricingPersonalInsurance?.warranties || [];
+      const soinsW = warranties.find(w => w.id === 112);
+      const hospW  = warranties.find(w => w.id === 109);
+      const dentW  = warranties.find(w => w.id === 110);
+      const optiW  = warranties.find(w => w.id === 111);
+      const audioW = warranties.find(w => w.id === 396);
+
+      const soins = parseSoins(soinsW?.value);
+      if (soins < lvlRule.min || soins > lvlRule.max) return;
+      if (!p.isSellable) return;
+
+      offers.push({
+        insurer:   'NEOLIANE',
+        contract:  p.gammeLabel,
+        formula:   p.formulaLabel,
+        guarantees: {
+          soins_optam:        soins,
+          hospit_optam:       parseWarranty(hospW?.value),
+          dentaire:           parseWarranty(dentW?.value),
+          optique_b_simple:   parseWarranty(optiW?.value),
+          optique_b_complexe: parseWarranty(optiW?.value),
+          audio:              parseWarranty(audioW?.value),
+        },
+        price: p.amount,
+        level: getSoinsLevel(soins),
+      });
+    });
+    return offers;
+  } catch(e) {
+    console.error('Erreur Neoliane:', e);
+    return [];
+  }
+}
+// ═══════════════════════════════════════════════════════
+//  CALCUL ÂGE RÉVOLU AU 31/12/2025
+// ═══════════════════════════════════════════════════════
+function ageRevolu(birthdate) {
+  const ref = new Date(2025, 11, 31); // 31 déc 2025
+  const bd  = new Date(birthdate);
+  let age = ref.getFullYear() - bd.getFullYear();
+  if (
+    bd.getMonth() > ref.getMonth() ||
+    (bd.getMonth() === ref.getMonth() && bd.getDate() > ref.getDate())
+  ) age--;
+  return age;
+}
+
+// ═══════════════════════════════════════════════════════
+//  LOOKUP PRIX INIZYS
+// ═══════════════════════════════════════════════════════
+function getInizysPrice(formulaCode, age, familyCode) {
+  const fdata = INIZYS_PRICING[formulaCode];
+  if (!fdata) return null;
+  // Age clamped to 18-90
+  const a = Math.max(18, Math.min(90, age));
+  const pricingByAge = fdata.pricing[String(a)];
+  if (!pricingByAge) return null;
+  return pricingByAge[String(familyCode)] || null;
+}
+
+// ═══════════════════════════════════════════════════════
+//  LOOKUP PRIX MALJ
+// ═══════════════════════════════════════════════════════
+function getMaljPrice(productCode, formulaCode, age, regime) {
+  const prod = MALJ_PRICING[productCode];
+  if (!prod) return null;
+  const form = prod[formulaCode];
+  if (!form) return null;
+  const reg = form[regime] || form['550001']; // fallback regime général
+  if (!reg) return null;
+  const a = Math.max(17, Math.min(90, age));
+  // Find exact age or nearest
+  if (reg[String(a)] !== undefined) return reg[String(a)];
+  // Nearest age
+  const ages = Object.keys(reg).map(Number);
+  const nearest = ages.reduce((prev, curr) =>
+    Math.abs(curr - a) < Math.abs(prev - a) ? curr : prev
+  );
+  return reg[String(nearest)];
+}
+
+// ═══════════════════════════════════════════════════════
+//  INIZYS FAMILY CODE MAPPING
+// ═══════════════════════════════════════════════════════
+// 1=ADULTE_SEUL, 2=ADULTE_1_ENFANT, 3=ADULTE_2_ENFANTS_PLUS
+// 4=COUPLE, 5=COUPLE_1_ENFANT, 6=COUPLE_2_ENFANTS_PLUS
+function getInizysFamily(profile) {
+  return {
+    individuel: 1,
+    couple:     4,
+    famille_1e: 2,
+    famille_2e: 3,
+  }[profile] || 1;
+}
+
+// MALJ ne propose qu'un tarif individuel (par tête) — pour couple/famille, additionner
+// Pour simplifier : MALJ = tarif individuel uniquement dans ce comparateur
+// Si couple : on affiche le tarif de la personne principale seulement avec note
+
+// ═══════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════
+let currentProfile = 'individuel';
+let currentLevel   = 'EQUILIBRE';
+let currentResults = [];
+
+// ═══════════════════════════════════════════════════════
+//  BUILD UI
+// ═══════════════════════════════════════════════════════
+function buildLevels() {
+  const grid = document.getElementById('levelsGrid');
+  LEVEL_RULES.forEach(lvl => {
+    const btn = document.createElement('div');
+    btn.className = 'level-btn' + (lvl.code === currentLevel ? ' active' : '');
+    btn.dataset.code = lvl.code;
+    btn.style.setProperty('--level-color', lvl.color);
+    btn.innerHTML = `<div class="level-dot" style="background:${lvl.color}"></div>
+      <span class="level-name" style="color:${lvl.code===currentLevel?lvl.color:''}">${lvl.label}</span>
+      <span class="level-range">${lvl.range}</span>`;
+    btn.onclick = () => {
+      document.querySelectorAll('.level-btn').forEach(b => {
+        b.classList.remove('active');
+        b.querySelector('.level-name').style.color = '';
+      });
+      btn.classList.add('active');
+      btn.querySelector('.level-name').style.color = lvl.color;
+      currentLevel = lvl.code;
+    };
+    grid.appendChild(btn);
+  });
+}
+
+function setProfile(el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  currentProfile = el.dataset.p;
+  const isCouple  = ['couple','famille_1e','famille_2e'].includes(currentProfile);
+  const hasChild1 = ['famille_1e','famille_2e'].includes(currentProfile);
+  const hasChild2 = currentProfile === 'famille_2e';
+  document.getElementById('partnerField').style.display = isCouple  ? '' : 'none';
+  document.getElementById('child1Field').style.display  = hasChild1 ? '' : 'none';
+  document.getElementById('child2Field').style.display  = hasChild2 ? '' : 'none';
+}
+
+function showError(msg) {
+  const b = document.getElementById('errorBox');
+  document.getElementById('errorMsg').textContent = msg;
+  b.classList.add('visible');
+  setTimeout(() => b.classList.remove('visible'), 4000);
+}
+
+function validate() {
+  const bd = document.getElementById('birthdate').value;
+  const zp = document.getElementById('zipcode').value;
+  if (!bd) { showError('Veuillez saisir votre date de naissance.'); return false; }
+  if (!/^\d{5}$/.test(zp)) { showError('Code postal invalide (5 chiffres).'); return false; }
+  return true;
+}
+
+function getSoinsLevel(s) {
+  for (let i = LEVEL_RULES.length - 1; i >= 0; i--) {
+    if (s >= LEVEL_RULES[i].min) return LEVEL_RULES[i];
+  }
+  return LEVEL_RULES[0];
+}
+
+// ═══════════════════════════════════════════════════════
+//  SEARCH
+// ═══════════════════════════════════════════════════════
+async function launchSearch() {
+  if (!validate()) return;
+  document.getElementById('results').classList.remove('visible');
+  document.getElementById('loading').classList.add('visible');
+
+  const bd        = document.getElementById('birthdate').value;
+  const bdPartner = document.getElementById('birthdate_partner').value;
+  const bdChild1  = document.getElementById('birthdate_child1').value;
+  const bdChild2  = document.getElementById('birthdate_child2').value;
+  const zipcode   = document.getElementById('zipcode').value;
+  const regime    = document.getElementById('regime').value;
+  const age       = ageRevolu(bd);
+  const famCode   = getInizysFamily(currentProfile);
+
+  // Âges conjoint et enfants
+  const agePartner = bdPartner ? ageRevolu(bdPartner) : null;
+  const ageChild1  = bdChild1  ? ageRevolu(bdChild1)  : 10; // défaut 10 ans
+  const ageChild2  = bdChild2  ? ageRevolu(bdChild2)  : 7;  // défaut 7 ans
+
+  // Loading animation
+  const steps = ['step1','step2','step3','step4','step5','step6'];
+  for (let i = 0; i < steps.length; i++) {
+    await new Promise(r => setTimeout(r, 180));
+    document.getElementById(steps[i]).classList.add('active');
+    if (i > 0) document.getElementById(steps[i-1]).classList.replace('active','done');
+  }
+  await new Promise(r => setTimeout(r, 180));
+  document.getElementById(steps[steps.length-1]).classList.replace('active','done');
+  await new Promise(r => setTimeout(r, 150));
+
+  const lvlRule = LEVEL_RULES.find(l => l.code === currentLevel);
+  const offers  = [];
+
+  // ─── MALJ ───────────────────────────────────────────
+  // Choisir le bon contrat selon l'âge
+  const isSenior = age >= 65;
+
+  const maljProduct   = isSenior ? 'MALJ_SENIOR_2026' : 'MALJ_SANTE_2026';
+  const maljContract  = isSenior ? 'MALJ Santé Senior'  : 'MALJ Mutuelle Santé';
+  const maljGuarantees= isSenior ? MALJ_SENIOR_GUARANTEES : MALJ_SANTE_GUARANTEES;
+  const maljFees      = isSenior ? MALJ_FEES.MALJ_SENIOR_2026 : MALJ_FEES.MALJ_SANTE_2026;
+  const maljFeesAnnual= isSenior ? 6 : 13;
+
+  const maljFormulas  = ['ECO','ZEN','EQUILIBRE','SERENITE','EXCELLENCE'];
+  maljFormulas.forEach(fc => {
+    const g = maljGuarantees[fc];
+    if (!g) return;
+    if (g.soins_optam < lvlRule.min || g.soins_optam > lvlRule.max) return;
+
+    // Tarif adhérent principal
+    const baseHolder = getMaljPrice(maljProduct, fc, age, regime);
+    if (!baseHolder) return;
+
+    // Calcul par tête selon profil
+    let basePremium = baseHolder;
+
+    if (['couple','famille_1e','famille_2e'].includes(currentProfile) && agePartner !== null) {
+      // Conjoint : même contrat (Senior si ≥65, Santé sinon)
+      const partnerIsSenior = agePartner >= 65;
+      const partnerProduct = partnerIsSenior ? 'MALJ_SENIOR_2026' : 'MALJ_SANTE_2026';
+      const basePartner = getMaljPrice(partnerProduct, fc, agePartner, regime);
+      if (basePartner) basePremium += basePartner;
+    }
+
+    if (['famille_1e','famille_2e'].includes(currentProfile)) {
+      // Enfant : toujours MALJ_SANTE_2026, âge clampé à 17 min
+      const c1Age = Math.max(17, ageChild1);
+      const baseChild1 = getMaljPrice('MALJ_SANTE_2026', fc, c1Age, regime);
+      if (baseChild1) basePremium += baseChild1;
+    }
+
+    if (currentProfile === 'famille_2e') {
+      const c2Age = Math.max(17, ageChild2);
+      const baseChild2 = getMaljPrice('MALJ_SANTE_2026', fc, c2Age, regime);
+      if (baseChild2) basePremium += baseChild2;
+    }
+
+    // Frais fixes (par contrat, pas par tête)
+    const totalPrice = Math.round((basePremium + maljFees) * 100) / 100;
+    offers.push({
+      insurer:  'MALJ',
+      contract: maljContract,
+      formula:  fc,
+      guarantees: g,
+      price:    totalPrice,
+      price_base: basePremium,
+      fees:         maljFees,
+      fees_annual:  maljFeesAnnual,
+      level:        getSoinsLevel(g.soins_optam),
+    });
+  });
+
+  // ─── INIZYS ─────────────────────────────────────────
+  const inizysFormulas = ['ECO','ECO_PLUS','EQUILIBRE','PRIVILEGE','VIP'];
+  inizysFormulas.forEach(fc => {
+    const g = INIZYS_GUARANTEES[fc];
+    if (!g) return;
+    if (g.soins_optam < lvlRule.min || g.soins_optam > lvlRule.max) return;
+    const p = getInizysPrice(fc, age, famCode);
+    if (!p) return;
+    const label = INIZYS_PRICING[fc]?.label || fc;
+    offers.push({
+      insurer:  'INIZYS',
+      contract: 'INIZYS ADP 2026',
+      formula:  label,
+      formula_code: fc,
+      guarantees: g,
+      price:    Math.round(p * 100) / 100,
+      level:    getSoinsLevel(g.soins_optam),
+    });
+  });
+
+  // ─── NEOLIANE (API temps réel) ──────────────────────
+  const neoliane = await fetchNeoliane(currentProfile, bd, bdPartner, zipcode, regime, lvlRule, bdChild1, bdChild2);
+  offers.push(...neoliane);
+
+  // ─── ALPTIS (3 produits en parallèle) ───────────────
+  const [alptisSelect, alptisProtect, alptisProPlus] = await Promise.all([
+    fetchAlptisSelect(currentProfile, bd, bdPartner, zipcode, regime, lvlRule, bdChild1, bdChild2),
+    fetchAlptisProtect(currentProfile, bd, bdPartner, zipcode, regime, lvlRule, bdChild1, bdChild2),
+    fetchAlptisProPlus(currentProfile, bd, bdPartner, zipcode, regime, lvlRule, bdChild1, bdChild2),
+  ]);
+  offers.push(...alptisSelect, ...alptisProtect, ...alptisProPlus);
+
+  offers.sort((a, b) => a.price - b.price);
+  currentResults = offers;
+
+  steps.forEach(s => { const el = document.getElementById(s); el.classList.remove('active','done'); });
+  document.getElementById('loading').classList.remove('visible');
+  renderResults(offers);
+}
+
+// ═══════════════════════════════════════════════════════
+//  RENDER
+// ═══════════════════════════════════════════════════════
+function renderResults(data) {
+  const lvl = LEVEL_RULES.find(l => l.code === currentLevel);
+  document.getElementById('resultCount').textContent = data.length;
+
+  const li = document.getElementById('levelIndicator');
+  li.textContent = lvl.label + ' — ' + lvl.range + ' soins courants';
+  li.style.borderColor = lvl.color;
+  li.style.color = lvl.color;
+
+  // TOP 3
+  const top3 = data.slice(0, 3);
+  const grid = document.getElementById('top3Grid');
+  grid.innerHTML = '';
+  top3.forEach((offer, i) => {
+    const color = INSURER_COLORS[offer.contract] || INSURER_COLORS[offer.insurer] || 'var(--accent)';
+    const card = document.createElement('div');
+    card.className = `top-card rank-${i+1}`;
+    card.style.animationDelay = `${i*80}ms`;
+    card.innerHTML = `
+      <div class="rank-badge r${i+1}">${i+1}</div>
+      <div class="tc-insurer" style="color:${color}">${offer.insurer}</div>
+      <div class="tc-name">${offer.contract}</div>
+      <div class="tc-formula">Formule ${offer.formula}</div>
+      <div class="tc-price">${offer.price.toFixed(2).replace('.',',')}€</div>
+      <div class="tc-unit">/ mois · tout compris</div>
+      ${offer.fees_annual ? `<div class="tc-fees">Dont ${offer.fees_annual}€/an de frais MALJ inclus</div>` : ''}
+      <div class="tc-guarantees">
+        ${gRow('Soins courants', offer.guarantees.soins_optam, '%', 400)}
+        ${gRow('Dentaire', offer.guarantees.dentaire, '%', 400)}
+        ${gRow('Hospitalisation', offer.guarantees.hospit_optam, '%', 400)}
+        ${gRow('Optique (verres simples)', offer.guarantees.optique_b_simple, '€', 400)}
+      </div>
+      <button class="btn-choose" onclick='openModal(${JSON.stringify(offer).replace(/'/g,"&#39;")})'>
+        Voir les garanties complètes
+      </button>`;
+    grid.appendChild(card);
+  });
+
+  // ALL
+  const allDiv = document.getElementById('allResults');
+  allDiv.innerHTML = '';
+  const rest = data.length > 3 ? data.slice(3) : [];
+  if (rest.length === 0 && data.length > 0) {
+    allDiv.innerHTML = `<div style="text-align:center;padding:20px;color:var(--ink-muted);font-size:13px">Toutes les offres figurent dans le Top 3.</div>`;
+  } else if (data.length === 0) {
+    allDiv.innerHTML = `<div style="text-align:center;padding:40px;color:var(--ink-muted)">Aucune offre ne correspond exactement à ce niveau. Essayez un niveau adjacent.</div>`;
+  } else {
+    rest.forEach((offer, i) => {
+      const color = INSURER_COLORS[offer.contract] || INSURER_COLORS[offer.insurer] || 'var(--accent)';
+      const row = document.createElement('div');
+      row.className = 'result-row';
+      row.style.animationDelay = `${i*40}ms`;
+      row.innerHTML = `
+        <div>
+          <div class="rr-name" style="color:${color}">${offer.insurer}</div>
+          <div class="rr-insurer">${offer.contract}</div>
+        </div>
+        <div class="rr-formula">${offer.formula}</div>
+        <div class="rr-soins"><span class="soins-badge" style="background:${offer.level.color}22;color:${offer.level.color}">${offer.guarantees.soins_optam}% BR</span></div>
+        <div class="rr-price">${offer.price.toFixed(2).replace('.',',')}€
+          <small>/mois${offer.fees ? ' (inc. frais)' : ''}</small>
+        </div>
+        <div class="rr-action"><button class="btn-row" onclick='openModal(${JSON.stringify(offer).replace(/'/g,"&#39;")})'>Détail</button></div>`;
+      allDiv.appendChild(row);
+    });
+  }
+
+  document.getElementById('results').classList.add('visible');
+  document.getElementById('results').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+function gRow(label, val, unit, max) {
+  if (val === undefined || val === null) return '';
+  const pct   = Math.min(100, (val / max) * 100);
+  const color = val >= 300 ? 'var(--vip)' : val >= 200 ? 'var(--privilege)' : val >= 150 ? 'var(--green)' : val >= 100 ? 'var(--accent)' : 'var(--eco)';
+  const disp  = unit === '%' ? val + '%' : val + '€';
+  return `<div class="g-row">
+    <span class="g-label">${label}</span>
+    <div class="g-bar-wrap"><div class="g-bar" style="width:${pct}%;background:${color}"></div></div>
+    <span class="g-val">${disp}</span>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════════
+//  SORT
+// ═══════════════════════════════════════════════════════
+function sortResults(by) {
+  if (!currentResults.length) return;
+  const sorted = [...currentResults];
+  if (by === 'price')  sorted.sort((a,b) => a.price - b.price);
+  if (by === 'soins')  sorted.sort((a,b) => b.guarantees.soins_optam - a.guarantees.soins_optam);
+  if (by === 'name')   sorted.sort((a,b) => a.insurer.localeCompare(b.insurer));
+  renderResults(sorted);
+}
+
+// ═══════════════════════════════════════════════════════
+//  MODAL
+// ═══════════════════════════════════════════════════════
+function openModal(offer) {
+  if (typeof offer === 'string') offer = JSON.parse(offer);
+  document.getElementById('modalTitle').textContent = `${offer.insurer} — Formule ${offer.formula}`;
+  document.getElementById('modalSubtitle').textContent = `${offer.contract} · ${offer.price.toFixed(2).replace('.',',')}€ / mois tout compris`;
+
+  const g = offer.guarantees;
+  const rows = [
+    { section: '🏥 Hospitalisation' },
+    { label: 'Honoraires médicaux OPTAM',    val: g.hospit_optam + '% BR' },
+    { section: '💊 Soins courants' },
+    { label: 'Consultations OPTAM',          val: g.soins_optam + '% BR' },
+    { label: 'Consultations non-OPTAM',      val: (g.soins_optam > 100 ? g.soins_optam - 20 : 100) + '% BR' },
+    { section: '🦷 Dentaire' },
+    { label: 'Soins et obturations',         val: g.dentaire + '% BR' },
+    { label: 'Prothèses 100% santé',         val: '100% prix' },
+    { section: '👓 Optique' },
+    { label: 'Classe A 100% santé',          val: '100% prix' },
+    { label: 'Verres simples (classe B)',    val: g.optique_b_simple + '€' },
+    { label: 'Verres complexes (classe B)',  val: g.optique_b_complexe + '€' },
+    { section: '👂 Audiologie' },
+    { label: 'Appareils classe I 100%',      val: '100% prix' },
+    { label: 'Appareils classe II',          val: g.audio + '% BR' },
+  ];
+
+  let html = `<table class="guarantee-table"><thead><tr><th>Garantie</th><th>Remboursement</th></tr></thead><tbody>`;
+  rows.forEach(r => {
+    if (r.section) html += `<tr><td class="gtable-section" colspan="2">${r.section}</td></tr>`;
+    else html += `<tr><td>${r.label}</td><td>${r.val}</td></tr>`;
+  });
+  html += '</tbody></table>';
+
+  if (offer.fees) {
+    html += `<div class="modal-fee-notice">
+      ℹ️ Ce tarif inclut <strong>${offer.fees}€/mois</strong> de frais fixes MALJ (assurance solidarité, assistance).<br>
+      Cotisation pure : ${offer.price_base?.toFixed(2).replace('.',',')}€/mois — Frais : ${offer.fees}€/mois
+    </div>`;
+  }
+
+  document.getElementById('modalBody').innerHTML = html;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function closeModal(e) {
+  if (!e || e.target === document.getElementById('modalOverlay') || e.currentTarget?.classList?.contains('btn-close')) {
+    document.getElementById('modalOverlay').classList.remove('open');
+  }
+}
+
+buildLevels();
+</script>
+</body>
+</html>
