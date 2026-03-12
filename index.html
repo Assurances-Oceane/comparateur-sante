@@ -523,7 +523,87 @@ const INSURER_COLORS = {
   'MALJ Santé Senior':   '#c084fc',
   'INIZYS':              'var(--inizys)',
   'NEOLIANE':            'var(--neoliane)',
+  'Santé Select':        '#2e7d32',
+  'Santé Protect':       '#1b5e20',
+  'Santé Pro+':          '#4caf50',
 };
+
+// ═══════════════════════════════════════════════════════
+//  ALPTIS — CONFIG & FONCTIONS
+// ═══════════════════════════════════════════════════════
+const ALPTIS_PROXY = 'https://www.leviagergaranti.fr/alptis-proxy.php';
+
+const ALPTIS_SELECT_SOINS   = { 1: 150, 2: 200, 3: 250, 4: 300, 5: 350 };
+const ALPTIS_PROTECT_SOINS  = { 'N1': 150, 'N2': 200, 'N3': 250, 'N4': 300 };
+const ALPTIS_PRO_PLUS_SOINS = { 'NIVEAU_1': 150, 'NIVEAU_2': 200, 'NIVEAU_3': 250, 'NIVEAU_4': 300, 'NIVEAU_5': 350, 'NIVEAU_6': 400 };
+
+const ALPTIS_SELECT_LEVELS   = { 'ECO':[], 'ECO_PLUS':[], 'EQUILIBRE':[], 'CONFORT':[1], 'PRIVILEGE':[2], 'VIP':[3,4,5] };
+const ALPTIS_PROTECT_LEVELS  = { 'ECO':[], 'ECO_PLUS':[], 'EQUILIBRE':[], 'CONFORT':['N1'], 'PRIVILEGE':['N2'], 'VIP':['N3','N4'] };
+const ALPTIS_PRO_PLUS_LEVELS = { 'ECO':[], 'ECO_PLUS':[], 'EQUILIBRE':[], 'CONFORT':['NIVEAU_1'], 'PRIVILEGE':['NIVEAU_2'], 'VIP':['NIVEAU_3','NIVEAU_4','NIVEAU_5','NIVEAU_6'] };
+
+function mapAlptisCSP(regime) {
+  const m = { '550001':'EMPLOYES_AGENTS_DE_MAITRISE', '550002':'EMPLOYES_AGENTS_DE_MAITRISE', '550006':'CADRES_ET_EMPLOYES_DE_LA_FONCTION_PUBLIQUE', '550008':'COMMERCANTS_ET_ASSIMILES', '550020':'RETRAITES' };
+  return m[regime] || 'EMPLOYES_AGENTS_DE_MAITRISE';
+}
+
+function buildAlptisProfile(profile, birthdate, birthdatePartner, zipcode, regime, bdChild1, bdChild2) {
+  const p = { date_naissance: birthdate, code_postal: zipcode, regime, csp: mapAlptisCSP(regime) };
+  if (regime === '550008') p.cadre_exercice = 'INDEPENDANT';
+  if (birthdatePartner && ['couple','famille_1e','famille_2e'].includes(profile)) p.date_naissance_conjoint = birthdatePartner;
+  if (bdChild1 && ['famille_1e','famille_2e'].includes(profile)) p.date_naissance_enfant1 = bdChild1;
+  if (bdChild2 && profile === 'famille_2e') p.date_naissance_enfant2 = bdChild2;
+  return p;
+}
+
+function buildAlptisGuarantees(soins) {
+  return { soins_optam: soins, hospit_optam: soins + 100, dentaire: soins, optique_b_simple: soins, optique_b_complexe: soins, audio: 100 };
+}
+
+async function fetchAlptisRaw(action, niveaux, profile, birthdate, birthdatePartner, zipcode, regime, bdChild1, bdChild2) {
+  try {
+    const res = await fetch(ALPTIS_PROXY, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action, niveaux, date_effet: getDateEffect(), profile: buildAlptisProfile(profile, birthdate, birthdatePartner, zipcode, regime, bdChild1, bdChild2) })
+    });
+    const data = await res.json();
+    if (!data.status || !Array.isArray(data.data)) return [];
+    return data.data;
+  } catch(e) { console.error('Erreur Alptis (' + action + '):', e); return []; }
+}
+
+async function fetchAlptisSelect(profile, birthdate, birthdatePartner, zipcode, regime, lvlRule, bdChild1, bdChild2) {
+  const niveaux = ALPTIS_SELECT_LEVELS[currentLevel] || [];
+  if (!niveaux.length) return [];
+  const raw = await fetchAlptisRaw('sante_select', niveaux, profile, birthdate, birthdatePartner, zipcode, regime, bdChild1, bdChild2);
+  return raw.filter(item => item.tarifs).map((item, i) => {
+    const soins = ALPTIS_SELECT_SOINS[niveaux[i]] || 100;
+    return { insurer: 'Santé Select', contract: 'Santé Select', formula: 'Niveau ' + niveaux[i], guarantees: buildAlptisGuarantees(soins), price: item.tarifs.total, level: getSoinsLevel(soins) };
+  });
+}
+
+async function fetchAlptisProtect(profile, birthdate, birthdatePartner, zipcode, regime, lvlRule, bdChild1, bdChild2) {
+  if (ageRevolu(birthdate) < 55) return [];
+  const niveaux = ALPTIS_PROTECT_LEVELS[currentLevel] || [];
+  if (!niveaux.length) return [];
+  const raw = await fetchAlptisRaw('sante_protect', niveaux, profile, birthdate, birthdatePartner, zipcode, regime, bdChild1, bdChild2);
+  return raw.filter(item => item.tarifs).map((item, i) => {
+    const soins = ALPTIS_PROTECT_SOINS[niveaux[i]] || 100;
+    return { insurer: 'Santé Protect', contract: 'Santé Protect', formula: niveaux[i], guarantees: buildAlptisGuarantees(soins), price: item.tarifs.prime_totale_mensuelle, level: getSoinsLevel(soins) };
+  });
+}
+
+async function fetchAlptisProPlus(profile, birthdate, birthdatePartner, zipcode, regime, lvlRule, bdChild1, bdChild2) {
+  if (regime !== '550008') return [];
+  if (ageRevolu(birthdate) >= 68) return [];
+  const niveaux = ALPTIS_PRO_PLUS_LEVELS[currentLevel] || [];
+  if (!niveaux.length) return [];
+  const raw = await fetchAlptisRaw('sante_pro_plus', niveaux, profile, birthdate, birthdatePartner, zipcode, regime, bdChild1, bdChild2);
+  return raw.filter(item => item.tarifs).map((item, i) => {
+    const soins = ALPTIS_PRO_PLUS_SOINS[niveaux[i]] || 100;
+    return { insurer: 'Santé Pro+', contract: 'Santé Pro+', formula: niveaux[i].replace('NIVEAU_', 'Niveau '), guarantees: buildAlptisGuarantees(soins), price: item.tarifs.total_mensuel, level: getSoinsLevel(soins) };
+  });
+}
 
 // ═══════════════════════════════════════════════════════
 //  NEOLIANE — CONFIG API
@@ -887,6 +967,14 @@ async function launchSearch() {
   // ─── NEOLIANE (API temps réel) ──────────────────────
   const neoliane = await fetchNeoliane(currentProfile, bd, bdPartner, zipcode, regime, lvlRule, bdChild1, bdChild2);
   offers.push(...neoliane);
+
+  // ─── ALPTIS (3 produits en parallèle) ───────────────
+  const [alptisSelect, alptisProtect, alptisProPlus] = await Promise.all([
+    fetchAlptisSelect(currentProfile, bd, bdPartner, zipcode, regime, lvlRule, bdChild1, bdChild2),
+    fetchAlptisProtect(currentProfile, bd, bdPartner, zipcode, regime, lvlRule, bdChild1, bdChild2),
+    fetchAlptisProPlus(currentProfile, bd, bdPartner, zipcode, regime, lvlRule, bdChild1, bdChild2),
+  ]);
+  offers.push(...alptisSelect, ...alptisProtect, ...alptisProPlus);
 
   offers.sort((a, b) => a.price - b.price);
   currentResults = offers;
