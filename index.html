@@ -780,7 +780,8 @@ async function fetchAprilPricing(productCode, levelCode, profile) {
     }
 
     if (!response.ok) {
-      console.warn(`[APRIL ${productCode}] Proxy ${response.status}`, payload);
+      console.warn(`[APRIL ${productCode}] Proxy ${response.status}`);
+      console.log('payload complet =', JSON.stringify(payload, null, 2));
       return null;
     }
 
