@@ -343,6 +343,10 @@ body::before {
       <label>Code postal</label>
       <input type="text" id="zipcode" placeholder="75001" maxlength="5">
     </div>
+    <div class="fg">
+      <label>Ville (recommandée pour APRIL)</label>
+      <input type="text" id="city" placeholder="VANNES">
+    </div>
     <div class="fg" id="partnerField" style="display:none">
       <label>Naissance conjoint(e)</label>
       <input type="date" id="birthdate_partner">
@@ -541,6 +545,19 @@ const INSURER_COLORS = {
 // ═══════════════════════════════════════════════════════
 const APRIL_PROXY = 'https://www.leviagergaranti.fr/proxy-april.php';
 
+const APRIL_GUARANTEE_BY_PRODUCT = {
+  SanteGan: 'MaladieChirurgie',
+  FlexiSante: 'GarantieHospitalisation',
+  SanteProtect: 'MaladieChirurgie',
+  SanteMix: 'GarantieHospitalisation',
+  SantePeps: 'MaladieChirurgie',
+  SantePrimo: 'MaladieChirurgie',
+  SanteCapSerenite: 'MaladieChirurgie',
+  SanteZen: 'MaladieChirurgie',
+  SanteTranquil: 'MaladieChirurgie',
+  SanteVita: 'MaladieChirurgie',
+};
+
 const APRIL_PRODUCTS = {
   'SanteGan': {
     title: 'Complémentaire Sénior GAN',
@@ -652,15 +669,87 @@ const APRIL_PRODUCTS = {
   },
 };
 
-function buildAprilGuarantees(soins) {
-  return {
+function buildAprilGuarantees(soins, productCode) {
+  const guarantees = {
     soins_optam: soins,
     hospit_optam: 100,
-    dentaire: null,
-    optique_b_simple: null,
-    optique_b_complexe: null,
-    audio: null,
+    dentaire: 0,
+    optique_b_simple: 0,
+    optique_b_complexe: 0,
+    audio: 0,
   };
+
+  if (['FlexiSante', 'SanteMix'].includes(productCode)) {
+    guarantees.hospit_optam = soins;
+  } else {
+    guarantees.hospit_optam = Math.max(100, soins);
+  }
+
+  return guarantees;
+}
+
+function aprilToNumber(value) {
+  if (value === null || value === undefined || value === '') return null;
+  if (typeof value === 'number' && Number.isFinite(value)) return value;
+  if (typeof value === 'string') {
+    const normalized = value.replace(',', '.').replace(/[^0-9.\-]/g, '');
+    const parsed = Number(normalized);
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+  return null;
+}
+
+function extractAprilMonthlyPrice(payload) {
+  const monthlyCandidates = [
+    payload?.monthlyPremium,
+    payload?.data?.monthlyPremium,
+    payload?.data?.products?.[0]?.coverages?.[0]?.pricing?.monthlyPremium,
+    payload?.data?.products?.[0]?.coverages?.[0]?.pricing?.monthlyAmount,
+    payload?.data?.products?.[0]?.pricing?.monthlyPremium,
+    payload?.products?.[0]?.coverages?.[0]?.pricing?.monthlyPremium,
+    payload?.products?.[0]?.coverages?.[0]?.pricing?.monthlyAmount,
+    payload?.products?.[0]?.pricing?.monthlyPremium,
+  ];
+
+  for (const candidate of monthlyCandidates) {
+    const n = aprilToNumber(candidate);
+    if (n !== null) return n;
+  }
+
+  const annualCandidates = [
+    payload?.data?.options?.[0]?.annualCost?.[0]?.amount,
+    payload?.options?.[0]?.annualCost?.[0]?.amount,
+  ];
+
+  for (const candidate of annualCandidates) {
+    const n = aprilToNumber(candidate);
+    if (n !== null) return n / 12;
+  }
+
+  const seen = new Set();
+  const walk = (obj) => {
+    if (!obj || typeof obj !== 'object') return null;
+    if (seen.has(obj)) return null;
+    seen.add(obj);
+
+    if (!Array.isArray(obj)) {
+      for (const key of ['monthlyPremium', 'monthlyAmount', 'amountMonthly']) {
+        const n = aprilToNumber(obj[key]);
+        if (n !== null) return n;
+      }
+      const annual = aprilToNumber(obj.annualPremium || obj.annualAmount);
+      if (annual !== null) return annual / 12;
+    }
+
+    const values = Array.isArray(obj) ? obj : Object.values(obj);
+    for (const value of values) {
+      const found = walk(value);
+      if (found !== null) return found;
+    }
+    return null;
+  };
+
+  return walk(payload);
 }
 
 async function fetchAprilPricing(productCode, levelCode, profile) {
@@ -669,11 +758,12 @@ async function fetchAprilPricing(productCode, levelCode, profile) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        productCode: productCode,
-        guaranteeCode: 'MaladieChirurgie',
-        levelCode: levelCode,
+        productCode,
+        guaranteeCode: APRIL_GUARANTEE_BY_PRODUCT[productCode] || 'MaladieChirurgie',
+        levelCode,
         birthdate: document.getElementById('birthdate').value,
         zipcode: document.getElementById('zipcode').value,
+        city: document.getElementById('city')?.value?.trim() || null,
         regime: document.getElementById('regime').value,
         date_naissance_conjoint: document.getElementById('birthdate_partner')?.value || null,
         date_naissance_enfant1: document.getElementById('birthdate_child1')?.value || null,
@@ -681,14 +771,31 @@ async function fetchAprilPricing(productCode, levelCode, profile) {
       })
     });
 
-    if (!response.ok) return null;
-    const data = await response.json();
-    if (!data.status || !data.data) return null;
+    const raw = await response.text();
+    let payload = null;
+    try {
+      payload = raw ? JSON.parse(raw) : null;
+    } catch {
+      payload = raw;
+    }
 
-    const annualPrice = data.data?.options?.[0]?.annualCost?.[0]?.amount;
-    if (annualPrice === undefined || annualPrice === null) return null;
+    if (!response.ok) {
+      console.warn(`[APRIL ${productCode}] Proxy ${response.status}`, payload);
+      return null;
+    }
 
-    return Math.round((annualPrice / 12) * 100) / 100;
+    if (!payload || payload.status === false) {
+      console.warn(`[APRIL ${productCode}] Réponse invalide`, payload);
+      return null;
+    }
+
+    const monthlyPrice = extractAprilMonthlyPrice(payload);
+    if (monthlyPrice === null) {
+      console.warn(`[APRIL ${productCode}] Prix introuvable`, payload);
+      return null;
+    }
+
+    return Math.round(monthlyPrice * 100) / 100;
   } catch (error) {
     console.warn(`[APRIL ${productCode}] Erreur:`, error);
     return null;
@@ -696,9 +803,7 @@ async function fetchAprilPricing(productCode, levelCode, profile) {
 }
 
 async function fetchAllAprilPrices(profile, selectedLevelCode) {
-  const results = [];
-
-  for (const [productCode, product] of Object.entries(APRIL_PRODUCTS)) {
+  const tasks = Object.entries(APRIL_PRODUCTS).map(async ([productCode, product]) => {
     let matchingLevel = null;
 
     for (const [levelCode, levelData] of Object.entries(product.levels)) {
@@ -708,24 +813,25 @@ async function fetchAllAprilPrices(profile, selectedLevelCode) {
       }
     }
 
-    if (!matchingLevel) continue;
+    if (!matchingLevel) return null;
 
     const price = await fetchAprilPricing(productCode, matchingLevel, profile);
-    if (price === null) continue;
+    if (price === null) return null;
 
     const soins = product.levels[matchingLevel].percent;
-    results.push({
+    return {
       insurer: 'APRIL',
       contract: product.title,
       formula: 'Niveau ' + matchingLevel,
-      guarantees: buildAprilGuarantees(soins),
-      price: price,
+      guarantees: buildAprilGuarantees(soins, productCode),
+      price,
       level: getSoinsLevel(soins),
-      guarantee_note: 'Le proxy APRIL remonte actuellement Soins courants et Maladie/Chirurgie. Les autres postes pourront être enrichis ensuite.',
-    });
-  }
+      guarantee_note: `Garantie de base APRIL utilisée : ${APRIL_GUARANTEE_BY_PRODUCT[productCode] || 'MaladieChirurgie'}`,
+    };
+  });
 
-  return results;
+  const results = await Promise.all(tasks);
+  return results.filter(Boolean);
 }
 
 // ═══════════════════════════════════════════════════════
@@ -1411,3 +1517,4 @@ buildLevels();
 </script>
 </body>
 </html>
+
