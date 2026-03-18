@@ -841,9 +841,6 @@ async function fetchAprilPricingAll(productCode, product, selectedLevelCode, pro
 
     if (!payload?.success || !payload.prices) return [];
 
-    // DEBUG temporaire — à retirer après validation
-    console.log(`[APRIL ${productCode}] prices reçus:`, JSON.stringify(payload.prices, null, 2));
-
     // payload.prices = { '01': { price, level, ... }, '02': { ... }, ... }
     const offers = [];
     for (const [levelCode, priceData] of Object.entries(payload.prices)) {
