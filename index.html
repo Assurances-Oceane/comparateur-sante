@@ -307,12 +307,12 @@ body::before {
 <header class="header">
   <div class="header-eyebrow"><span class="eyebrow-dot"></span> Tarifs officiels 2026</div>
   <h1>Comparez votre mutuelle santé<br><em>aux vrais tarifs</em></h1>
-  <p>MALJ, INIZYS, NEOLIANE, ALPTIS & APRIL — tarifs calculés par âge et profil.</p>
+  <p>MALJ, INIZYS, NEOLIANE, ALPTIS & APRIL — tarifs 2026 exacts, calculés par âge et profil.</p>
 </header>
 
 <div class="insurers-row">
   <div class="insurer-badge"><span class="dot" style="background:var(--malj)"></span> MALJ Mutuelle Santé</div>
-  <div class="insurer-badge"><span class="dot" style="background:#c084fc)"></span> MALJ Santé Senior</div>
+  <div class="insurer-badge"><span class="dot" style="background:#c084fc"></span> MALJ Santé Senior</div>
   <div class="insurer-badge"><span class="dot" style="background:var(--inizys)"></span> INIZYS</div>
   <div class="insurer-badge"><span class="dot" style="background:var(--neoliane)"></span> NEOLIANE</div>
   <div class="insurer-badge"><span class="dot" style="background:var(--alptis)"></span> ALPTIS</div>
@@ -342,6 +342,10 @@ body::before {
     <div class="fg">
       <label>Code postal</label>
       <input type="text" id="zipcode" placeholder="75001" maxlength="5">
+    </div>
+    <div class="fg">
+      <label>Ville (pour APRIL)</label>
+      <input type="text" id="city" placeholder="ex : PARIS">
     </div>
     <div class="fg" id="partnerField" style="display:none">
       <label>Naissance conjoint(e)</label>
@@ -397,10 +401,11 @@ body::before {
     <div class="loading-step" id="step2">⟳ Calcul MALJ Santé Senior…</div>
     <div class="loading-step" id="step3">⟳ Calcul INIZYS…</div>
     <div class="loading-step" id="step4">⟳ Récupération tarifs NEOLIANE…</div>
-    <div class="loading-step" id="step5">⟳ Application du niveau de garanties…</div>
-    <div class="loading-step" id="step6">⟳ Récupération tarifs ALPTIS…</div>
-    <div class="loading-step" id="step7">⟳ Récupération tarifs APRIL…</div>
+    <div class="loading-step" id="step5">⟳ Récupération tarifs ALPTIS…</div>
+    <div class="loading-step" id="step6">⟳ Récupération tarifs APRIL…</div>
+    <div class="loading-step" id="step7">⟳ Application du niveau de garanties…</div>
     <div class="loading-step" id="step8">⟳ Classement des offres…</div>
+  </div>
 </div>
 
 <!-- RESULTS -->
@@ -439,7 +444,7 @@ body::before {
   </div>
 
   <div style="margin-top:24px;text-align:center">
-    <div class="data-badge">Tarifs officiels 2026 — MALJ, INIZYS & NEOLIANE</div>
+    <div class="data-badge">Tarifs officiels 2026 — MALJ, INIZYS, NEOLIANE, ALPTIS & APRIL</div>
   </div>
 </div>
 
@@ -528,15 +533,30 @@ const INSURER_COLORS = {
   'MALJ Santé Senior':   '#c084fc',
   'INIZYS':              'var(--inizys)',
   'NEOLIANE':            'var(--neoliane)',
+  'ALPTIS':              'var(--alptis)',
+  'APRIL':               'var(--april)',
   'Santé Select':        '#2e7d32',
   'Santé Protect':       '#1b5e20',
   'Santé Pro+':          '#4caf50',
 };
-//═══════════════════════════════════════════════════════
-//  APRIL — CONFIG & FONCTIONS (NOUVEAU)
-// ═══════════════════════════════════════════════════════
 
+// ═══════════════════════════════════════════════════════
+//  APRIL — CONFIG & FONCTIONS
+// ═══════════════════════════════════════════════════════
 const APRIL_PROXY = 'https://www.leviagergaranti.fr/proxy-april.php';
+
+const APRIL_GUARANTEE_BY_PRODUCT = {
+  SanteGan: 'MaladieChirurgie',
+  FlexiSante: 'GarantieHospitalisation',
+  SanteProtect: 'MaladieChirurgie',
+  SanteMix: 'GarantieHospitalisation',
+  SantePeps: 'MaladieChirurgie',
+  SantePrimo: 'MaladieChirurgie',
+  SanteCapSerenite: 'MaladieChirurgie',
+  SanteZen: 'MaladieChirurgie',
+  SanteTranquil: 'MaladieChirurgie',
+  SanteVita: 'MaladieChirurgie',
+};
 
 const APRIL_PRODUCTS = {
   'SanteGan': {
@@ -649,17 +669,95 @@ const APRIL_PRODUCTS = {
   },
 };
 
-async function fetchAprilPricing(productCode, levelCode) {
+function buildAprilGuarantees(soins, productCode) {
+  const guarantees = {
+    soins_optam: soins,
+    hospit_optam: 100,
+    dentaire: 0,
+    optique_b_simple: 0,
+    optique_b_complexe: 0,
+    audio: 0,
+  };
+
+  if (['FlexiSante', 'SanteMix'].includes(productCode)) {
+    guarantees.hospit_optam = soins;
+  } else {
+    guarantees.hospit_optam = Math.max(100, soins);
+  }
+
+  return guarantees;
+}
+
+function aprilToNumber(value) {
+  if (value === null || value === undefined || value === '') return null;
+  if (typeof value === 'number' && Number.isFinite(value)) return value;
+  if (typeof value === 'string') {
+    const normalized = value.replace(',', '.').replace(/[^0-9.\-]/g, '');
+    const parsed = Number(normalized);
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+  return null;
+}
+
+// Lecture du prix mensuel depuis la réponse du proxy APRIL
+// Le proxy retourne : { success: true, prices: { '01': { price: 45.20, level: '01', ... }, ... } }
+// On reçoit le levelCode exact qu'on a demandé, donc on lit prices[levelCode].price
+function extractAprilMonthlyPrice(payload, levelCode) {
+  if (!payload || !payload.success) return null;
+
+  // Structure normale : prices[levelCode].price
+  if (payload.prices && typeof payload.prices === 'object') {
+    const entry = payload.prices[levelCode];
+    if (entry && typeof entry.price === 'number' && entry.price > 0) return entry.price;
+
+    // Parfois le proxy regroupe tous les niveaux — on prend le premier disponible
+    const values = Object.values(payload.prices);
+    if (values.length > 0) {
+      const first = values.find(v => v && typeof v.price === 'number' && v.price > 0);
+      if (first) return first.price;
+    }
+  }
+
+  // Fallback : parcours générique des rawData si présent
+  const raw = payload.rawData;
+  if (Array.isArray(raw)) {
+    for (const item of raw) {
+      if (item?.levelCode === levelCode && item?.contribution?.contributionAmount) {
+        const n = parseFloat(item.contribution.contributionAmount);
+        if (Number.isFinite(n) && n > 0) return n;
+      }
+    }
+    // Premier item avec un montant
+    for (const item of raw) {
+      if (item?.contribution?.contributionAmount) {
+        const n = parseFloat(item.contribution.contributionAmount);
+        if (Number.isFinite(n) && n > 0) return n;
+      }
+    }
+  }
+
+  return null;
+}
+function getCityForApril() {
+  const cityInput = document.getElementById('city')?.value?.trim();
+  if (cityInput) return cityInput.toUpperCase();
+  // Ville non renseignée : on utilise une valeur générique valide pour l'API APRIL
+  // (le tarif APRIL est identique sur tout le territoire, seul le code postal compte)
+  return 'PARIS';
+}
+async function fetchAprilPricing(productCode, levelCode, profile) {
   try {
+    const city = getCityForApril(); // toujours une chaîne valide maintenant
     const response = await fetch(APRIL_PROXY, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        productCode: productCode,
-        guaranteeCode: 'MaladieChirurgie',
-        levelCode: levelCode,
+        productCode,
+        guaranteeCode: APRIL_GUARANTEE_BY_PRODUCT[productCode] || 'MaladieChirurgie',
+        levelCode,
         birthdate: document.getElementById('birthdate').value,
         zipcode: document.getElementById('zipcode').value,
+        city,
         regime: document.getElementById('regime').value,
         date_naissance_conjoint: document.getElementById('birthdate_partner')?.value || null,
         date_naissance_enfant1: document.getElementById('birthdate_child1')?.value || null,
@@ -667,51 +765,69 @@ async function fetchAprilPricing(productCode, levelCode) {
       })
     });
 
-    if (!response.ok) return null;
-    const data = await response.json();
-    if (!data.status || !data.data) return null;
+    const raw = await response.text();
+    let payload = null;
+    try {
+      payload = raw ? JSON.parse(raw) : null;
+    } catch {
+      payload = null;
+    }
 
-    // Parser la réponse April : data.data.options[0].annualCost[0].amount
-    const annualPrice = data.data?.options?.[0]?.annualCost?.[0]?.amount;
-    if (!annualPrice) return null;
+    if (!response.ok) {
+      console.warn(`[APRIL ${productCode}/${levelCode}] HTTP ${response.status}`, payload);
+      return null;
+    }
 
-    return Math.round((annualPrice / 12) * 100) / 100; // annuel → mensuel
+    if (!payload || payload.success === false) {
+      console.warn(`[APRIL ${productCode}/${levelCode}] Réponse invalide`, payload);
+      return null;
+    }
+
+    const monthlyPrice = extractAprilMonthlyPrice(payload, levelCode);
+    if (monthlyPrice === null) {
+      console.warn(`[APRIL ${productCode}/${levelCode}] Prix introuvable dans:`, payload);
+      return null;
+    }
+
+    return Math.round(monthlyPrice * 100) / 100;
   } catch (error) {
-    console.warn(`[APRIL ${productCode}] Erreur:`, error);
+    console.warn(`[APRIL ${productCode}/${levelCode}] Erreur réseau:`, error);
     return null;
   }
 }
 
-async function fetchAllAprilPrices(lvlCode) {
-  const results = [];
-
-  for (const [productCode, product] of Object.entries(APRIL_PRODUCTS)) {
+async function fetchAllAprilPrices(profile, selectedLevelCode) {
+  const tasks = Object.entries(APRIL_PRODUCTS).map(async ([productCode, product]) => {
     let matchingLevel = null;
-    for (const [lc, ld] of Object.entries(product.levels)) {
-      if (ld.classification === lvlCode) {
-        matchingLevel = lc;
+
+    for (const [levelCode, levelData] of Object.entries(product.levels)) {
+      if (levelData.classification === selectedLevelCode) {
+        matchingLevel = levelCode;
         break;
       }
     }
-    if (!matchingLevel) continue;
 
-    const price = await fetchAprilPricing(productCode, matchingLevel);
-    if (price !== null) {
-      const soins = product.levels[matchingLevel].percent;
-      results.push({
-        insurer: 'APRIL',
-        productName: product.title,
-        levelCode: matchingLevel,
-        soinsPercent: soins,
-        classification: lvlCode,
-        price: price,
-        guarantees: { 'Maladie/Chirurgie': 100 },
-      });
-    }
-  }
+    if (!matchingLevel) return null;
 
-  return results;
+    const price = await fetchAprilPricing(productCode, matchingLevel, profile);
+    if (price === null) return null;
+
+    const soins = product.levels[matchingLevel].percent;
+    return {
+      insurer: 'APRIL',
+      contract: product.title,
+      formula: 'Niveau ' + matchingLevel,
+      guarantees: buildAprilGuarantees(soins, productCode),
+      price,
+      level: getSoinsLevel(soins),
+      guarantee_note: `Garantie de base APRIL utilisée : ${APRIL_GUARANTEE_BY_PRODUCT[productCode] || 'MaladieChirurgie'}`,
+    };
+  });
+
+  const results = await Promise.all(tasks);
+  return results.filter(Boolean);
 }
+
 // ═══════════════════════════════════════════════════════
 //  ALPTIS — CONFIG & FONCTIONS
 // ═══════════════════════════════════════════════════════
@@ -1043,6 +1159,7 @@ async function launchSearch() {
   if (!validate()) return;
   document.getElementById('results').classList.remove('visible');
   document.getElementById('loading').classList.add('visible');
+  try {
 
   const bd        = document.getElementById('birthdate').value;
   const bdPartner = document.getElementById('birthdate_partner').value;
@@ -1055,48 +1172,61 @@ async function launchSearch() {
 
   // Âges conjoint et enfants
   const agePartner = bdPartner ? ageRevolu(bdPartner) : null;
-  const ageChild1  = bdChild1  ? ageRevolu(bdChild1)  : 10; // défaut 10 ans
-  const ageChild2  = bdChild2  ? ageRevolu(bdChild2)  : 7;  // défaut 7 ans
-
-  // Loading animation
-  const steps = ['step1','step2','step3','step4','step5','step6'];
-  for (let i = 0; i < steps.length; i++) {
-    await new Promise(r => setTimeout(r, 180));
-    document.getElementById(steps[i]).classList.add('active');
-    if (i > 0) document.getElementById(steps[i-1]).classList.replace('active','done');
-  }
-  await new Promise(r => setTimeout(r, 180));
-  document.getElementById(steps[steps.length-1]).classList.replace('active','done');
-  await new Promise(r => setTimeout(r, 150));
+  const ageChild1  = bdChild1  ? ageRevolu(bdChild1)  : 10;
+  const ageChild2  = bdChild2  ? ageRevolu(bdChild2)  : 7;
 
   const lvlRule = LEVEL_RULES.find(l => l.code === currentLevel);
   const offers  = [];
 
+  const steps = ['step1','step2','step3','step4','step5','step6','step7','step8'];
+  const pause = (ms = 80) => new Promise(r => setTimeout(r, ms));
+  const resetSteps = () => {
+    steps.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.remove('active', 'done');
+    });
+  };
+  const activateStep = (id) => {
+    steps.forEach(stepId => {
+      const el = document.getElementById(stepId);
+      if (!el) return;
+      el.classList.remove('active');
+    });
+    document.getElementById(id)?.classList.add('active');
+  };
+  const completeStep = (id) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.classList.remove('active');
+    el.classList.add('done');
+  };
+
+  resetSteps();
+
   // ─── MALJ ───────────────────────────────────────────
-  // Choisir le bon contrat selon l'âge
+  activateStep('step1');
+  await pause();
+
   const isSenior = age >= 65;
+  const maljProduct    = isSenior ? 'MALJ_SENIOR_2026' : 'MALJ_SANTE_2026';
+  const maljContract   = isSenior ? 'MALJ Santé Senior' : 'MALJ Mutuelle Santé';
+  const maljGuarantees = isSenior ? MALJ_SENIOR_GUARANTEES : MALJ_SANTE_GUARANTEES;
+  const maljFees       = isSenior ? MALJ_FEES.MALJ_SENIOR_2026 : MALJ_FEES.MALJ_SANTE_2026;
+  const maljFeesAnnual = isSenior ? 6 : 13;
 
-  const maljProduct   = isSenior ? 'MALJ_SENIOR_2026' : 'MALJ_SANTE_2026';
-  const maljContract  = isSenior ? 'MALJ Santé Senior'  : 'MALJ Mutuelle Santé';
-  const maljGuarantees= isSenior ? MALJ_SENIOR_GUARANTEES : MALJ_SANTE_GUARANTEES;
-  const maljFees      = isSenior ? MALJ_FEES.MALJ_SENIOR_2026 : MALJ_FEES.MALJ_SANTE_2026;
-  const maljFeesAnnual= isSenior ? 6 : 13;
-
-  const maljFormulas  = ['ECO','ZEN','EQUILIBRE','SERENITE','EXCELLENCE'];
+  const maljFormulas = ['ECO','ZEN','EQUILIBRE','SERENITE','EXCELLENCE'];
   maljFormulas.forEach(fc => {
     const g = maljGuarantees[fc];
     if (!g) return;
     if (g.soins_optam < lvlRule.min || g.soins_optam > lvlRule.max) return;
 
-    // Tarif adhérent principal
     const baseHolder = getMaljPrice(maljProduct, fc, age, regime);
     if (!baseHolder) return;
 
-    // Calcul par tête selon profil
     let basePremium = baseHolder;
 
     if (['couple','famille_1e','famille_2e'].includes(currentProfile) && agePartner !== null) {
-      // Conjoint : même contrat (Senior si ≥65, Santé sinon)
       const partnerIsSenior = agePartner >= 65;
       const partnerProduct = partnerIsSenior ? 'MALJ_SENIOR_2026' : 'MALJ_SANTE_2026';
       const basePartner = getMaljPrice(partnerProduct, fc, agePartner, regime);
@@ -1104,7 +1234,6 @@ async function launchSearch() {
     }
 
     if (['famille_1e','famille_2e'].includes(currentProfile)) {
-      // Enfant : toujours MALJ_SANTE_2026, âge clampé à 17 min
       const c1Age = Math.max(17, ageChild1);
       const baseChild1 = getMaljPrice('MALJ_SANTE_2026', fc, c1Age, regime);
       if (baseChild1) basePremium += baseChild1;
@@ -1116,7 +1245,6 @@ async function launchSearch() {
       if (baseChild2) basePremium += baseChild2;
     }
 
-    // Frais fixes (par contrat, pas par tête)
     const totalPrice = Math.round((basePremium + maljFees) * 100) / 100;
     offers.push({
       insurer:  'MALJ',
@@ -1130,8 +1258,16 @@ async function launchSearch() {
       level:        getSoinsLevel(g.soins_optam),
     });
   });
+  completeStep('step1');
+
+  activateStep('step2');
+  await pause();
+  completeStep('step2');
 
   // ─── INIZYS ─────────────────────────────────────────
+  activateStep('step3');
+  await pause();
+
   const inizysFormulas = ['ECO','ECO_PLUS','EQUILIBRE','PRIVILEGE','VIP'];
   inizysFormulas.forEach(fc => {
     const g = INIZYS_GUARANTEES[fc];
@@ -1150,25 +1286,51 @@ async function launchSearch() {
       level:    getSoinsLevel(g.soins_optam),
     });
   });
+  completeStep('step3');
 
   // ─── NEOLIANE (API temps réel) ──────────────────────
+  activateStep('step4');
+  await pause();
   const neoliane = await fetchNeoliane(currentProfile, bd, bdPartner, zipcode, regime, lvlRule, bdChild1, bdChild2);
   offers.push(...neoliane);
+  completeStep('step4');
 
   // ─── ALPTIS (3 produits en parallèle) ───────────────
+  activateStep('step5');
+  await pause();
   const [alptisSelect, alptisProtect, alptisProPlus] = await Promise.all([
     fetchAlptisSelect(currentProfile, bd, bdPartner, zipcode, regime, lvlRule, bdChild1, bdChild2),
     fetchAlptisProtect(currentProfile, bd, bdPartner, zipcode, regime, lvlRule, bdChild1, bdChild2),
     fetchAlptisProPlus(currentProfile, bd, bdPartner, zipcode, regime, lvlRule, bdChild1, bdChild2),
   ]);
   offers.push(...alptisSelect, ...alptisProtect, ...alptisProPlus);
+  completeStep('step5');
 
+  // ─── APRIL (proxy temps réel) ───────────────────────
+  activateStep('step6');
+  await pause();
+  const april = await fetchAllAprilPrices(currentProfile, currentLevel);
+  offers.push(...april);
+  completeStep('step6');
+
+  // ─── Application du niveau / classement ─────────────
+  activateStep('step7');
+  await pause();
+  completeStep('step7');
+
+  activateStep('step8');
+  await pause();
   offers.sort((a, b) => a.price - b.price);
   currentResults = offers;
+  completeStep('step8');
 
-  steps.forEach(s => { const el = document.getElementById(s); el.classList.remove('active','done'); });
   document.getElementById('loading').classList.remove('visible');
   renderResults(offers);
+  } catch (err) {
+    console.error('[launchSearch] Erreur inattendue:', err);
+    document.getElementById('loading').classList.remove('visible');
+    showError('Une erreur est survenue lors du calcul. Vérifiez la console (F12) pour le détail.');
+  }
 }
 
 // ═══════════════════════════════════════════════════════
@@ -1277,31 +1439,62 @@ function openModal(offer) {
   document.getElementById('modalTitle').textContent = `${offer.insurer} — Formule ${offer.formula}`;
   document.getElementById('modalSubtitle').textContent = `${offer.contract} · ${offer.price.toFixed(2).replace('.',',')}€ / mois tout compris`;
 
-  const g = offer.guarantees;
-  const rows = [
-    { section: '🏥 Hospitalisation' },
-    { label: 'Honoraires médicaux OPTAM',    val: g.hospit_optam + '% BR' },
-    { section: '💊 Soins courants' },
-    { label: 'Consultations OPTAM',          val: g.soins_optam + '% BR' },
-    { label: 'Consultations non-OPTAM',      val: (g.soins_optam > 100 ? g.soins_optam - 20 : 100) + '% BR' },
-    { section: '🦷 Dentaire' },
-    { label: 'Soins et obturations',         val: g.dentaire + '% BR' },
-    { label: 'Prothèses 100% santé',         val: '100% prix' },
-    { section: '👓 Optique' },
-    { label: 'Classe A 100% santé',          val: '100% prix' },
-    { label: 'Verres simples (classe B)',    val: g.optique_b_simple + '€' },
-    { label: 'Verres complexes (classe B)',  val: g.optique_b_complexe + '€' },
-    { section: '👂 Audiologie' },
-    { label: 'Appareils classe I 100%',      val: '100% prix' },
-    { label: 'Appareils classe II',          val: g.audio + '% BR' },
-  ];
+  const g = offer.guarantees || {};
+  const hasVal = (v) => v !== undefined && v !== null && v !== '';
 
-  let html = `<table class="guarantee-table"><thead><tr><th>Garantie</th><th>Remboursement</th></tr></thead><tbody>`;
-  rows.forEach(r => {
-    if (r.section) html += `<tr><td class="gtable-section" colspan="2">${r.section}</td></tr>`;
-    else html += `<tr><td>${r.label}</td><td>${r.val}</td></tr>`;
-  });
-  html += '</tbody></table>';
+  const rows = [];
+
+  if (hasVal(g.hospit_optam)) {
+    rows.push({ section: '🏥 Hospitalisation' });
+    rows.push({ label: 'Honoraires médicaux OPTAM', val: g.hospit_optam + '% BR' });
+  }
+
+  if (hasVal(g.soins_optam)) {
+    rows.push({ section: '💊 Soins courants' });
+    rows.push({ label: 'Consultations OPTAM', val: g.soins_optam + '% BR' });
+    rows.push({ label: 'Consultations non-OPTAM', val: (g.soins_optam > 100 ? g.soins_optam - 20 : 100) + '% BR' });
+  }
+
+  if (hasVal(g.dentaire)) {
+    rows.push({ section: '🦷 Dentaire' });
+    rows.push({ label: 'Soins et obturations', val: g.dentaire + '% BR' });
+    rows.push({ label: 'Prothèses 100% santé', val: '100% prix' });
+  }
+
+  if (hasVal(g.optique_b_simple) || hasVal(g.optique_b_complexe)) {
+    rows.push({ section: '👓 Optique' });
+    rows.push({ label: 'Classe A 100% santé', val: '100% prix' });
+    if (hasVal(g.optique_b_simple)) {
+      rows.push({ label: 'Verres simples (classe B)', val: g.optique_b_simple + '€' });
+    }
+    if (hasVal(g.optique_b_complexe)) {
+      rows.push({ label: 'Verres complexes (classe B)', val: g.optique_b_complexe + '€' });
+    }
+  }
+
+  if (hasVal(g.audio)) {
+    rows.push({ section: '👂 Audiologie' });
+    rows.push({ label: 'Appareils classe I 100%', val: '100% prix' });
+    rows.push({ label: 'Appareils classe II', val: g.audio + '% BR' });
+  }
+
+  let html = '';
+  if (!rows.length) {
+    html = `<div style="padding:18px;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--ink-muted)">
+      Détail des garanties indisponible pour cette offre.
+    </div>`;
+  } else {
+    html = `<table class="guarantee-table"><thead><tr><th>Garantie</th><th>Remboursement</th></tr></thead><tbody>`;
+    rows.forEach(r => {
+      if (r.section) html += `<tr><td class="gtable-section" colspan="2">${r.section}</td></tr>`;
+      else html += `<tr><td>${r.label}</td><td>${r.val}</td></tr>`;
+    });
+    html += '</tbody></table>';
+  }
+
+  if (offer.guarantee_note) {
+    html += `<div class="modal-fee-notice">ℹ️ ${offer.guarantee_note}</div>`;
+  }
 
   if (offer.fees) {
     html += `<div class="modal-fee-notice">
@@ -1324,4 +1517,3 @@ buildLevels();
 </script>
 </body>
 </html>
-
