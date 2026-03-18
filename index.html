@@ -774,7 +774,15 @@ async function fetchAprilPricing(productCode, levelCode, profile) {
     }
 
     if (!response.ok) {
-      console.warn(`[APRIL ${productCode}/${levelCode}] HTTP ${response.status}`, payload);
+      console.group(`[APRIL ${productCode}/${levelCode}] HTTP ${response.status}`);
+      console.log('Réponse APRIL:', payload);
+      if (payload?.sentBody) {
+        console.log('Body envoyé à APRIL:', JSON.stringify(payload.sentBody, null, 2));
+      }
+      if (payload?.details) {
+        console.log('Détail erreur:', payload.details);
+      }
+      console.groupEnd();
       return null;
     }
 
