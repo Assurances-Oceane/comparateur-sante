@@ -535,9 +535,9 @@ const INSURER_COLORS = {
   'NEOLIANE':            'var(--neoliane)',
   'ALPTIS':              'var(--alptis)',
   'APRIL':               'var(--april)',
-  'Santé Select':        '#2e7d32',
-  'Santé Protect':       '#1b5e20',
-  'Santé Pro+':          '#4caf50',
+  'Santé Select':        '#00000',
+  'Santé Protect':       '#00000',
+  'Santé Pro+':          '#00000',
 };
 
 // ═══════════════════════════════════════════════════════
@@ -840,12 +840,6 @@ async function fetchAprilPricingAll(productCode, product, selectedLevelCode, pro
     }
 
     if (!payload?.success || !payload.prices) return [];
-
-    // Log debug SanteMix
-    if (productCode === 'SanteMix' && payload.debugItems) {
-      console.log('[SanteMix] Structure réponse API (debugItems):', payload.debugItems);
-      console.log('[SanteMix] Prices calculés:', payload.prices);
-    }
 
     // payload.prices = { '01': { price, level, ... }, '02': { ... }, ... }
     const offers = [];
