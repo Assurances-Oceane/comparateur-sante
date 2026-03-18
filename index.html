@@ -804,36 +804,80 @@ async function fetchAprilPricing(productCode, levelCode, profile) {
   }
 }
 
-async function fetchAllAprilPrices(profile, selectedLevelCode) {
-  const tasks = Object.entries(APRIL_PRODUCTS).map(async ([productCode, product]) => {
-    let matchingLevel = null;
+// Nouvelle fonction : retourne TOUTES les offres d'un produit (tous niveaux)
+// filtrées sur la classification souhaitée
+async function fetchAprilPricingAll(productCode, product, selectedLevelCode, profile) {
+  try {
+    const city = getCityForApril();
+    const response = await fetch(APRIL_PROXY, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        productCode,
+        guaranteeCode: APRIL_GUARANTEE_BY_PRODUCT[productCode] || 'MaladieChirurgie',
+        levelCode: '*',   // tous les niveaux d'un coup
+        birthdate: document.getElementById('birthdate').value,
+        zipcode:   document.getElementById('zipcode').value,
+        city,
+        regime:    document.getElementById('regime').value,
+        date_naissance_conjoint: document.getElementById('birthdate_partner')?.value || null,
+        date_naissance_enfant1:  document.getElementById('birthdate_child1')?.value  || null,
+        date_naissance_enfant2:  document.getElementById('birthdate_child2')?.value  || null,
+      })
+    });
 
-    for (const [levelCode, levelData] of Object.entries(product.levels)) {
-      if (levelData.classification === selectedLevelCode) {
-        matchingLevel = levelCode;
-        break;
-      }
+    const raw = await response.text();
+    let payload = null;
+    try { payload = raw ? JSON.parse(raw) : null; } catch { payload = null; }
+
+    if (!response.ok) {
+      console.group(`[APRIL ${productCode}/*] HTTP ${response.status}`);
+      console.log('Réponse:', payload);
+      if (payload?.sentBody)  console.log('Body envoyé:', JSON.stringify(payload.sentBody, null, 2));
+      if (payload?.details)   console.log('Détail erreur:', payload.details);
+      console.groupEnd();
+      return [];
     }
 
-    if (!matchingLevel) return null;
+    if (!payload?.success || !payload.prices) return [];
 
-    const price = await fetchAprilPricing(productCode, matchingLevel, profile);
-    if (price === null) return null;
+    // payload.prices = { '01': { price, level, ... }, '02': { ... }, ... }
+    const offers = [];
+    for (const [levelCode, priceData] of Object.entries(payload.prices)) {
+      const levelDef = product.levels[levelCode];
+      if (!levelDef) continue; // niveau inconnu dans notre mapping
 
-    const soins = product.levels[matchingLevel].percent;
-    return {
-      insurer: 'APRIL',
-      contract: product.title,
-      formula: 'Niveau ' + matchingLevel,
-      guarantees: buildAprilGuarantees(soins, productCode),
-      price,
-      level: getSoinsLevel(soins),
-      guarantee_note: `Garantie de base APRIL utilisée : ${APRIL_GUARANTEE_BY_PRODUCT[productCode] || 'MaladieChirurgie'}`,
-    };
-  });
+      // Filtrer sur la classification demandée
+      if (levelDef.classification !== selectedLevelCode) continue;
 
+      const price = priceData.price;
+      if (!price || price <= 0) continue;
+
+      const soins = levelDef.percent;
+      offers.push({
+        insurer:  'APRIL',
+        contract: product.title,
+        formula:  'Niveau ' + levelCode,
+        guarantees: buildAprilGuarantees(soins, productCode),
+        price: Math.round(price * 100) / 100,
+        level: getSoinsLevel(soins),
+        guarantee_note: `${productCode} — niveau ${levelCode}`,
+      });
+    }
+    return offers;
+
+  } catch (error) {
+    console.warn(`[APRIL ${productCode}/*] Erreur réseau:`, error);
+    return [];
+  }
+}
+
+async function fetchAllAprilPrices(profile, selectedLevelCode) {
+  const tasks = Object.entries(APRIL_PRODUCTS).map(
+    ([productCode, product]) => fetchAprilPricingAll(productCode, product, selectedLevelCode, profile)
+  );
   const results = await Promise.all(tasks);
-  return results.filter(Boolean);
+  return results.flat();
 }
 
 // ═══════════════════════════════════════════════════════
