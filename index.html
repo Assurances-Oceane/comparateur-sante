@@ -751,7 +751,21 @@ function extractAprilMonthlyPrice(payload) {
 
   return walk(payload);
 }
-
+function getCityForApril() {
+  const cityInput = document.getElementById('city')?.value?.trim();
+  if (cityInput) {
+    return cityInput.toUpperCase();
+  }
+  
+  // Si ville vide, demander à l'utilisateur de la remplir
+  const zipcode = document.getElementById('zipcode').value;
+  alert('⚠️ Pour obtenir les tarifs APRIL, veuillez renseigner votre ville.\n\nCode postal détecté : ' + zipcode);
+  
+  // Focus sur le champ ville
+  document.getElementById('city')?.focus();
+  
+  return null; // Cela va faire échouer APRIL mais pas les autres assureurs
+}
 async function fetchAprilPricing(productCode, levelCode, profile) {
   try {
     const response = await fetch(APRIL_PROXY, {
@@ -763,7 +777,7 @@ async function fetchAprilPricing(productCode, levelCode, profile) {
         levelCode,
         birthdate: document.getElementById('birthdate').value,
         zipcode: document.getElementById('zipcode').value,
-        city: document.getElementById('city')?.value?.trim() || null,
+        city: getCityForApril(),  // ← Nouvelle fonction
         regime: document.getElementById('regime').value,
         date_naissance_conjoint: document.getElementById('birthdate_partner')?.value || null,
         date_naissance_enfant1: document.getElementById('birthdate_child1')?.value || null,
@@ -780,8 +794,7 @@ async function fetchAprilPricing(productCode, levelCode, profile) {
     }
 
     if (!response.ok) {
-      console.warn(`[APRIL ${productCode}] Proxy ${response.status}`);
-      console.log('payload complet =', JSON.stringify(payload, null, 2));
+      console.warn(`[APRIL ${productCode}] Proxy ${response.status}`, payload);
       return null;
     }
 
