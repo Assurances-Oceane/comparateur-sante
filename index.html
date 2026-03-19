@@ -535,9 +535,9 @@ const INSURER_COLORS = {
   'NEOLIANE':            'var(--neoliane)',
   'ALPTIS':              'var(--alptis)',
   'APRIL':               'var(--april)',
-  'Santé Select':        '#00000',
-  'Santé Protect':       '#00000',
-  'Santé Pro+':          '#00000',
+  'Santé Select':        '#2e7d32',
+  'Santé Protect':       '#1b5e20',
+  'Santé Pro+':          '#4caf50',
 };
 
 // ═══════════════════════════════════════════════════════
@@ -669,23 +669,130 @@ const APRIL_PRODUCTS = {
   },
 };
 
-function buildAprilGuarantees(soins, productCode) {
-  const guarantees = {
-    soins_optam: soins,
-    hospit_optam: 100,
-    dentaire: 0,
-    optique_b_simple: 0,
-    optique_b_complexe: 0,
-    audio: 0,
-  };
+// ─────────────────────────────────────────────────────────────────
+//  GARANTIES RÉELLES APRIL — extraites des notices de garanties 2025
+//  Structure : { soins_optam, hospit_optam, dentaire,
+//                optique_b_simple (cat1), optique_b_complexe (cat3), audio }
+//  Valeurs en % BR sauf optique/audio en €
+//  On retient les valeurs DPTAM (médecins secteur 1) pour soins & hospit
+// ─────────────────────────────────────────────────────────────────
+const APRIL_GUARANTEES_BY_LEVEL = {
 
-  if (['FlexiSante', 'SanteMix'].includes(productCode)) {
-    guarantees.hospit_optam = soins;
-  } else {
-    guarantees.hospit_optam = Math.max(100, soins);
+  // ── APRIL Santé Peps (5 niveaux) ────────────────────────────────
+  SantePeps: {
+    '01': { soins_optam:100, hospit_optam:100, dentaire:100,  optique_b_simple:100,  optique_b_complexe:200,  audio:100  },
+    '02': { soins_optam:125, hospit_optam:125, dentaire:125,  optique_b_simple:150,  optique_b_complexe:300,  audio:200  },
+    '03': { soins_optam:150, hospit_optam:150, dentaire:150,  optique_b_simple:200,  optique_b_complexe:350,  audio:300  },
+    '04': { soins_optam:175, hospit_optam:200, dentaire:175,  optique_b_simple:250,  optique_b_complexe:400,  audio:400  },
+    '05': { soins_optam:225, hospit_optam:250, dentaire:200,  optique_b_simple:250,  optique_b_complexe:400,  audio:500  },
+  },
+
+  // ── APRIL Santé Primo (niveaux 02→07, niveau 01 non commercialisé) ──
+  SantePrimo: {
+    '02': { soins_optam:120, hospit_optam:120, dentaire:125,  optique_b_simple:125,  optique_b_complexe:200,  audio:100  },
+    '03': { soins_optam:140, hospit_optam:140, dentaire:125,  optique_b_simple:155,  optique_b_complexe:225,  audio:100  },
+    '04': { soins_optam:160, hospit_optam:180, dentaire:150,  optique_b_simple:200,  optique_b_complexe:250,  audio:350  },
+    '05': { soins_optam:175, hospit_optam:210, dentaire:150,  optique_b_simple:255,  optique_b_complexe:275,  audio:100  },
+    '06': { soins_optam:210, hospit_optam:260, dentaire:150,  optique_b_simple:300,  optique_b_complexe:300,  audio:550  },
+    '07': { soins_optam:250, hospit_optam:300, dentaire:200,  optique_b_simple:300,  optique_b_complexe:350,  audio:100  },
+  },
+
+  // ── APRIL Santé Sérénité (6 niveaux) ────────────────────────────
+  SanteCapSerenite: {
+    '01': { soins_optam:100, hospit_optam:100, dentaire:100,  optique_b_simple:100,  optique_b_complexe:200,  audio:100  },
+    '02': { soins_optam:125, hospit_optam:125, dentaire:125,  optique_b_simple:150,  optique_b_complexe:250,  audio:125  },
+    '03': { soins_optam:150, hospit_optam:150, dentaire:150,  optique_b_simple:200,  optique_b_complexe:300,  audio:150  },
+    '04': { soins_optam:200, hospit_optam:200, dentaire:175,  optique_b_simple:250,  optique_b_complexe:350,  audio:175  },
+    '05': { soins_optam:250, hospit_optam:250, dentaire:200,  optique_b_simple:300,  optique_b_complexe:400,  audio:200  },
+    '06': { soins_optam:300, hospit_optam:300, dentaire:225,  optique_b_simple:300,  optique_b_complexe:400,  audio:200  },
+  },
+
+  // ── APRIL Santé Zen (6 niveaux) ─────────────────────────────────
+  SanteZen: {
+    '01': { soins_optam:100, hospit_optam:100, dentaire:100,  optique_b_simple:100,  optique_b_complexe:200,  audio:100  },
+    '02': { soins_optam:125, hospit_optam:125, dentaire:125,  optique_b_simple:125,  optique_b_complexe:200,  audio:100  },
+    '03': { soins_optam:150, hospit_optam:150, dentaire:150,  optique_b_simple:150,  optique_b_complexe:250,  audio:100  },
+    '04': { soins_optam:200, hospit_optam:200, dentaire:150,  optique_b_simple:200,  optique_b_complexe:300,  audio:100  },
+    '05': { soins_optam:250, hospit_optam:250, dentaire:200,  optique_b_simple:250,  optique_b_complexe:350,  audio:100  },
+    '06': { soins_optam:300, hospit_optam:300, dentaire:200,  optique_b_simple:300,  optique_b_complexe:350,  audio:100  },
+  },
+
+  // ── APRIL Tranquillité Santé (6 niveaux) ────────────────────────
+  SanteTranquil: {
+    '01': { soins_optam:100, hospit_optam:100, dentaire:100,  optique_b_simple:100,  optique_b_complexe:200,  audio:100  },
+    '02': { soins_optam:125, hospit_optam:125, dentaire:125,  optique_b_simple:100,  optique_b_complexe:200,  audio:100  },
+    '03': { soins_optam:150, hospit_optam:150, dentaire:125,  optique_b_simple:150,  optique_b_complexe:250,  audio:100  },
+    '04': { soins_optam:200, hospit_optam:200, dentaire:150,  optique_b_simple:200,  optique_b_complexe:350,  audio:100  },
+    '05': { soins_optam:250, hospit_optam:250, dentaire:175,  optique_b_simple:250,  optique_b_complexe:450,  audio:100  },
+    '06': { soins_optam:300, hospit_optam:300, dentaire:200,  optique_b_simple:300,  optique_b_complexe:450,  audio:100  },
+  },
+
+  // ── APRIL Vita Santé (6 niveaux) ────────────────────────────────
+  SanteVita: {
+    '01': { soins_optam:100, hospit_optam:100, dentaire:100,  optique_b_simple:100,  optique_b_complexe:200,  audio:100  },
+    '02': { soins_optam:125, hospit_optam:125, dentaire:125,  optique_b_simple:100,  optique_b_complexe:200,  audio:100  },
+    '03': { soins_optam:150, hospit_optam:150, dentaire:150,  optique_b_simple:150,  optique_b_complexe:250,  audio:100  },
+    '04': { soins_optam:175, hospit_optam:175, dentaire:175,  optique_b_simple:200,  optique_b_complexe:300,  audio:100  },
+    '05': { soins_optam:200, hospit_optam:200, dentaire:200,  optique_b_simple:250,  optique_b_complexe:350,  audio:100  },
+    '06': { soins_optam:225, hospit_optam:250, dentaire:250,  optique_b_simple:300,  optique_b_complexe:400,  audio:100  },
+  },
+
+  // ── Complémentaire Sénior GAN (5 niveaux) ───────────────────────
+  SanteGan: {
+    '01': { soins_optam:125, hospit_optam:125, dentaire:125,  optique_b_simple:200,  optique_b_complexe:300,  audio:100  },
+    '02': { soins_optam:150, hospit_optam:150, dentaire:150,  optique_b_simple:225,  optique_b_complexe:300,  audio:100  },
+    '03': { soins_optam:200, hospit_optam:200, dentaire:170,  optique_b_simple:250,  optique_b_complexe:350,  audio:125  },
+    '04': { soins_optam:250, hospit_optam:300, dentaire:200,  optique_b_simple:350,  optique_b_complexe:400,  audio:150  },
+    '05': { soins_optam:300, hospit_optam:400, dentaire:270,  optique_b_simple:350,  optique_b_complexe:500,  audio:200  },
+  },
+
+  // ── Protection Santé MALAKOFF HUMANIS (5 niveaux) ───────────────
+  SanteProtect: {
+    '01': { soins_optam:150, hospit_optam:150, dentaire:100,  optique_b_simple:125,  optique_b_complexe:200,  audio:125  },
+    '02': { soins_optam:200, hospit_optam:200, dentaire:125,  optique_b_simple:150,  optique_b_complexe:250,  audio:300  },
+    '03': { soins_optam:250, hospit_optam:250, dentaire:150,  optique_b_simple:200,  optique_b_complexe:300,  audio:400  },
+    '04': { soins_optam:300, hospit_optam:300, dentaire:175,  optique_b_simple:250,  optique_b_complexe:350,  audio:500  },
+    '05': { soins_optam:350, hospit_optam:350, dentaire:200,  optique_b_simple:300,  optique_b_complexe:400,  audio:600  },
+  },
+
+  // ── APRIL Flexi Santé — Formule Complète (6 niveaux) ────────────
+  // Soins = Module Hospit/Soins courants, Dentaire/Optique = Module ODA
+  FlexiSante: {
+    '01': { soins_optam:100, hospit_optam:100, dentaire:100,  optique_b_simple:100,  optique_b_complexe:200,  audio:100  },
+    '02': { soins_optam:100, hospit_optam:125, dentaire:125,  optique_b_simple:100,  optique_b_complexe:200,  audio:100  },
+    '03': { soins_optam:125, hospit_optam:150, dentaire:150,  optique_b_simple:150,  optique_b_complexe:250,  audio:100  },
+    '04': { soins_optam:150, hospit_optam:200, dentaire:200,  optique_b_simple:200,  optique_b_complexe:300,  audio:100  },
+    '05': { soins_optam:200, hospit_optam:250, dentaire:250,  optique_b_simple:250,  optique_b_complexe:350,  audio:100  },
+    '06': { soins_optam:250, hospit_optam:300, dentaire:300,  optique_b_simple:300,  optique_b_complexe:400,  audio:100  },
+  },
+
+  // ── APRIL Santé Mix Proximité (6 niveaux) ───────────────────────
+  // Module Hospit + Module Frais de Santé (soins courants)
+  SanteMix: {
+    '01': { soins_optam:100, hospit_optam:100, dentaire:100,  optique_b_simple:100,  optique_b_complexe:200,  audio:100  },
+    '02': { soins_optam:125, hospit_optam:125, dentaire:125,  optique_b_simple:100,  optique_b_complexe:200,  audio:100  },
+    '03': { soins_optam:150, hospit_optam:150, dentaire:150,  optique_b_simple:150,  optique_b_complexe:275,  audio:100  },
+    '04': { soins_optam:200, hospit_optam:200, dentaire:175,  optique_b_simple:200,  optique_b_complexe:350,  audio:100  },
+    '05': { soins_optam:250, hospit_optam:250, dentaire:200,  optique_b_simple:250,  optique_b_complexe:425,  audio:100  },
+    '06': { soins_optam:300, hospit_optam:300, dentaire:250,  optique_b_simple:300,  optique_b_complexe:500,  audio:100  },
+  },
+};
+
+function buildAprilGuarantees(soins, productCode, levelCode) {
+  // Utiliser les données réelles si disponibles
+  const productData = APRIL_GUARANTEES_BY_LEVEL[productCode];
+  if (productData && levelCode && productData[levelCode]) {
+    return productData[levelCode];
   }
-
-  return guarantees;
+  // Fallback générique si produit/niveau inconnu
+  return {
+    soins_optam:        soins,
+    hospit_optam:       Math.max(100, soins),
+    dentaire:           soins,
+    optique_b_simple:   soins <= 100 ? 100 : soins * 1.5,
+    optique_b_complexe: soins <= 100 ? 200 : soins * 2,
+    audio:              100,
+  };
 }
 
 function aprilToNumber(value) {
@@ -858,7 +965,7 @@ async function fetchAprilPricingAll(productCode, product, selectedLevelCode, pro
         insurer:  'APRIL',
         contract: product.title,
         formula:  'Niveau ' + levelCode,
-        guarantees: buildAprilGuarantees(soins, productCode),
+        guarantees: buildAprilGuarantees(soins, productCode, levelCode),
         price: Math.round(price * 100) / 100,
         level: getSoinsLevel(soins),
         guarantee_note: `${productCode} — niveau ${levelCode}`,
