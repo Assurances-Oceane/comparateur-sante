@@ -535,9 +535,9 @@ const INSURER_COLORS = {
   'NEOLIANE':            'var(--neoliane)',
   'ALPTIS':              'var(--alptis)',
   'APRIL':               'var(--april)',
-  'Santé Select':        '#2e7d32',
-  'Santé Protect':       '#1b5e20',
-  'Santé Pro+':          '#4caf50',
+  'Santé Select':        '#00000',
+  'Santé Protect':       '#00000',
+  'Santé Pro+':          '#00000',
 };
 
 // ═══════════════════════════════════════════════════════
@@ -1591,70 +1591,150 @@ function sortResults(by) {
 }
 
 // ═══════════════════════════════════════════════════════
+//  LIENS PDF GARANTIES PAR PRODUIT APRIL
+//  À héberger sur GitHub dans /docs/garanties/
+// ═══════════════════════════════════════════════════════
+const APRIL_PDF_URLS = {
+  SantePeps:        'https://assurances-oceane.github.io/comparateur-sante/docs/garanties/april-sante-peps.pdf',
+  SantePrimo:       'https://assurances-oceane.github.io/comparateur-sante/docs/garanties/april-sante-primo.pdf',
+  SanteCapSerenite: 'https://assurances-oceane.github.io/comparateur-sante/docs/garanties/april-sante-serenite.pdf',
+  SanteZen:         'https://assurances-oceane.github.io/comparateur-sante/docs/garanties/april-sante-zen.pdf',
+  SanteTranquil:    'https://assurances-oceane.github.io/comparateur-sante/docs/garanties/april-tranquillite-sante.pdf',
+  SanteVita:        'https://assurances-oceane.github.io/comparateur-sante/docs/garanties/april-vita-sante.pdf',
+  SanteGan:         'https://assurances-oceane.github.io/comparateur-sante/docs/garanties/complementaire-senior-gan.pdf',
+  SanteProtect:     'https://assurances-oceane.github.io/comparateur-sante/docs/garanties/protection-sante-malakoff.pdf',
+  FlexiSante:       'https://assurances-oceane.github.io/comparateur-sante/docs/garanties/april-flexi-sante.pdf',
+  SanteMix:         'https://assurances-oceane.github.io/comparateur-sante/docs/garanties/april-sante-mix-proximite.pdf',
+};
+
+// Produits non responsables (ne prennent pas en charge le 100% Santé)
+const APRIL_NON_RESPONSABLE = ['FlexiSante']; // Formule Eco uniquement
+
+// ═══════════════════════════════════════════════════════
 //  MODAL
 // ═══════════════════════════════════════════════════════
 function openModal(offer) {
   if (typeof offer === 'string') offer = JSON.parse(offer);
-  document.getElementById('modalTitle').textContent = `${offer.insurer} — Formule ${offer.formula}`;
-  document.getElementById('modalSubtitle').textContent = `${offer.contract} · ${offer.price.toFixed(2).replace('.',',')}€ / mois tout compris`;
 
+  const isApril = offer.insurer === 'APRIL';
   const g = offer.guarantees || {};
-  const hasVal = (v) => v !== undefined && v !== null && v !== '';
+  const hasVal = (v) => v !== undefined && v !== null && v !== '' && v !== 0;
 
-  const rows = [];
-
-  if (hasVal(g.hospit_optam)) {
-    rows.push({ section: '🏥 Hospitalisation' });
-    rows.push({ label: 'Honoraires médicaux OPTAM', val: g.hospit_optam + '% BR' });
-  }
-
-  if (hasVal(g.soins_optam)) {
-    rows.push({ section: '💊 Soins courants' });
-    rows.push({ label: 'Consultations OPTAM', val: g.soins_optam + '% BR' });
-    rows.push({ label: 'Consultations non-OPTAM', val: (g.soins_optam > 100 ? g.soins_optam - 20 : 100) + '% BR' });
-  }
-
-  if (hasVal(g.dentaire)) {
-    rows.push({ section: '🦷 Dentaire' });
-    rows.push({ label: 'Soins et obturations', val: g.dentaire + '% BR' });
-    rows.push({ label: 'Prothèses 100% santé', val: '100% prix' });
-  }
-
-  if (hasVal(g.optique_b_simple) || hasVal(g.optique_b_complexe)) {
-    rows.push({ section: '👓 Optique' });
-    rows.push({ label: 'Classe A 100% santé', val: '100% prix' });
-    if (hasVal(g.optique_b_simple)) {
-      rows.push({ label: 'Verres simples (classe B)', val: g.optique_b_simple + '€' });
-    }
-    if (hasVal(g.optique_b_complexe)) {
-      rows.push({ label: 'Verres complexes (classe B)', val: g.optique_b_complexe + '€' });
-    }
-  }
-
-  if (hasVal(g.audio)) {
-    rows.push({ section: '👂 Audiologie' });
-    rows.push({ label: 'Appareils classe I 100%', val: '100% prix' });
-    rows.push({ label: 'Appareils classe II', val: g.audio + '% BR' });
-  }
+  // Titre + sous-titre
+  document.getElementById('modalTitle').textContent = `${offer.contract} — ${offer.formula}`;
+  document.getElementById('modalSubtitle').textContent = `${offer.price.toFixed(2).replace('.',',')}€ / mois tout compris`;
 
   let html = '';
-  if (!rows.length) {
-    html = `<div style="padding:18px;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--ink-muted)">
-      Détail des garanties indisponible pour cette offre.
+
+  // ── Format APRIL : simplifié avec badge responsable + 5 lignes ──
+  if (isApril) {
+    const productCode = offer.guarantee_note?.split(' — ')[0] || '';
+    const isNonResp   = APRIL_NON_RESPONSABLE.includes(productCode);
+    const pdfUrl      = APRIL_PDF_URLS[productCode] || null;
+
+    // Badge responsable
+    html += `<div style="margin-bottom:16px">
+      <span style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;font-size:12px;font-weight:700;
+        background:${isNonResp ? 'rgba(220,38,38,0.08)' : 'rgba(5,150,105,0.08)'};
+        color:${isNonResp ? 'var(--red)' : 'var(--green)'};
+        border:1px solid ${isNonResp ? 'rgba(220,38,38,0.2)' : 'rgba(5,150,105,0.2)'}">
+        ${isNonResp ? '⚠️ Contrat Non Responsable — 100% Santé exclu' : '✅ Contrat Responsable — 100% Santé inclus'}
+      </span>
     </div>`;
-  } else {
-    html = `<table class="guarantee-table"><thead><tr><th>Garantie</th><th>Remboursement</th></tr></thead><tbody>`;
-    rows.forEach(r => {
-      if (r.section) html += `<tr><td class="gtable-section" colspan="2">${r.section}</td></tr>`;
-      else html += `<tr><td>${r.label}</td><td>${r.val}</td></tr>`;
+
+    // 5 lignes garanties
+    const aprilRows = [
+      { icon:'🏥', label:'Hospitalisation',  val: hasVal(g.hospit_optam)      ? g.hospit_optam + '% BR'      : '—', note:'Honoraires chirurgicaux DPTAM' },
+      { icon:'💊', label:'Soins courants',   val: hasVal(g.soins_optam)       ? g.soins_optam + '% BR'       : '—', note:'Consultations médecins DPTAM' },
+      { icon:'🦷', label:'Dentaire',         val: hasVal(g.dentaire)          ? g.dentaire + '% BR'          : '—', note:'Prothèses hors 100% Santé' },
+      { icon:'👓', label:'Optique',          val: hasVal(g.optique_b_simple)  ? g.optique_b_simple + ' €'   : '—', note:'Verres + monture classe B (cat. 1)' },
+      { icon:'👂', label:'Audiologie',       val: hasVal(g.audio)             ? g.audio + '% BR'             : '—', note:'Prothèses auditives classe II' },
+    ];
+
+    html += `<div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px">`;
+    aprilRows.forEach(r => {
+      const isEmpty = r.val === '—';
+      html += `
+        <div style="display:flex;align-items:center;justify-content:space-between;
+          padding:12px 16px;border-radius:var(--radius-sm);
+          background:var(--surface2);border:1px solid var(--border)">
+          <div style="display:flex;align-items:center;gap:10px">
+            <span style="font-size:18px">${r.icon}</span>
+            <div>
+              <div style="font-weight:600;font-size:14px;color:var(--ink)">${r.label}</div>
+              <div style="font-size:11px;color:var(--ink-dim)">${r.note}</div>
+            </div>
+          </div>
+          <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;
+            color:${isEmpty ? 'var(--ink-dim)' : 'var(--accent)'}">
+            ${r.val}
+          </div>
+        </div>`;
     });
-    html += '</tbody></table>';
+    html += `</div>`;
+
+    // Bouton PDF
+    if (pdfUrl) {
+      html += `
+        <a href="${pdfUrl}" target="_blank" rel="noopener" style="
+          display:inline-flex;align-items:center;gap:8px;
+          padding:10px 18px;border-radius:var(--radius-sm);
+          background:var(--surface2);border:1px solid var(--border);
+          font-size:13px;font-weight:600;color:var(--ink);
+          text-decoration:none;transition:all .15s;margin-bottom:8px">
+          📄 Tableau de garanties — Télécharger PDF
+        </a>`;
+    } else {
+      html += `<div style="font-size:12px;color:var(--ink-dim);margin-bottom:8px">
+        📄 Tableau de garanties : disponible prochainement
+      </div>`;
+    }
+
+  // ── Format standard (MALJ, INIZYS, NEOLIANE, ALPTIS) ───────────
+  } else {
+    const rows = [];
+
+    if (hasVal(g.hospit_optam)) {
+      rows.push({ section: '🏥 Hospitalisation' });
+      rows.push({ label: 'Honoraires médicaux OPTAM', val: g.hospit_optam + '% BR' });
+    }
+    if (hasVal(g.soins_optam)) {
+      rows.push({ section: '💊 Soins courants' });
+      rows.push({ label: 'Consultations OPTAM', val: g.soins_optam + '% BR' });
+      rows.push({ label: 'Consultations non-OPTAM', val: (g.soins_optam > 100 ? g.soins_optam - 20 : 100) + '% BR' });
+    }
+    if (hasVal(g.dentaire)) {
+      rows.push({ section: '🦷 Dentaire' });
+      rows.push({ label: 'Soins et obturations', val: g.dentaire + '% BR' });
+      rows.push({ label: 'Prothèses 100% santé', val: 'Frais réels' });
+    }
+    if (hasVal(g.optique_b_simple) || hasVal(g.optique_b_complexe)) {
+      rows.push({ section: '👓 Optique' });
+      rows.push({ label: 'Classe A 100% santé', val: 'Frais réels' });
+      if (hasVal(g.optique_b_simple))  rows.push({ label: 'Verres simples (classe B)',  val: g.optique_b_simple  + '€' });
+      if (hasVal(g.optique_b_complexe)) rows.push({ label: 'Verres complexes (classe B)', val: g.optique_b_complexe + '€' });
+    }
+    if (hasVal(g.audio)) {
+      rows.push({ section: '👂 Audiologie' });
+      rows.push({ label: 'Appareils 100% Santé classe I', val: 'Frais réels' });
+      rows.push({ label: 'Appareils classe II', val: g.audio + '% BR' });
+    }
+
+    if (!rows.length) {
+      html = `<div style="padding:18px;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--ink-muted)">
+        Détail des garanties indisponible pour cette offre.
+      </div>`;
+    } else {
+      html = `<table class="guarantee-table"><thead><tr><th>Garantie</th><th>Remboursement</th></tr></thead><tbody>`;
+      rows.forEach(r => {
+        if (r.section) html += `<tr><td class="gtable-section" colspan="2">${r.section}</td></tr>`;
+        else           html += `<tr><td>${r.label}</td><td>${r.val}</td></tr>`;
+      });
+      html += '</tbody></table>';
+    }
   }
 
-  if (offer.guarantee_note) {
-    html += `<div class="modal-fee-notice">ℹ️ ${offer.guarantee_note}</div>`;
-  }
-
+  // Note MALJ frais fixes
   if (offer.fees) {
     html += `<div class="modal-fee-notice">
       ℹ️ Ce tarif inclut <strong>${offer.fees}€/mois</strong> de frais fixes MALJ (assurance solidarité, assistance).<br>
