@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -575,9 +575,9 @@ const INSURER_COLORS = {
   'NEOLIANE':            'var(--neoliane)',
   'ALPTIS':              'var(--alptis)',
   'APRIL':               'var(--april)',
-  'Santé Select':        '#00000',
-  'Santé Protect':       '#00000',
-  'Santé Pro+':          '#00000',
+  'Santé Select':        '#2e7d32',
+  'Santé Protect':       '#1b5e20',
+  'Santé Pro+':          '#4caf50',
 };
 
 // ═══════════════════════════════════════════════════════
@@ -997,9 +997,18 @@ async function fetchAprilPricingAll(productCode, product, selectedLevelCode, pro
 
       if (!response.ok || !payload?.success || !payload.prices) return null;
 
+      // DEBUG TEMPORAIRE — voir ce que retourne l'API pour ce levelCode
+      const retKeys = Object.keys(payload.prices || {});
+      console.log(`[APRIL DEBUG] ${productCode} lc=${levelCode} → clés retournées:`, retKeys,
+        '| rawData[0] levelCode:', payload.rawData?.[0]?.levelCode,
+        '| rawData[0] gc:', payload.rawData?.[0]?.guaranteeCode);
+
       // Le proxy retourne prices[levelCode] avec le prix pour ce niveau précis
       const priceData = payload.prices?.[levelCode];
-      if (!priceData?.price || priceData.price <= 0) return null;
+      if (!priceData?.price || priceData.price <= 0) {
+        console.warn(`[APRIL DEBUG] ${productCode} lc=${levelCode} → introuvable dans prices. Clés disponibles:`, retKeys);
+        return null;
+      }
 
       const soins = product.levels[levelCode].percent;
       return {
