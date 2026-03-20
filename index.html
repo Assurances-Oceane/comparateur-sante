@@ -478,31 +478,62 @@ const INIZYS_PRICING = {"ECO": {"label": "\u00c9conomique", "soins_percent": 100
 // ═══════════════════════════════════════════════════════
 
 // MALJ Mutuelle Santé (< 65 ans)
+// ─────────────────────────────────────────────────────────────────
+//  GARANTIES RÉELLES MALJ — extraites des notices de garanties 2024
+//  MALJ Assurance Mutuelle Santé (jusqu'à 64 ans)
+//  Source : TG SANTEC_GAM_0724
+// ─────────────────────────────────────────────────────────────────
 const MALJ_SANTE_GUARANTEES = {
-  ECO:       { soins_optam:100, dentaire:100,  optique_b_simple:50,  optique_b_complexe:100, hospit_optam:100, audio:100 },
-  ZEN:       { soins_optam:150, dentaire:150,  optique_b_simple:150, optique_b_complexe:200, hospit_optam:150, audio:150 },
-  EQUILIBRE: { soins_optam:200, dentaire:200,  optique_b_simple:250, optique_b_complexe:300, hospit_optam:200, audio:200 },
-  SERENITE:  { soins_optam:300, dentaire:250,  optique_b_simple:300, optique_b_complexe:350, hospit_optam:300, audio:250 },
-  EXCELLENCE:{ soins_optam:350, dentaire:300,  optique_b_simple:400, optique_b_complexe:500, hospit_optam:350, audio:300 },
+  // ECO : soins 100%, hospit 100%, dentaire prothèses 100%, optique cat1 50€
+  ECO:       { soins_optam:100, hospit_optam:100, dentaire:100, optique_b_simple:50,  optique_b_complexe:125, audio:100 },
+  // ZEN : soins 150%, hospit 150%, dentaire prothèses 125%, optique cat1 150€
+  ZEN:       { soins_optam:150, hospit_optam:150, dentaire:125, optique_b_simple:150, optique_b_complexe:200, audio:150 },
+  // EQUILIBRE : soins 200%, hospit 200%, dentaire prothèses 200%, optique cat1 250€
+  EQUILIBRE: { soins_optam:200, hospit_optam:200, dentaire:200, optique_b_simple:250, optique_b_complexe:300, audio:200 },
+  // SERENITE : soins 250%, hospit 250%, dentaire prothèses 250%, optique cat1 300€
+  SERENITE:  { soins_optam:250, hospit_optam:250, dentaire:250, optique_b_simple:300, optique_b_complexe:350, audio:250 },
+  // EXCELLENCE : soins 400%, hospit frais réels, dentaire prothèses 400%, optique cat1 400€
+  EXCELLENCE:{ soins_optam:400, hospit_optam:400, dentaire:400, optique_b_simple:400, optique_b_complexe:500, audio:350 },
 };
 
-// MALJ Santé Senior (≥ 65 ans)
+// MALJ Santé Senior (65-85 ans) — TG SANTESEN_GAM_0724
 const MALJ_SENIOR_GUARANTEES = {
-  ECO:       { soins_optam:100, dentaire:100,  optique_b_simple:50,  optique_b_complexe:100, hospit_optam:100, audio:100 },
-  ZEN:       { soins_optam:150, dentaire:150,  optique_b_simple:150, optique_b_complexe:200, hospit_optam:150, audio:150 },
-  EQUILIBRE: { soins_optam:200, dentaire:200,  optique_b_simple:250, optique_b_complexe:300, hospit_optam:200, audio:200 },
-  SERENITE:  { soins_optam:250, dentaire:250,  optique_b_simple:300, optique_b_complexe:350, hospit_optam:250, audio:250 },
-  EXCELLENCE:{ soins_optam:400, dentaire:350,  optique_b_simple:400, optique_b_complexe:500, hospit_optam:400, audio:350 },
+  // ECO SENIOR : soins 100%, hospit 100%, dentaire prothèses 100%, optique verres simples 50€
+  ECO:       { soins_optam:100, hospit_optam:100, dentaire:100, optique_b_simple:50,  optique_b_complexe:125, audio:100 },
+  // ZEN SENIOR : soins 150%, hospit 150%, dentaire prothèses 150%, optique verres simples 150€
+  ZEN:       { soins_optam:150, hospit_optam:150, dentaire:150, optique_b_simple:150, optique_b_complexe:200, audio:150 },
+  // EQUILIBRE SENIOR : soins 200%, hospit 200%, dentaire prothèses 200%, optique cat1 250€
+  EQUILIBRE: { soins_optam:200, hospit_optam:200, dentaire:200, optique_b_simple:250, optique_b_complexe:300, audio:250 },
+  // SERENITE SENIOR : soins 300%, hospit 300%, dentaire prothèses 250%, optique cat1 300€
+  SERENITE:  { soins_optam:300, hospit_optam:300, dentaire:250, optique_b_simple:300, optique_b_complexe:350, audio:300 },
+  // EXCELLENCE SENIOR : soins 350%, hospit 350%, dentaire prothèses 350%, optique cat1 400€
+  EXCELLENCE:{ soins_optam:350, hospit_optam:350, dentaire:350, optique_b_simple:400, optique_b_complexe:500, audio:400 },
 };
 
-// INIZYS garanties par formule
-const INIZYS_GUARANTEES = {
-  ECO:       { soins_optam:100, dentaire:100,  optique_b_simple:50,  optique_b_complexe:100, hospit_optam:100, audio:100 },
-  ECO_PLUS:  { soins_optam:120, dentaire:120,  optique_b_simple:100, optique_b_complexe:150, hospit_optam:120, audio:100 },
-  EQUILIBRE: { soins_optam:140, dentaire:150,  optique_b_simple:200, optique_b_complexe:250, hospit_optam:150, audio:140 },
-  PRIVILEGE: { soins_optam:200, dentaire:200,  optique_b_simple:260, optique_b_complexe:310, hospit_optam:200, audio:200 },
-  VIP:       { soins_optam:300, dentaire:280,  optique_b_simple:350, optique_b_complexe:420, hospit_optam:300, audio:280 },
+// PDF MALJ
+const MALJ_PDF_URLS = {
+  MALJ_SANTE_2026:  'https://assurances-oceane.github.io/comparateur-sante/docs/garanties/malj-sante.pdf',
+  MALJ_SENIOR_2026: 'https://assurances-oceane.github.io/comparateur-sante/docs/garanties/malj-senior.pdf',
 };
+
+// ─────────────────────────────────────────────────────────────────
+//  GARANTIES RÉELLES INIZYS — extraites de la notice 2026
+//  Mutuelle Communale Prévoyance Océane (INIZYS)
+//  Source : GARANTIES_INIZYS_MC_2026
+// ─────────────────────────────────────────────────────────────────
+const INIZYS_GUARANTEES = {
+  // NIVEAU 1 : soins 100%, hospit 100%, dentaire prothèses 100%, optique 100% BR (pas de forfait)
+  ECO:       { soins_optam:100, hospit_optam:100, dentaire:100, optique_b_simple:100,  optique_b_complexe:100,  audio:100 },
+  // NIVEAU 2 : soins 150%, hospit 150%, dentaire prothèses 200%, optique verres simples 200€
+  ECO_PLUS:  { soins_optam:150, hospit_optam:150, dentaire:200, optique_b_simple:200,  optique_b_complexe:250,  audio:150 },
+  // NIVEAU 3 : soins 200%, hospit 200%, dentaire prothèses 250%, optique verres simples 230€
+  EQUILIBRE: { soins_optam:200, hospit_optam:200, dentaire:250, optique_b_simple:230,  optique_b_complexe:300,  audio:200 },
+  // NIVEAU 4 : soins 250%, hospit 250%, dentaire prothèses 300%, optique verres simples 250€
+  PRIVILEGE: { soins_optam:250, hospit_optam:250, dentaire:300, optique_b_simple:250,  optique_b_complexe:350,  audio:225 },
+};
+
+// PDF INIZYS
+const INIZYS_PDF_URL = 'https://assurances-oceane.github.io/comparateur-sante/docs/garanties/inizys-mc-prevoyance-oceane.pdf';
 
 // ═══════════════════════════════════════════════════════
 //  FRAIS FIXES MALJ
@@ -1017,8 +1048,50 @@ function buildAlptisProfile(profile, birthdate, birthdatePartner, zipcode, regim
   return p;
 }
 
-function buildAlptisGuarantees(soins) {
-  return { soins_optam: soins, hospit_optam: soins + 100, dentaire: soins, optique_b_simple: soins, optique_b_complexe: soins, audio: 100 };
+// ─────────────────────────────────────────────────────────────────
+//  GARANTIES RÉELLES ALPTIS — extraites des notices 2024
+// ─────────────────────────────────────────────────────────────────
+
+// Santé Select R (8 niveaux) — RESPONSABLE
+const ALPTIS_SELECT_GUARANTEES = {
+  1: { soins_optam:100, hospit_optam:100, dentaire:100,  optique_b_simple:100,  optique_b_complexe:100,  audio:100 },
+  2: { soins_optam:125, hospit_optam:125, dentaire:150,  optique_b_simple:50,   optique_b_complexe:200,  audio:200 },
+  3: { soins_optam:150, hospit_optam:150, dentaire:200,  optique_b_simple:150,  optique_b_complexe:250,  audio:300 },
+  4: { soins_optam:200, hospit_optam:200, dentaire:250,  optique_b_simple:175,  optique_b_complexe:275,  audio:400 },
+  5: { soins_optam:250, hospit_optam:250, dentaire:300,  optique_b_simple:200,  optique_b_complexe:300,  audio:500 },
+  6: { soins_optam:300, hospit_optam:300, dentaire:350,  optique_b_simple:250,  optique_b_complexe:400,  audio:600 },
+  7: { soins_optam:350, hospit_optam:350, dentaire:400,  optique_b_simple:300,  optique_b_complexe:450,  audio:700 },
+  8: { soins_optam:400, hospit_optam:400, dentaire:400,  optique_b_simple:350,  optique_b_complexe:550,  audio:800 },
+};
+
+// Santé Protect (4 niveaux, seniors 55+) — RESPONSABLE
+const ALPTIS_PROTECT_GUARANTEES = {
+  'N1': { soins_optam:100, hospit_optam:100, dentaire:100,  optique_b_simple:100,  optique_b_complexe:100,  audio:100 },
+  'N2': { soins_optam:125, hospit_optam:125, dentaire:125,  optique_b_simple:125,  optique_b_complexe:200,  audio:125 },
+  'N3': { soins_optam:150, hospit_optam:150, dentaire:150,  optique_b_simple:150,  optique_b_complexe:250,  audio:150 },
+  'N4': { soins_optam:200, hospit_optam:200, dentaire:175,  optique_b_simple:175,  optique_b_complexe:275,  audio:175 },
+};
+
+// PDF ALPTIS
+const ALPTIS_PDF_URLS = {
+  'Santé Select': 'https://assurances-oceane.github.io/comparateur-sante/docs/garanties/alptis-sante-select.pdf',
+  'Santé Protect': 'https://assurances-oceane.github.io/comparateur-sante/docs/garanties/alptis-sante-protect.pdf',
+  'Santé Pro+': 'https://assurances-oceane.github.io/comparateur-sante/docs/garanties/alptis-sante-pro-plus.pdf',
+};
+
+function buildAlptisGuarantees(soins, contractName, formulaLabel) {
+  // Utiliser les données réelles si disponibles
+  if (contractName === 'Santé Select' || contractName?.includes('Select')) {
+    const niveau = parseInt(formulaLabel?.replace(/[^0-9]/g, '')) || 1;
+    const g = ALPTIS_SELECT_GUARANTEES[niveau];
+    if (g) return g;
+  }
+  if (contractName === 'Santé Protect' || contractName?.includes('Protect')) {
+    const g = ALPTIS_PROTECT_GUARANTEES[formulaLabel] || ALPTIS_PROTECT_GUARANTEES['N1'];
+    return g;
+  }
+  // Fallback générique (Santé Pro+ ou inconnu)
+  return { soins_optam: soins, hospit_optam: Math.max(100, soins), dentaire: soins, optique_b_simple: Math.round(soins * 1.5), optique_b_complexe: soins * 2, audio: 100 };
 }
 
 async function fetchAlptisRaw(action, niveaux, profile, birthdate, birthdatePartner, zipcode, regime, bdChild1, bdChild2) {
@@ -1040,7 +1113,7 @@ async function fetchAlptisSelect(profile, birthdate, birthdatePartner, zipcode, 
   const raw = await fetchAlptisRaw('sante_select', niveaux, profile, birthdate, birthdatePartner, zipcode, regime, bdChild1, bdChild2);
   return raw.filter(item => item.tarifs).map((item, i) => {
     const soins = ALPTIS_SELECT_SOINS[niveaux[i]] || 100;
-    return { insurer: 'Santé Select', contract: 'Santé Select', formula: 'Niveau ' + niveaux[i], guarantees: buildAlptisGuarantees(soins), price: item.tarifs.total, level: getSoinsLevel(soins) };
+    return { insurer: 'Santé Select', contract: 'Santé Select', formula: 'Niveau ' + niveaux[i], guarantees: buildAlptisGuarantees(soins, 'Santé Select', niveaux[i].toString()), price: item.tarifs.total, level: getSoinsLevel(soins) };
   });
 }
 
@@ -1051,7 +1124,7 @@ async function fetchAlptisProtect(profile, birthdate, birthdatePartner, zipcode,
   const raw = await fetchAlptisRaw('sante_protect', niveaux, profile, birthdate, birthdatePartner, zipcode, regime, bdChild1, bdChild2);
   return raw.filter(item => item.tarifs).map((item, i) => {
     const soins = ALPTIS_PROTECT_SOINS[niveaux[i]] || 100;
-    return { insurer: 'Santé Protect', contract: 'Santé Protect', formula: niveaux[i], guarantees: buildAlptisGuarantees(soins), price: item.tarifs.prime_totale_mensuelle, level: getSoinsLevel(soins) };
+    return { insurer: 'Santé Protect', contract: 'Santé Protect', formula: niveaux[i], guarantees: buildAlptisGuarantees(soins, 'Santé Protect', niveaux[i]), price: item.tarifs.prime_totale_mensuelle, level: getSoinsLevel(soins) };
   });
 }
 
@@ -1063,7 +1136,7 @@ async function fetchAlptisProPlus(profile, birthdate, birthdatePartner, zipcode,
   const raw = await fetchAlptisRaw('sante_pro_plus', niveaux, profile, birthdate, birthdatePartner, zipcode, regime, bdChild1, bdChild2);
   return raw.filter(item => item.tarifs).map((item, i) => {
     const soins = ALPTIS_PRO_PLUS_SOINS[niveaux[i]] || 100;
-    return { insurer: 'Santé Pro+', contract: 'Santé Pro+', formula: niveaux[i].replace('NIVEAU_', 'Niveau '), guarantees: buildAlptisGuarantees(soins), price: item.tarifs.total_mensuel, level: getSoinsLevel(soins) };
+    return { insurer: 'Santé Pro+', contract: 'Santé Pro+', formula: niveaux[i].replace('NIVEAU_', 'Niveau '), guarantees: buildAlptisGuarantees(soins, 'Santé Pro+', niveaux[i]), price: item.tarifs.total_mensuel, level: getSoinsLevel(soins) };
   });
 }
 
@@ -1156,6 +1229,152 @@ async function fetchNeoliane(profile, birthdate, birthdatePartner, zipcode, regi
       if (soins < lvlRule.min || soins > lvlRule.max) return;
       if (!p.isSellable) return;
 
+// ─────────────────────────────────────────────────────────────────
+//  GARANTIES RÉELLES NEOLIANE — extraites des notices 2024/2025
+//  Clé = gammeLabel (nom commercial exact retourné par l'API)
+//  Structure identique à APRIL : { soins, hospit, dentaire, optique_b_simple, optique_b_complexe, audio }
+//  Pour les produits NON RESPONSABLES (Energik, AltoSanté, Innov'Santé) : optique en €, audio en %
+//  Innov'Santé : dentaire/optique/audio = forfait global → on indique le forfait IS2→IS7
+// ─────────────────────────────────────────────────────────────────
+const NEOLIANE_NON_RESPONSABLE = ['Énergik', 'Energik', 'AltoSanté', 'AltoSante', "Innov'Santé", 'InnovSante'];
+
+// Mapping gammeLabel → { responsable, pdfUrl, garanties par formulaLabel }
+const NEOLIANE_GUARANTEES = {
+  // ── Énergik (NON RESPONSABLE, EN1-EN6) ──────────────────────────
+  'Énergik': {
+    responsable: false,
+    pdfUrl: 'https://assurances-oceane.github.io/comparateur-sante/docs/garanties/neoliane-energik.pdf',
+    byFormula: {
+      'EN 1': { soins_optam:100, hospit_optam:100, dentaire:100,  optique_b_simple:100,  optique_b_complexe:100,  audio:100 },
+      'EN 2': { soins_optam:125, hospit_optam:120, dentaire:150,  optique_b_simple:100,  optique_b_complexe:100,  audio:100 },
+      'EN 3': { soins_optam:125, hospit_optam:140, dentaire:175,  optique_b_simple:100,  optique_b_complexe:100,  audio:100 },
+      'EN 4': { soins_optam:150, hospit_optam:165, dentaire:200,  optique_b_simple:125,  optique_b_complexe:200,  audio:100 },
+      'EN 5': { soins_optam:175, hospit_optam:190, dentaire:225,  optique_b_simple:150,  optique_b_complexe:225,  audio:100 },
+      'EN 6': { soins_optam:200, hospit_optam:215, dentaire:250,  optique_b_simple:175,  optique_b_complexe:250,  audio:125 },
+    }
+  },
+  // ── Plénitude (RESPONSABLE, P1-P6) ──────────────────────────────
+  'Plénitude': {
+    responsable: true,
+    pdfUrl: 'https://assurances-oceane.github.io/comparateur-sante/docs/garanties/neoliane-plenitude.pdf',
+    byFormula: {
+      'P1': { soins_optam:100, hospit_optam:120, dentaire:100,  optique_b_simple:100,  optique_b_complexe:100,  audio:100 },
+      'P2': { soins_optam:125, hospit_optam:140, dentaire:150,  optique_b_simple:125,  optique_b_complexe:200,  audio:200 },
+      'P3': { soins_optam:150, hospit_optam:165, dentaire:200,  optique_b_simple:125,  optique_b_complexe:225,  audio:225 },
+      'P4': { soins_optam:150, hospit_optam:215, dentaire:250,  optique_b_simple:175,  optique_b_complexe:275,  audio:325 },
+      'P5': { soins_optam:175, hospit_optam:265, dentaire:275,  optique_b_simple:225,  optique_b_complexe:325,  audio:350 },
+      'P6': { soins_optam:175, hospit_optam:315, dentaire:300,  optique_b_simple:275,  optique_b_complexe:400,  audio:450 },
+    }
+  },
+  // ── Dynamique (RESPONSABLE, D1-D5) ──────────────────────────────
+  'Dynamique': {
+    responsable: true,
+    pdfUrl: 'https://assurances-oceane.github.io/comparateur-sante/docs/garanties/neoliane-dynamique.pdf',
+    byFormula: {
+      'D1': { soins_optam:100, hospit_optam:100, dentaire:100,  optique_b_simple:100,  optique_b_complexe:150,  audio:100 },
+      'D2': { soins_optam:125, hospit_optam:100, dentaire:125,  optique_b_simple:50,   optique_b_complexe:150,  audio:100 },
+      'D3': { soins_optam:150, hospit_optam:120, dentaire:150,  optique_b_simple:80,   optique_b_complexe:170,  audio:100 },
+      'D4': { soins_optam:150, hospit_optam:140, dentaire:175,  optique_b_simple:100,  optique_b_complexe:190,  audio:100 },
+      'D5': { soins_optam:175, hospit_optam:160, dentaire:200,  optique_b_simple:100,  optique_b_complexe:200,  audio:100 },
+    }
+  },
+  // ── Performance (RESPONSABLE, NP1-NP6) ──────────────────────────
+  'Performance': {
+    responsable: true,
+    pdfUrl: 'https://assurances-oceane.github.io/comparateur-sante/docs/garanties/neoliane-performance.pdf',
+    byFormula: {
+      'NP 1':  { soins_optam:100, hospit_optam:100, dentaire:100,  optique_b_simple:100,  optique_b_complexe:100,  audio:100 },
+      'NP 1R': { soins_optam:100, hospit_optam:125, dentaire:125,  optique_b_simple:100,  optique_b_complexe:100,  audio:100 },
+      'NP 2':  { soins_optam:100, hospit_optam:150, dentaire:150,  optique_b_simple:125,  optique_b_complexe:200,  audio:100 },
+      'NP 2R': { soins_optam:100, hospit_optam:175, dentaire:175,  optique_b_simple:150,  optique_b_complexe:225,  audio:100 },
+      'NP 3':  { soins_optam:125, hospit_optam:200, dentaire:200,  optique_b_simple:175,  optique_b_complexe:250,  audio:125 },
+      'NP 4':  { soins_optam:150, hospit_optam:225, dentaire:250,  optique_b_simple:200,  optique_b_complexe:300,  audio:150 },
+      'NP 5':  { soins_optam:200, hospit_optam:275, dentaire:275,  optique_b_simple:250,  optique_b_complexe:350,  audio:200 },
+      'NP 6':  { soins_optam:250, hospit_optam:300, dentaire:300,  optique_b_simple:300,  optique_b_complexe:400,  audio:250 },
+    }
+  },
+  // ── Quiétude (RESPONSABLE, Q1-Q7, seniors 55+) ──────────────────
+  'Quiétude': {
+    responsable: true,
+    pdfUrl: 'https://assurances-oceane.github.io/comparateur-sante/docs/garanties/neoliane-quietude.pdf',
+    byFormula: {
+      'Q1': { soins_optam:100, hospit_optam:100, dentaire:100,  optique_b_simple:125,  optique_b_complexe:200,  audio:150 },
+      'Q2': { soins_optam:125, hospit_optam:150, dentaire:100,  optique_b_simple:150,  optique_b_complexe:200,  audio:150 },
+      'Q3': { soins_optam:150, hospit_optam:200, dentaire:125,  optique_b_simple:175,  optique_b_complexe:240,  audio:250 },
+      'Q4': { soins_optam:175, hospit_optam:225, dentaire:150,  optique_b_simple:200,  optique_b_complexe:275,  audio:250 },
+      'Q5': { soins_optam:200, hospit_optam:250, dentaire:175,  optique_b_simple:250,  optique_b_complexe:350,  audio:325 },
+      'Q6': { soins_optam:200, hospit_optam:300, dentaire:200,  optique_b_simple:250,  optique_b_complexe:400,  audio:325 },
+      'Q7': { soins_optam:200, hospit_optam:350, dentaire:225,  optique_b_simple:250,  optique_b_complexe:450,  audio:400 },
+    }
+  },
+  // ── Optima (RESPONSABLE, OPTIMA1-5) ─────────────────────────────
+  'Optima': {
+    responsable: true,
+    pdfUrl: 'https://assurances-oceane.github.io/comparateur-sante/docs/garanties/neoliane-optima.pdf',
+    byFormula: {
+      'OPTIMA 1': { soins_optam:100, hospit_optam:100, dentaire:100,  optique_b_simple:100,  optique_b_complexe:100,  audio:100 },
+      'OPTIMA 2': { soins_optam:100, hospit_optam:130, dentaire:100,  optique_b_simple:100,  optique_b_complexe:150,  audio:100 },
+      'OPTIMA 3': { soins_optam:100, hospit_optam:150, dentaire:125,  optique_b_simple:125,  optique_b_complexe:200,  audio:100 },
+      'OPTIMA 4': { soins_optam:100, hospit_optam:175, dentaire:150,  optique_b_simple:150,  optique_b_complexe:225,  audio:100 },
+      'OPTIMA 5': { soins_optam:125, hospit_optam:200, dentaire:200,  optique_b_simple:175,  optique_b_complexe:250,  audio:125 },
+    }
+  },
+  // ── Innov'Santé (NON RESPONSABLE, IS1-IS7) — forfait global ─────
+  "Innov'Santé": {
+    responsable: false,
+    pdfUrl: 'https://assurances-oceane.github.io/comparateur-sante/docs/garanties/neoliane-innov-sante.pdf',
+    byFormula: {
+      'IS 1': { soins_optam:100, hospit_optam:100, dentaire:0,   optique_b_simple:0,    optique_b_complexe:0,    audio:0   },
+      'IS 2': { soins_optam:100, hospit_optam:125, dentaire:150, optique_b_simple:150,  optique_b_complexe:150,  audio:150 },
+      'IS 3': { soins_optam:125, hospit_optam:150, dentaire:250, optique_b_simple:250,  optique_b_complexe:250,  audio:250 },
+      'IS 4': { soins_optam:150, hospit_optam:175, dentaire:350, optique_b_simple:350,  optique_b_complexe:350,  audio:350 },
+      'IS 5': { soins_optam:150, hospit_optam:200, dentaire:450, optique_b_simple:450,  optique_b_complexe:450,  audio:450 },
+      'IS 6': { soins_optam:175, hospit_optam:250, dentaire:550, optique_b_simple:550,  optique_b_complexe:550,  audio:550 },
+      'IS 7': { soins_optam:200, hospit_optam:300, dentaire:650, optique_b_simple:650,  optique_b_complexe:650,  audio:650 },
+    }
+  },
+  // ── AltoSanté (NON RESPONSABLE, AS1-AS6) ────────────────────────
+  'AltoSanté': {
+    responsable: false,
+    pdfUrl: 'https://assurances-oceane.github.io/comparateur-sante/docs/garanties/neoliane-alto-sante.pdf',
+    byFormula: {
+      'AS 1': { soins_optam:100, hospit_optam:100, dentaire:100,  optique_b_simple:100,  optique_b_complexe:100,  audio:260 },
+      'AS 2': { soins_optam:125, hospit_optam:125, dentaire:125,  optique_b_simple:100,  optique_b_complexe:100,  audio:260 },
+      'AS 3': { soins_optam:150, hospit_optam:150, dentaire:165,  optique_b_simple:150,  optique_b_complexe:225,  audio:260 },
+      'AS 4': { soins_optam:175, hospit_optam:175, dentaire:190,  optique_b_simple:175,  optique_b_complexe:250,  audio:260 },
+      'AS 5': { soins_optam:200, hospit_optam:200, dentaire:215,  optique_b_simple:200,  optique_b_complexe:275,  audio:325 },
+      'AS 6': { soins_optam:200, hospit_optam:225, dentaire:265,  optique_b_simple:225,  optique_b_complexe:325,  audio:390 },
+    }
+  },
+  // ── Pulse (RESPONSABLE, PU1-PU8) ────────────────────────────────
+  'Pulse': {
+    responsable: true,
+    pdfUrl: 'https://assurances-oceane.github.io/comparateur-sante/docs/garanties/neoliane-pulse.pdf',
+    byFormula: {
+      'PU 1': { soins_optam:100, hospit_optam:125, dentaire:100,  optique_b_simple:125,  optique_b_complexe:200,  audio:100 },
+      'PU 2': { soins_optam:125, hospit_optam:150, dentaire:125,  optique_b_simple:150,  optique_b_complexe:225,  audio:125 },
+      'PU 3': { soins_optam:125, hospit_optam:175, dentaire:150,  optique_b_simple:175,  optique_b_complexe:250,  audio:150 },
+      'PU 4': { soins_optam:150, hospit_optam:200, dentaire:175,  optique_b_simple:200,  optique_b_complexe:300,  audio:175 },
+      'PU 5': { soins_optam:150, hospit_optam:225, dentaire:200,  optique_b_simple:250,  optique_b_complexe:350,  audio:200 },
+      'PU 6': { soins_optam:175, hospit_optam:250, dentaire:225,  optique_b_simple:300,  optique_b_complexe:400,  audio:225 },
+      'PU 7': { soins_optam:175, hospit_optam:300, dentaire:250,  optique_b_simple:350,  optique_b_complexe:450,  audio:250 },
+      'PU 8': { soins_optam:200, hospit_optam:325, dentaire:275,  optique_b_simple:350,  optique_b_complexe:500,  audio:275 },
+    }
+  },
+};
+
+function getNeolianeGuarantees(gammeLabel, formulaLabel) {
+  // Recherche insensible à la casse et aux variantes orthographiques
+  const key = Object.keys(NEOLIANE_GUARANTEES).find(k =>
+    gammeLabel?.toLowerCase().includes(k.toLowerCase()) ||
+    k.toLowerCase().includes(gammeLabel?.toLowerCase())
+  );
+  if (!key) return null;
+  const data = NEOLIANE_GUARANTEES[key];
+  const g = data.byFormula[formulaLabel] || null;
+  return g ? { ...g, responsable: data.responsable, pdfUrl: data.pdfUrl } : null;
+}
+
       offers.push({
         insurer:   'NEOLIANE',
         contract:  p.gammeLabel,
@@ -1170,6 +1389,8 @@ async function fetchNeoliane(profile, birthdate, birthdatePartner, zipcode, regi
         },
         price: p.amount,
         level: getSoinsLevel(soins),
+        neoliane_gamme: p.gammeLabel,
+        neoliane_formula: p.formulaLabel,
       });
     });
     return offers;
@@ -1616,7 +1837,8 @@ const APRIL_NON_RESPONSABLE = ['FlexiSante']; // Formule Eco uniquement
 function openModal(offer) {
   if (typeof offer === 'string') offer = JSON.parse(offer);
 
-  const isApril = offer.insurer === 'APRIL';
+  const isApril    = offer.insurer === 'APRIL';
+  const isNeoliane = offer.insurer === 'NEOLIANE';
   const g = offer.guarantees || {};
   const hasVal = (v) => v !== undefined && v !== null && v !== '' && v !== 0;
 
@@ -1690,47 +1912,142 @@ function openModal(offer) {
       </div>`;
     }
 
-  // ── Format standard (MALJ, INIZYS, NEOLIANE, ALPTIS) ───────────
-  } else {
-    const rows = [];
+  // ── Format NEOLIANE : même présentation qu'APRIL ────────────────
+  } else if (isNeoliane) {
+    const neoData   = getNeolianeGuarantees(offer.neoliane_gamme || offer.contract, offer.neoliane_formula || offer.formula);
+    const isNonResp = neoData ? !neoData.responsable : NEOLIANE_NON_RESPONSABLE.some(n => offer.contract?.includes(n));
+    const pdfUrl    = neoData?.pdfUrl || null;
 
-    if (hasVal(g.hospit_optam)) {
-      rows.push({ section: '🏥 Hospitalisation' });
-      rows.push({ label: 'Honoraires médicaux OPTAM', val: g.hospit_optam + '% BR' });
-    }
-    if (hasVal(g.soins_optam)) {
-      rows.push({ section: '💊 Soins courants' });
-      rows.push({ label: 'Consultations OPTAM', val: g.soins_optam + '% BR' });
-      rows.push({ label: 'Consultations non-OPTAM', val: (g.soins_optam > 100 ? g.soins_optam - 20 : 100) + '% BR' });
-    }
-    if (hasVal(g.dentaire)) {
-      rows.push({ section: '🦷 Dentaire' });
-      rows.push({ label: 'Soins et obturations', val: g.dentaire + '% BR' });
-      rows.push({ label: 'Prothèses 100% santé', val: 'Frais réels' });
-    }
-    if (hasVal(g.optique_b_simple) || hasVal(g.optique_b_complexe)) {
-      rows.push({ section: '👓 Optique' });
-      rows.push({ label: 'Classe A 100% santé', val: 'Frais réels' });
-      if (hasVal(g.optique_b_simple))  rows.push({ label: 'Verres simples (classe B)',  val: g.optique_b_simple  + '€' });
-      if (hasVal(g.optique_b_complexe)) rows.push({ label: 'Verres complexes (classe B)', val: g.optique_b_complexe + '€' });
-    }
-    if (hasVal(g.audio)) {
-      rows.push({ section: '👂 Audiologie' });
-      rows.push({ label: 'Appareils 100% Santé classe I', val: 'Frais réels' });
-      rows.push({ label: 'Appareils classe II', val: g.audio + '% BR' });
-    }
+    // Utiliser les garanties PDF si disponibles, sinon les données API
+    const gDisplay = neoData ? {
+      hospit_optam:      neoData.hospit_optam,
+      soins_optam:       neoData.soins_optam,
+      dentaire:          neoData.dentaire,
+      optique_b_simple:  neoData.optique_b_simple,
+      audio:             neoData.audio,
+    } : g;
 
-    if (!rows.length) {
-      html = `<div style="padding:18px;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--ink-muted)">
-        Détail des garanties indisponible pour cette offre.
+    // Badge responsable
+    html += `<div style="margin-bottom:16px">
+      <span style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;font-size:12px;font-weight:700;
+        background:${isNonResp ? 'rgba(220,38,38,0.08)' : 'rgba(5,150,105,0.08)'};
+        color:${isNonResp ? 'var(--red)' : 'var(--green)'};
+        border:1px solid ${isNonResp ? 'rgba(220,38,38,0.2)' : 'rgba(5,150,105,0.2)'}">
+        ${isNonResp ? '⚠️ Contrat Non Responsable — 100% Santé exclu' : '✅ Contrat Responsable — 100% Santé inclus'}
+      </span>
+    </div>`;
+
+    // Note spéciale Innov'Santé (forfait global)
+    const isInnovSante = offer.contract?.includes("Innov");
+    if (isInnovSante) {
+      html += `<div style="padding:10px 14px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:var(--radius-sm);font-size:12px;color:var(--amber,#d97706);margin-bottom:12px">
+        ⚠️ Dentaire, Optique et Audiologie couverts par un <strong>forfait global annuel</strong> (dentaire + optique + audio = même enveloppe)
       </div>`;
-    } else {
-      html = `<table class="guarantee-table"><thead><tr><th>Garantie</th><th>Remboursement</th></tr></thead><tbody>`;
-      rows.forEach(r => {
-        if (r.section) html += `<tr><td class="gtable-section" colspan="2">${r.section}</td></tr>`;
-        else           html += `<tr><td>${r.label}</td><td>${r.val}</td></tr>`;
-      });
-      html += '</tbody></table>';
+    }
+
+    // 5 lignes garanties
+    const neoRows = [
+      { icon:'🏥', label:'Hospitalisation',  val: hasVal(gDisplay.hospit_optam) ? gDisplay.hospit_optam + '% BR' : '—', note:'Honoraires chirurgicaux OPTAM' },
+      { icon:'💊', label:'Soins courants',   val: hasVal(gDisplay.soins_optam)  ? gDisplay.soins_optam  + '% BR' : '—', note:'Consultations médecins OPTAM' },
+      { icon:'🦷', label:'Dentaire',         val: hasVal(gDisplay.dentaire)     ? gDisplay.dentaire + (isInnovSante ? ' € (forfait global)' : '% BR') : '—', note: isInnovSante ? 'Inclus dans forfait global D+O+A' : 'Prothèses hors 100% Santé' },
+      { icon:'👓', label:'Optique',          val: hasVal(gDisplay.optique_b_simple) ? gDisplay.optique_b_simple + (gDisplay.optique_b_simple > 10 && gDisplay.optique_b_simple < 1000 && !isInnovSante ? ' €' : (isInnovSante ? ' € (forfait global)' : '% BR')) : '—', note: isInnovSante ? 'Inclus dans forfait global D+O+A' : 'Verres + monture classe B (cat. 1)' },
+      { icon:'👂', label:'Audiologie',       val: hasVal(gDisplay.audio)        ? gDisplay.audio + (isInnovSante ? ' € (forfait global)' : '% BR') : '—', note: isInnovSante ? 'Inclus dans forfait global D+O+A' : 'Prothèses auditives classe II' },
+    ];
+
+    html += `<div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px">`;
+    neoRows.forEach(r => {
+      const isEmpty = r.val === '—';
+      html += `
+        <div style="display:flex;align-items:center;justify-content:space-between;
+          padding:12px 16px;border-radius:var(--radius-sm);
+          background:var(--surface2);border:1px solid var(--border)">
+          <div style="display:flex;align-items:center;gap:10px">
+            <span style="font-size:18px">${r.icon}</span>
+            <div>
+              <div style="font-weight:600;font-size:14px;color:var(--ink)">${r.label}</div>
+              <div style="font-size:11px;color:var(--ink-dim)">${r.note}</div>
+            </div>
+          </div>
+          <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;
+            color:${isEmpty ? 'var(--ink-dim)' : 'var(--accent)'}">
+            ${r.val}
+          </div>
+        </div>`;
+    });
+    html += `</div>`;
+
+    // Bouton PDF
+    if (pdfUrl) {
+      html += `<a href="${pdfUrl}" target="_blank" rel="noopener" style="
+        display:inline-flex;align-items:center;gap:8px;
+        padding:10px 18px;border-radius:var(--radius-sm);
+        background:var(--surface2);border:1px solid var(--border);
+        font-size:13px;font-weight:600;color:var(--ink);
+        text-decoration:none;transition:all .15s;margin-bottom:8px">
+        📄 Tableau de garanties — Télécharger PDF
+      </a>`;
+    }
+  // ── Format standard (MALJ, INIZYS, ALPTIS) ──────────────────────
+  } else {
+    const isAlptis = ['Santé Select','Santé Protect','Santé Pro+'].includes(offer.insurer) ||
+                     ['Santé Select','Santé Protect','Santé Pro+'].includes(offer.contract);
+    const isMalj   = offer.insurer?.includes('MALJ') || offer.contract?.includes('MALJ');
+    const isInizys = offer.insurer === 'INIZYS' || offer.contract === 'INIZYS';
+
+    // Badge responsable
+    html += `<div style="margin-bottom:16px">
+      <span style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;font-size:12px;font-weight:700;
+        background:rgba(5,150,105,0.08);color:var(--green);border:1px solid rgba(5,150,105,0.2)">
+        ✅ Contrat Responsable — 100% Santé inclus
+      </span>
+    </div>`;
+
+    // 5 lignes garanties
+    const stdRows = [
+      { icon:'🏥', label:'Hospitalisation',  val: hasVal(g.hospit_optam)      ? g.hospit_optam + '% BR'   : '—', note:'Honoraires médicaux DPTAM' },
+      { icon:'💊', label:'Soins courants',   val: hasVal(g.soins_optam)       ? g.soins_optam  + '% BR'   : '—', note:'Consultations médecins DPTAM' },
+      { icon:'🦷', label:'Dentaire',         val: hasVal(g.dentaire)          ? g.dentaire + '% BR'       : '—', note:'Prothèses hors 100% Santé' },
+      { icon:'👓', label:'Optique',          val: hasVal(g.optique_b_simple)  ? g.optique_b_simple + ' €' : '—', note:'Verres + monture classe B (cat. 1)' },
+      { icon:'👂', label:'Audiologie',       val: hasVal(g.audio)             ? g.audio + '% BR'          : '—', note:'Prothèses auditives classe II' },
+    ];
+
+    html += `<div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px">`;
+    stdRows.forEach(r => {
+      const isEmpty = r.val === '—';
+      html += `
+        <div style="display:flex;align-items:center;justify-content:space-between;
+          padding:12px 16px;border-radius:var(--radius-sm);
+          background:var(--surface2);border:1px solid var(--border)">
+          <div style="display:flex;align-items:center;gap:10px">
+            <span style="font-size:18px">${r.icon}</span>
+            <div>
+              <div style="font-weight:600;font-size:14px;color:var(--ink)">${r.label}</div>
+              <div style="font-size:11px;color:var(--ink-dim)">${r.note}</div>
+            </div>
+          </div>
+          <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;
+            color:${isEmpty ? 'var(--ink-dim)' : 'var(--accent)'}">
+            ${r.val}
+          </div>
+        </div>`;
+    });
+    html += `</div>`;
+
+    // Bouton PDF
+    let pdfUrl = null;
+    if (isAlptis) pdfUrl = ALPTIS_PDF_URLS[offer.contract] || ALPTIS_PDF_URLS[offer.insurer] || null;
+    if (isMalj)   pdfUrl = offer.product_code ? MALJ_PDF_URLS[offer.product_code] : (offer.contract?.includes('Senior') ? MALJ_PDF_URLS['MALJ_SENIOR_2026'] : MALJ_PDF_URLS['MALJ_SANTE_2026']);
+    if (isInizys) pdfUrl = INIZYS_PDF_URL;
+
+    if (pdfUrl) {
+      html += `<a href="${pdfUrl}" target="_blank" rel="noopener" style="
+        display:inline-flex;align-items:center;gap:8px;
+        padding:10px 18px;border-radius:var(--radius-sm);
+        background:var(--surface2);border:1px solid var(--border);
+        font-size:13px;font-weight:600;color:var(--ink);
+        text-decoration:none;transition:all .15s;margin-bottom:8px">
+        📄 Tableau de garanties — Télécharger PDF
+      </a>`;
     }
   }
 
