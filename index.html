@@ -989,8 +989,15 @@ async function fetchAprilPricingAll(productCode, product, selectedLevelCode, pro
 
       if (!response.ok || !payload?.success || !payload.prices) return null;
 
-      // Le proxy retourne prices[levelCode] avec le prix pour ce niveau précis
-      const priceData = payload.prices[levelCode];
+      // Le proxy retourne prices[levelCode] normalement.
+      // Si l'API retourne un levelCode différent (ex: '01' au lieu de '05'),
+      // on prend le premier prix disponible.
+      let priceData = payload.prices[levelCode];
+      if (!priceData?.price || priceData.price <= 0) {
+        // Fallback : prendre le premier prix non nul retourné
+        const firstKey = Object.keys(payload.prices || {}).find(k => payload.prices[k]?.price > 0);
+        priceData = firstKey ? payload.prices[firstKey] : null;
+      }
       if (!priceData?.price || priceData.price <= 0) return null;
 
       const soins = product.levels[levelCode].percent;
@@ -1432,6 +1439,11 @@ function getInizysPrice(formulaCode, age, familyCode) {
 // ═══════════════════════════════════════════════════════
 //  LOOKUP PRIX MALJ
 // ═══════════════════════════════════════════════════════
+// MALJ : tarification sur âge révolu + 1 (ex: né en 1969 = 56 ans révolus → cotisation à 57 ans)
+function ageMalj(birthdate) {
+  return ageRevolu(birthdate) + 1;
+}
+
 function getMaljPrice(productCode, formulaCode, age, regime) {
   const prod = MALJ_PRICING[productCode];
   if (!prod) return null;
@@ -1550,11 +1562,13 @@ async function launchSearch() {
   const bdChild2  = document.getElementById('birthdate_child2').value;
   const zipcode   = document.getElementById('zipcode').value;
   const regime    = document.getElementById('regime').value;
-  const age       = ageRevolu(bd);
-  const famCode   = getInizysFamily(currentProfile);
+  const age        = ageRevolu(bd);          // âge révolu standard (Neoliane, Alptis, April)
+  const ageMaljVal = ageMalj(bd);            // âge MALJ = révolu + 1
+  const famCode    = getInizysFamily(currentProfile);
 
   // Âges conjoint et enfants
-  const agePartner = bdPartner ? ageRevolu(bdPartner) : null;
+  const agePartner     = bdPartner ? ageRevolu(bdPartner) : null;
+  const ageMaljPartner = bdPartner ? ageMalj(bdPartner)   : null;
   const ageChild1  = bdChild1  ? ageRevolu(bdChild1)  : 10;
   const ageChild2  = bdChild2  ? ageRevolu(bdChild2)  : 7;
 
@@ -1591,7 +1605,7 @@ async function launchSearch() {
   activateStep('step1');
   await pause();
 
-  const isSenior = age >= 65;
+  const isSenior = ageMaljVal >= 65;
   const maljProduct    = isSenior ? 'MALJ_SENIOR_2026' : 'MALJ_SANTE_2026';
   const maljContract   = isSenior ? 'MALJ Santé Senior' : 'MALJ Mutuelle Santé';
   const maljGuarantees = isSenior ? MALJ_SENIOR_GUARANTEES : MALJ_SANTE_GUARANTEES;
@@ -1604,15 +1618,15 @@ async function launchSearch() {
     if (!g) return;
     if (g.soins_optam < lvlRule.min || g.soins_optam > lvlRule.max) return;
 
-    const baseHolder = getMaljPrice(maljProduct, fc, age, regime);
+    const baseHolder = getMaljPrice(maljProduct, fc, ageMaljVal, regime);
     if (!baseHolder) return;
 
     let basePremium = baseHolder;
 
-    if (['couple','famille_1e','famille_2e'].includes(currentProfile) && agePartner !== null) {
-      const partnerIsSenior = agePartner >= 65;
+    if (['couple','famille_1e','famille_2e'].includes(currentProfile) && ageMaljPartner !== null) {
+      const partnerIsSenior = ageMaljPartner >= 65;
       const partnerProduct = partnerIsSenior ? 'MALJ_SENIOR_2026' : 'MALJ_SANTE_2026';
-      const basePartner = getMaljPrice(partnerProduct, fc, agePartner, regime);
+      const basePartner = getMaljPrice(partnerProduct, fc, ageMaljPartner, regime);
       if (basePartner) basePremium += basePartner;
     }
 
@@ -1651,12 +1665,17 @@ async function launchSearch() {
   activateStep('step3');
   await pause();
 
+  // INIZYS : pour couple/famille, tarif indexé sur le PLUS JEUNE des assurés
+  const inizysAge = (currentProfile !== 'individuel' && agePartner !== null)
+    ? Math.min(age, agePartner)   // plus jeune du couple
+    : age;
+
   const inizysFormulas = ['ECO','ECO_PLUS','EQUILIBRE','PRIVILEGE','VIP'];
   inizysFormulas.forEach(fc => {
     const g = INIZYS_GUARANTEES[fc];
     if (!g) return;
     if (g.soins_optam < lvlRule.min || g.soins_optam > lvlRule.max) return;
-    const p = getInizysPrice(fc, age, famCode);
+    const p = getInizysPrice(fc, inizysAge, famCode);
     if (!p) return;
     const label = INIZYS_PRICING[fc]?.label || fc;
     offers.push({
@@ -1832,7 +1851,9 @@ const APRIL_PDF_URLS = {
 };
 
 // Produits non responsables (ne prennent pas en charge le 100% Santé)
-const APRIL_NON_RESPONSABLE = ['FlexiSante']; // Formule Eco uniquement
+// FlexiSante Formule Eco = non responsable ; Formule Complète = responsable
+// Dans ce comparateur on propose Formule Complète → responsable
+const APRIL_NON_RESPONSABLE = []; // FlexiSante Formule Complète est responsable
 
 // ═══════════════════════════════════════════════════════
 //  MODAL
@@ -1878,8 +1899,9 @@ function openModal(offer) {
 
     // Note FlexiSante : prix = Module Hospit+Soins uniquement
     if (productCode === 'FlexiSante') {
-      html += `<div style="padding:10px 14px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:var(--radius-sm);font-size:12px;color:#d97706;margin-bottom:12px">
-        ⚠️ <strong>FlexiSanté modulaire</strong> — Le prix indiqué correspond au module Hospitalisation + Soins courants uniquement. Les modules Optique, Dentaire et Audiologie sont en supplément.
+      html += `<div style="padding:10px 14px;background:rgba(37,99,235,0.06);border:1px solid rgba(37,99,235,0.2);border-radius:var(--radius-sm);font-size:12px;color:var(--accent);margin-bottom:12px">
+        ℹ️ <strong>FlexiSanté — Formule Complète Responsable</strong><br>
+        Ce tarif couvre le Module Hospitalisation + Soins courants. Le Module Optique/Dentaire/Audiologie (ODA) est séparé et s'ajoute au prix affiché. Pour une couverture complète, demandez un devis ODA à April.
       </div>`;
     }
     // Note SanteMix : prix = Hospit + FDS, ODA non inclus
