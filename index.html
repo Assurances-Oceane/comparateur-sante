@@ -522,15 +522,23 @@ const MALJ_PDF_URLS = {
 //  Mutuelle Communale Prévoyance Océane (INIZYS)
 //  Source : GARANTIES_INIZYS_MC_2026
 // ─────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────
+//  INIZYS — garanties extraites du PDF 2026 (5 niveaux)
+//  N1(2AP4)=100%, N2(2AP5)=120%, N3(2AP1)=140%, N4(2AP2)=200%, N5(2AP3)=300%
+//  Optique = forfait € sauf N1 (100% BR)
+//  Audio = % BR
+// ─────────────────────────────────────────────────────────────────
 const INIZYS_GUARANTEES = {
-  // NIVEAU 1 : soins 100%, hospit 100%, dentaire prothèses 100%, optique 100% BR (pas de forfait)
-  ECO:       { soins_optam:100, hospit_optam:100, dentaire:100, optique_b_simple:100,  optique_b_complexe:100,  audio:100 },
-  // NIVEAU 2 : soins 150%, hospit 150%, dentaire prothèses 200%, optique verres simples 200€
-  ECO_PLUS:  { soins_optam:150, hospit_optam:150, dentaire:200, optique_b_simple:200,  optique_b_complexe:250,  audio:150 },
-  // NIVEAU 3 : soins 200%, hospit 200%, dentaire prothèses 250%, optique verres simples 230€
-  EQUILIBRE: { soins_optam:200, hospit_optam:200, dentaire:250, optique_b_simple:230,  optique_b_complexe:300,  audio:200 },
-  // NIVEAU 4 : soins 250%, hospit 250%, dentaire prothèses 300%, optique verres simples 250€
-  PRIVILEGE: { soins_optam:250, hospit_optam:250, dentaire:300, optique_b_simple:250,  optique_b_complexe:350,  audio:225 },
+  // N1 (2AP4) : soins 100%, hospit 100%, dentaire 100%, optique 100% BR
+  ECO:       { soins_optam:100, hospit_optam:100, dentaire:100, optique_b_simple:100,  optique_unit:'pct',  audio:100 },
+  // N2 (2AP5) : soins 120%, hospit 120%, dentaire 150%, optique verres simples 50€
+  ECO_PLUS:  { soins_optam:120, hospit_optam:120, dentaire:150, optique_b_simple:50,   optique_unit:'euro', audio:120 },
+  // N3 (2AP1) : soins 140%, hospit 140%, dentaire 200%, optique verres simples 150€
+  EQUILIBRE: { soins_optam:140, hospit_optam:140, dentaire:200, optique_b_simple:150,  optique_unit:'euro', audio:140 },
+  // N4 (2AP2) : soins 200%, hospit 200%, dentaire 250%, optique verres simples 200€
+  PRIVILEGE: { soins_optam:200, hospit_optam:200, dentaire:250, optique_b_simple:200,  optique_unit:'euro', audio:200 },
+  // N5 (2AP3) : soins 300%, hospit 300%, dentaire 300%, optique verres simples 250€
+  VIP:       { soins_optam:300, hospit_optam:300, dentaire:300, optique_b_simple:250,  optique_unit:'euro', audio:250 },
 };
 
 // PDF INIZYS
@@ -989,15 +997,8 @@ async function fetchAprilPricingAll(productCode, product, selectedLevelCode, pro
 
       if (!response.ok || !payload?.success || !payload.prices) return null;
 
-      // Le proxy retourne prices[levelCode] normalement.
-      // Si l'API retourne un levelCode différent (ex: '01' au lieu de '05'),
-      // on prend le premier prix disponible.
-      let priceData = payload.prices[levelCode];
-      if (!priceData?.price || priceData.price <= 0) {
-        // Fallback : prendre le premier prix non nul retourné
-        const firstKey = Object.keys(payload.prices || {}).find(k => payload.prices[k]?.price > 0);
-        priceData = firstKey ? payload.prices[firstKey] : null;
-      }
+      // Le proxy retourne prices[levelCode] avec le prix pour ce niveau précis
+      const priceData = payload.prices?.[levelCode];
       if (!priceData?.price || priceData.price <= 0) return null;
 
       const soins = product.levels[levelCode].percent;
@@ -2045,7 +2046,7 @@ function openModal(offer) {
       { icon:'🏥', label:'Hospitalisation',  val: hasVal(g.hospit_optam)      ? g.hospit_optam + '% BR'   : '—', note:'Honoraires médicaux DPTAM' },
       { icon:'💊', label:'Soins courants',   val: hasVal(g.soins_optam)       ? g.soins_optam  + '% BR'   : '—', note:'Consultations médecins DPTAM' },
       { icon:'🦷', label:'Dentaire',         val: hasVal(g.dentaire)          ? g.dentaire + '% BR'       : '—', note:'Prothèses hors 100% Santé' },
-      { icon:'👓', label:'Optique',          val: hasVal(g.optique_b_simple)  ? g.optique_b_simple + ' €' : '—', note:'Verres + monture classe B (cat. 1)' },
+      { icon:'👓', label:'Optique',          val: hasVal(g.optique_b_simple)  ? g.optique_b_simple + (g.optique_unit === 'pct' ? '% BR' : ' €') : '—', note:'Verres + monture classe B (cat. 1)' },
       { icon:'👂', label:'Audiologie',       val: hasVal(g.audio)             ? g.audio + '% BR'          : '—', note:'Prothèses auditives classe II' },
     ];
 
