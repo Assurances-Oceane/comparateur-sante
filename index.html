@@ -1201,55 +1201,6 @@ function getDateEffect() {
 }
 
 // Appel API Neoliane complet → retourne liste d'offres formatées
-function getNeolianeGuarantees(gammeLabel, formulaLabel) {
-  if (!gammeLabel) return null;
-  const key = Object.keys(NEOLIANE_GUARANTEES).find(k =>
-    gammeLabel?.toLowerCase().includes(k.toLowerCase()) ||
-    k.toLowerCase().includes(gammeLabel?.toLowerCase())
-  );
-  if (!key) { console.warn('[Neoliane] Gamme non trouvée:', gammeLabel); return null; }
-  const data = NEOLIANE_GUARANTEES[key];
-  const fLabel = formulaLabel?.trim();
-  let g = data.byFormula[fLabel] || null;
-  if (!g) {
-    const fKey = Object.keys(data.byFormula).find(k =>
-      k.trim().toLowerCase() === fLabel?.toLowerCase() ||
-      k.trim().toLowerCase().replace(/\s+/g,'') === fLabel?.toLowerCase().replace(/\s+/g,'')
-    );
-    g = fKey ? data.byFormula[fKey] : null;
-  }
-  if (!g) { console.warn('[Neoliane] Formule non trouvée:', formulaLabel, '— Clés:', Object.keys(data.byFormula)); return null; }
-  return { ...g, responsable: data.responsable, pdfUrl: data.pdfUrl, audio_extra: g.audio_extra || null };
-}
-
-async function fetchNeoliane(profile, birthdate, birthdatePartner, zipcode, regime, lvlRule, bdChild1, bdChild2) {
-  try {
-    const res = await fetch(NEOLIANE_PROXY, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        action: 'get_prices',
-        zipCode: zipcode,
-        dateEffect: getDateEffect(),
-        profileHealth: buildNeolianeProfile(profile, birthdate, birthdatePartner, regime, bdChild1, bdChild2)
-      })
-    });
-    const data = await res.json();
-    if (!data.status || !data.products) return [];
-
-    const offers = [];
-    data.products.forEach(p => {
-      const warranties = p.pricingPersonalInsurance?.warranties || [];
-      const soinsW = warranties.find(w => w.id === 112);
-      const hospW  = warranties.find(w => w.id === 109);
-      const dentW  = warranties.find(w => w.id === 110);
-      const optiW  = warranties.find(w => w.id === 111);
-      const audioW = warranties.find(w => w.id === 396);
-
-      const soins = parseSoins(soinsW?.value);
-      if (soins < lvlRule.min || soins > lvlRule.max) return;
-      if (!p.isSellable) return;
-
 // ─────────────────────────────────────────────────────────────────
 //  GARANTIES RÉELLES NEOLIANE — extraites des notices 2024/2025
 //  Clé = gammeLabel (nom commercial exact retourné par l'API)
@@ -1384,6 +1335,54 @@ const NEOLIANE_GUARANTEES = {
   },
 };
 
+function getNeolianeGuarantees(gammeLabel, formulaLabel) {
+  if (!gammeLabel) return null;
+  const key = Object.keys(NEOLIANE_GUARANTEES).find(k =>
+    gammeLabel?.toLowerCase().includes(k.toLowerCase()) ||
+    k.toLowerCase().includes(gammeLabel?.toLowerCase())
+  );
+  if (!key) { console.warn('[Neoliane] Gamme non trouvée:', gammeLabel); return null; }
+  const data = NEOLIANE_GUARANTEES[key];
+  const fLabel = formulaLabel?.trim();
+  let g = data.byFormula[fLabel] || null;
+  if (!g) {
+    const fKey = Object.keys(data.byFormula).find(k =>
+      k.trim().toLowerCase() === fLabel?.toLowerCase() ||
+      k.trim().toLowerCase().replace(/\s+/g,'') === fLabel?.toLowerCase().replace(/\s+/g,'')
+    );
+    g = fKey ? data.byFormula[fKey] : null;
+  }
+  if (!g) { console.warn('[Neoliane] Formule non trouvée:', formulaLabel, '— Clés:', Object.keys(data.byFormula)); return null; }
+  return { ...g, responsable: data.responsable, pdfUrl: data.pdfUrl, audio_extra: g.audio_extra || null };
+}
+
+async function fetchNeoliane(profile, birthdate, birthdatePartner, zipcode, regime, lvlRule, bdChild1, bdChild2) {
+  try {
+    const res = await fetch(NEOLIANE_PROXY, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'get_prices',
+        zipCode: zipcode,
+        dateEffect: getDateEffect(),
+        profileHealth: buildNeolianeProfile(profile, birthdate, birthdatePartner, regime, bdChild1, bdChild2)
+      })
+    });
+    const data = await res.json();
+    if (!data.status || !data.products) return [];
+
+    const offers = [];
+    data.products.forEach(p => {
+      const warranties = p.pricingPersonalInsurance?.warranties || [];
+      const soinsW = warranties.find(w => w.id === 112);
+      const hospW  = warranties.find(w => w.id === 109);
+      const dentW  = warranties.find(w => w.id === 110);
+      const optiW  = warranties.find(w => w.id === 111);
+      const audioW = warranties.find(w => w.id === 396);
+
+      const soins = parseSoins(soinsW?.value);
+      if (soins < lvlRule.min || soins > lvlRule.max) return;
+      if (!p.isSellable) return;
       offers.push({
         insurer:   'NEOLIANE',
         contract:  p.gammeLabel,
