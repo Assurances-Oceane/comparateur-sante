@@ -1201,6 +1201,27 @@ function getDateEffect() {
 }
 
 // Appel API Neoliane complet → retourne liste d'offres formatées
+function getNeolianeGuarantees(gammeLabel, formulaLabel) {
+  if (!gammeLabel) return null;
+  const key = Object.keys(NEOLIANE_GUARANTEES).find(k =>
+    gammeLabel?.toLowerCase().includes(k.toLowerCase()) ||
+    k.toLowerCase().includes(gammeLabel?.toLowerCase())
+  );
+  if (!key) { console.warn('[Neoliane] Gamme non trouvée:', gammeLabel); return null; }
+  const data = NEOLIANE_GUARANTEES[key];
+  const fLabel = formulaLabel?.trim();
+  let g = data.byFormula[fLabel] || null;
+  if (!g) {
+    const fKey = Object.keys(data.byFormula).find(k =>
+      k.trim().toLowerCase() === fLabel?.toLowerCase() ||
+      k.trim().toLowerCase().replace(/\s+/g,'') === fLabel?.toLowerCase().replace(/\s+/g,'')
+    );
+    g = fKey ? data.byFormula[fKey] : null;
+  }
+  if (!g) { console.warn('[Neoliane] Formule non trouvée:', formulaLabel, '— Clés:', Object.keys(data.byFormula)); return null; }
+  return { ...g, responsable: data.responsable, pdfUrl: data.pdfUrl, audio_extra: g.audio_extra || null };
+}
+
 async function fetchNeoliane(profile, birthdate, birthdatePartner, zipcode, regime, lvlRule, bdChild1, bdChild2) {
   try {
     const res = await fetch(NEOLIANE_PROXY, {
@@ -1362,31 +1383,6 @@ const NEOLIANE_GUARANTEES = {
     }
   },
 };
-
-function getNeolianeGuarantees(gammeLabel, formulaLabel) {
-  if (!gammeLabel) return null;
-  // Recherche insensible à la casse et aux variantes orthographiques
-  const key = Object.keys(NEOLIANE_GUARANTEES).find(k =>
-    gammeLabel?.toLowerCase().includes(k.toLowerCase()) ||
-    k.toLowerCase().includes(gammeLabel?.toLowerCase())
-  );
-  if (!key) { console.warn('[Neoliane] Gamme non trouvée:', gammeLabel); return null; }
-  const data = NEOLIANE_GUARANTEES[key];
-
-  // Chercher la formule avec matching flexible (trim + insensible casse)
-  const fLabel = formulaLabel?.trim();
-  let g = data.byFormula[fLabel] || null;
-  if (!g) {
-    // Essai avec normalisation des espaces (ex: 'EN 1' vs 'EN1')
-    const fKey = Object.keys(data.byFormula).find(k =>
-      k.trim().toLowerCase() === fLabel?.toLowerCase() ||
-      k.trim().toLowerCase().replace(/\s+/g,'') === fLabel?.toLowerCase().replace(/\s+/g,'')
-    );
-    g = fKey ? data.byFormula[fKey] : null;
-  }
-  if (!g) { console.warn('[Neoliane] Formule non trouvée:', formulaLabel, '— Clés dispo:', Object.keys(data.byFormula)); return null; }
-  return { ...g, responsable: data.responsable, pdfUrl: data.pdfUrl, audio_extra: g.audio_extra || null };
-}
 
       offers.push({
         insurer:   'NEOLIANE',
