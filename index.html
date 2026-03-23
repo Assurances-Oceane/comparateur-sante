@@ -485,30 +485,20 @@ const INIZYS_PRICING = {"ECO": {"label": "\u00c9conomique", "soins_percent": 100
 //  Source : TG SANTEC_GAM_0724
 // ─────────────────────────────────────────────────────────────────
 const MALJ_SANTE_GUARANTEES = {
-  // ECO : soins 100%, hospit 100%, dentaire prothèses 100%, optique cat1 50€
-  ECO:       { soins_optam:100, hospit_optam:100, dentaire:100, optique_b_simple:50,  optique_b_complexe:125, audio:100 },
-  // ZEN : soins 150%, hospit 150%, dentaire prothèses 125%, optique cat1 150€
-  ZEN:       { soins_optam:150, hospit_optam:150, dentaire:125, optique_b_simple:150, optique_b_complexe:200, audio:150 },
-  // EQUILIBRE : soins 200%, hospit 200%, dentaire prothèses 200%, optique cat1 250€
-  EQUILIBRE: { soins_optam:200, hospit_optam:200, dentaire:200, optique_b_simple:250, optique_b_complexe:300, audio:200 },
-  // SERENITE : soins 250%, hospit 250%, dentaire prothèses 250%, optique cat1 300€
-  SERENITE:  { soins_optam:250, hospit_optam:250, dentaire:250, optique_b_simple:300, optique_b_complexe:350, audio:250 },
-  // EXCELLENCE : soins 400%, hospit frais réels, dentaire prothèses 400%, optique cat1 400€
-  EXCELLENCE:{ soins_optam:400, hospit_optam:400, dentaire:400, optique_b_simple:400, optique_b_complexe:500, audio:350 },
+  ECO:       { soins_optam:100, hospit_optam:100, dentaire:100, optique_b_simple:200, optique_unit:'euro', audio:100 },
+  ZEN:       { soins_optam:150, hospit_optam:150, dentaire:125, optique_b_simple:250, optique_unit:'euro', audio:150 },
+  EQUILIBRE: { soins_optam:200, hospit_optam:200, dentaire:200, optique_b_simple:350, optique_unit:'euro', audio:200 },
+  SERENITE:  { soins_optam:250, hospit_optam:250, dentaire:250, optique_b_simple:400, optique_unit:'euro', audio:250 },
+  EXCELLENCE:{ soins_optam:400, hospit_optam:400, dentaire:400, optique_b_simple:600, optique_unit:'euro', audio:350 },
 };
 
 // MALJ Santé Senior (65-85 ans) — TG SANTESEN_GAM_0724
 const MALJ_SENIOR_GUARANTEES = {
-  // ECO SENIOR : soins 100%, hospit 100%, dentaire prothèses 100%, optique verres simples 50€
-  ECO:       { soins_optam:100, hospit_optam:100, dentaire:100, optique_b_simple:50,  optique_b_complexe:125, audio:100 },
-  // ZEN SENIOR : soins 150%, hospit 150%, dentaire prothèses 150%, optique verres simples 150€
-  ZEN:       { soins_optam:150, hospit_optam:150, dentaire:150, optique_b_simple:150, optique_b_complexe:200, audio:150 },
-  // EQUILIBRE SENIOR : soins 200%, hospit 200%, dentaire prothèses 200%, optique cat1 250€
-  EQUILIBRE: { soins_optam:200, hospit_optam:200, dentaire:200, optique_b_simple:250, optique_b_complexe:300, audio:250 },
-  // SERENITE SENIOR : soins 300%, hospit 300%, dentaire prothèses 250%, optique cat1 300€
-  SERENITE:  { soins_optam:300, hospit_optam:300, dentaire:250, optique_b_simple:300, optique_b_complexe:350, audio:300 },
-  // EXCELLENCE SENIOR : soins 350%, hospit 350%, dentaire prothèses 350%, optique cat1 400€
-  EXCELLENCE:{ soins_optam:350, hospit_optam:350, dentaire:350, optique_b_simple:400, optique_b_complexe:500, audio:400 },
+  ECO:       { soins_optam:100, hospit_optam:100, dentaire:100, optique_b_simple:200, optique_unit:'euro', audio:100 },
+  ZEN:       { soins_optam:150, hospit_optam:150, dentaire:150, optique_b_simple:250, optique_unit:'euro', audio:150 },
+  EQUILIBRE: { soins_optam:200, hospit_optam:200, dentaire:200, optique_b_simple:350, optique_unit:'euro', audio:250 },
+  SERENITE:  { soins_optam:300, hospit_optam:300, dentaire:250, optique_b_simple:400, optique_unit:'euro', audio:300 },
+  EXCELLENCE:{ soins_optam:350, hospit_optam:350, dentaire:350, optique_b_simple:600, optique_unit:'euro', audio:400 },
 };
 
 // PDF MALJ
@@ -1076,10 +1066,10 @@ const ALPTIS_SELECT_GUARANTEES = {
 
 // Santé Protect (4 niveaux, seniors 55+) — RESPONSABLE
 const ALPTIS_PROTECT_GUARANTEES = {
-  'N1': { soins_optam:100, hospit_optam:100, dentaire:100,  optique_b_simple:100,  optique_b_complexe:100,  audio:100 },
-  'N2': { soins_optam:125, hospit_optam:125, dentaire:125,  optique_b_simple:125,  optique_b_complexe:200,  audio:125 },
-  'N3': { soins_optam:150, hospit_optam:150, dentaire:150,  optique_b_simple:150,  optique_b_complexe:250,  audio:150 },
-  'N4': { soins_optam:200, hospit_optam:200, dentaire:175,  optique_b_simple:175,  optique_b_complexe:275,  audio:175 },
+  'N1': { soins_optam:100, hospit_optam:100, dentaire:100,  optique_b_simple:100,  optique_unit:'euro', audio:100 },
+  'N2': { soins_optam:125, hospit_optam:125, dentaire:125,  optique_b_simple:200,  optique_unit:'euro', audio:100 },
+  'N3': { soins_optam:150, hospit_optam:150, dentaire:150,  optique_b_simple:250,  optique_unit:'euro', audio:100 },
+  'N4': { soins_optam:200, hospit_optam:200, dentaire:175,  optique_b_simple:275,  optique_unit:'euro', audio:100 },
 };
 
 // PDF ALPTIS
@@ -1255,12 +1245,12 @@ const NEOLIANE_GUARANTEES = {
     responsable: false,
     pdfUrl: 'https://assurances-oceane.github.io/comparateur-sante/docs/garanties/neoliane-energik.pdf',
     byFormula: {
-      'EN 1': { soins_optam:100, hospit_optam:100, dentaire:100,  optique_b_simple:100,  optique_b_complexe:100,  optique_unit:'pct',  audio:100 },
-      'EN 2': { soins_optam:125, hospit_optam:120, dentaire:150,  optique_b_simple:100,  optique_b_complexe:100,  optique_unit:'pct',  audio:100 },
-      'EN 3': { soins_optam:125, hospit_optam:140, dentaire:175,  optique_b_simple:100,  optique_b_complexe:100,  optique_unit:'pct',  audio:100 },
-      'EN 4': { soins_optam:150, hospit_optam:165, dentaire:200,  optique_b_simple:125,  optique_b_complexe:200,  optique_unit:'euro', audio:100 },
-      'EN 5': { soins_optam:175, hospit_optam:190, dentaire:225,  optique_b_simple:150,  optique_b_complexe:225,  optique_unit:'euro', audio:100 },
-      'EN 6': { soins_optam:200, hospit_optam:215, dentaire:250,  optique_b_simple:175,  optique_b_complexe:250,  optique_unit:'euro', audio:125 },
+      'EN 1': { soins_optam:100, hospit_optam:100, dentaire:100,  optique_b_simple:100,  optique_unit:'pct',  optique_unit:'pct',  audio:100 },
+      'EN 2': { soins_optam:125, hospit_optam:120, dentaire:150,  optique_b_simple:100,  optique_unit:'pct',  optique_unit:'pct',  audio:100 },
+      'EN 3': { soins_optam:125, hospit_optam:140, dentaire:175,  optique_b_simple:100,  optique_unit:'pct',  optique_unit:'pct',  audio:100 },
+      'EN 4': { soins_optam:150, hospit_optam:165, dentaire:200,  optique_b_simple:200,  optique_unit:'euro',  optique_unit:'euro', audio:100 },
+      'EN 5': { soins_optam:175, hospit_optam:190, dentaire:225,  optique_b_simple:225,  optique_unit:'euro',  optique_unit:'euro', audio:100 },
+      'EN 6': { soins_optam:200, hospit_optam:215, dentaire:250,  optique_b_simple:250,  optique_unit:'euro',  optique_unit:'euro', audio:125 },
     }
   },
   // ── Plénitude (RESPONSABLE, P1-P6) ──────────────────────────────
@@ -1281,11 +1271,11 @@ const NEOLIANE_GUARANTEES = {
     responsable: true,
     pdfUrl: 'https://assurances-oceane.github.io/comparateur-sante/docs/garanties/neoliane-dynamique.pdf',
     byFormula: {
-      'D1': { soins_optam:100, hospit_optam:100, dentaire:100,  optique_b_simple:100,  optique_b_complexe:150,  audio:100 },
-      'D2': { soins_optam:125, hospit_optam:100, dentaire:125,  optique_b_simple:50,   optique_b_complexe:150,  audio:100 },
-      'D3': { soins_optam:150, hospit_optam:120, dentaire:150,  optique_b_simple:80,   optique_b_complexe:170,  audio:100 },
-      'D4': { soins_optam:150, hospit_optam:140, dentaire:175,  optique_b_simple:100,  optique_b_complexe:190,  audio:100 },
-      'D5': { soins_optam:175, hospit_optam:160, dentaire:200,  optique_b_simple:100,  optique_b_complexe:200,  audio:100 },
+      'D1': { soins_optam:100, hospit_optam:100, dentaire:100,  optique_b_simple:150,  optique_unit:'pct',  audio:100 },
+      'D2': { soins_optam:125, hospit_optam:100, dentaire:125,  optique_b_simple:150,  optique_unit:'pct',  audio:100 },
+      'D3': { soins_optam:150, hospit_optam:120, dentaire:150,  optique_b_simple:170,  optique_unit:'pct',  audio:100 },
+      'D4': { soins_optam:150, hospit_optam:140, dentaire:175,  optique_b_simple:190,  optique_unit:'pct',  audio:100 },
+      'D5': { soins_optam:175, hospit_optam:160, dentaire:200,  optique_b_simple:200,  optique_unit:'pct',  audio:100 },
     }
   },
   // ── Performance (RESPONSABLE, NP1-NP6) ──────────────────────────
@@ -1293,14 +1283,14 @@ const NEOLIANE_GUARANTEES = {
     responsable: true,
     pdfUrl: 'https://assurances-oceane.github.io/comparateur-sante/docs/garanties/neoliane-performance.pdf',
     byFormula: {
-      'NP 1':  { soins_optam:100, hospit_optam:100, dentaire:100,  optique_b_simple:100,  optique_b_complexe:100,  audio:100 },
-      'NP 1R': { soins_optam:100, hospit_optam:125, dentaire:125,  optique_b_simple:100,  optique_b_complexe:100,  audio:100 },
-      'NP 2':  { soins_optam:100, hospit_optam:150, dentaire:150,  optique_b_simple:125,  optique_b_complexe:200,  audio:100 },
-      'NP 2R': { soins_optam:100, hospit_optam:175, dentaire:175,  optique_b_simple:150,  optique_b_complexe:225,  audio:100 },
-      'NP 3':  { soins_optam:125, hospit_optam:200, dentaire:200,  optique_b_simple:175,  optique_b_complexe:250,  audio:125 },
-      'NP 4':  { soins_optam:150, hospit_optam:225, dentaire:250,  optique_b_simple:200,  optique_b_complexe:300,  audio:150 },
-      'NP 5':  { soins_optam:200, hospit_optam:275, dentaire:275,  optique_b_simple:250,  optique_b_complexe:350,  audio:200 },
-      'NP 6':  { soins_optam:250, hospit_optam:300, dentaire:300,  optique_b_simple:300,  optique_b_complexe:400,  audio:250 },
+      'NP 1':  { soins_optam:100, hospit_optam:100, dentaire:100,  optique_b_simple:100,  optique_unit:'pct',  audio:100 },
+      'NP 1R': { soins_optam:100, hospit_optam:125, dentaire:125,  optique_b_simple:100,  optique_unit:'pct',  audio:100 },
+      'NP 2':  { soins_optam:100, hospit_optam:150, dentaire:150,  optique_b_simple:200,  optique_unit:'pct',  audio:100 },
+      'NP 2R': { soins_optam:100, hospit_optam:175, dentaire:175,  optique_b_simple:225,  optique_unit:'pct',  audio:100 },
+      'NP 3':  { soins_optam:125, hospit_optam:200, dentaire:200,  optique_b_simple:250,  optique_unit:'pct',  audio:125 },
+      'NP 4':  { soins_optam:150, hospit_optam:225, dentaire:250,  optique_b_simple:300,  optique_unit:'pct',  audio:150 },
+      'NP 5':  { soins_optam:200, hospit_optam:275, dentaire:275,  optique_b_simple:350,  optique_unit:'pct',  audio:200 },
+      'NP 6':  { soins_optam:250, hospit_optam:300, dentaire:300,  optique_b_simple:400,  optique_unit:'pct',  audio:250 },
     }
   },
   // ── Quiétude (RESPONSABLE, Q1-Q7, seniors 55+) ──────────────────
@@ -1322,11 +1312,11 @@ const NEOLIANE_GUARANTEES = {
     responsable: true,
     pdfUrl: 'https://assurances-oceane.github.io/comparateur-sante/docs/garanties/neoliane-optima.pdf',
     byFormula: {
-      'OPTIMA 1': { soins_optam:100, hospit_optam:100, dentaire:100,  optique_b_simple:100,  optique_b_complexe:100,  audio:100 },
-      'OPTIMA 2': { soins_optam:100, hospit_optam:130, dentaire:100,  optique_b_simple:100,  optique_b_complexe:150,  audio:100 },
-      'OPTIMA 3': { soins_optam:100, hospit_optam:150, dentaire:125,  optique_b_simple:125,  optique_b_complexe:200,  audio:100 },
-      'OPTIMA 4': { soins_optam:100, hospit_optam:175, dentaire:150,  optique_b_simple:150,  optique_b_complexe:225,  audio:100 },
-      'OPTIMA 5': { soins_optam:125, hospit_optam:200, dentaire:200,  optique_b_simple:175,  optique_b_complexe:250,  audio:125 },
+      'OPTIMA 1': { soins_optam:100, hospit_optam:100, dentaire:100,  optique_b_simple:100,  optique_unit:'pct',  audio:100 },
+      'OPTIMA 2': { soins_optam:100, hospit_optam:130, dentaire:100,  optique_b_simple:150,  optique_unit:'pct',  audio:100 },
+      'OPTIMA 3': { soins_optam:100, hospit_optam:150, dentaire:125,  optique_b_simple:200,  optique_unit:'pct',  audio:100 },
+      'OPTIMA 4': { soins_optam:100, hospit_optam:175, dentaire:150,  optique_b_simple:225,  optique_unit:'pct',  audio:100 },
+      'OPTIMA 5': { soins_optam:125, hospit_optam:200, dentaire:200,  optique_b_simple:250,  optique_unit:'pct',  audio:125 },
     }
   },
   // ── Innov'Santé (NON RESPONSABLE, IS1-IS7) — forfait global ─────
@@ -1348,12 +1338,12 @@ const NEOLIANE_GUARANTEES = {
     responsable: false,
     pdfUrl: 'https://assurances-oceane.github.io/comparateur-sante/docs/garanties/neoliane-alto-sante.pdf',
     byFormula: {
-      'AS 1': { soins_optam:100, hospit_optam:100, dentaire:100,  optique_b_simple:100,  optique_b_complexe:100,  audio:260 },
-      'AS 2': { soins_optam:125, hospit_optam:125, dentaire:125,  optique_b_simple:100,  optique_b_complexe:100,  audio:260 },
-      'AS 3': { soins_optam:150, hospit_optam:150, dentaire:165,  optique_b_simple:150,  optique_b_complexe:225,  audio:260 },
-      'AS 4': { soins_optam:175, hospit_optam:175, dentaire:190,  optique_b_simple:175,  optique_b_complexe:250,  audio:260 },
-      'AS 5': { soins_optam:200, hospit_optam:200, dentaire:215,  optique_b_simple:200,  optique_b_complexe:275,  audio:325 },
-      'AS 6': { soins_optam:200, hospit_optam:225, dentaire:265,  optique_b_simple:225,  optique_b_complexe:325,  audio:390 },
+      'AS 1': { soins_optam:100, hospit_optam:100, dentaire:100,  optique_b_simple:100,  optique_unit:'pct',  audio:100, audio_extra:160 },
+      'AS 2': { soins_optam:125, hospit_optam:125, dentaire:125,  optique_b_simple:100,  optique_unit:'pct',  audio:100, audio_extra:160 },
+      'AS 3': { soins_optam:150, hospit_optam:150, dentaire:165,  optique_b_simple:225,  optique_unit:'euro', audio:100, audio_extra:160 },
+      'AS 4': { soins_optam:175, hospit_optam:175, dentaire:190,  optique_b_simple:250,  optique_unit:'euro', audio:100, audio_extra:160 },
+      'AS 5': { soins_optam:200, hospit_optam:200, dentaire:215,  optique_b_simple:275,  optique_unit:'euro', audio:125, audio_extra:200 },
+      'AS 6': { soins_optam:200, hospit_optam:225, dentaire:265,  optique_b_simple:325,  optique_unit:'euro', audio:150, audio_extra:240 },
     }
   },
   // ── Pulse (RESPONSABLE, PU1-PU8) ────────────────────────────────
@@ -1361,28 +1351,41 @@ const NEOLIANE_GUARANTEES = {
     responsable: true,
     pdfUrl: 'https://assurances-oceane.github.io/comparateur-sante/docs/garanties/neoliane-pulse.pdf',
     byFormula: {
-      'PU 1': { soins_optam:100, hospit_optam:125, dentaire:100,  optique_b_simple:125,  optique_b_complexe:200,  audio:100 },
-      'PU 2': { soins_optam:125, hospit_optam:150, dentaire:125,  optique_b_simple:150,  optique_b_complexe:225,  audio:125 },
-      'PU 3': { soins_optam:125, hospit_optam:175, dentaire:150,  optique_b_simple:175,  optique_b_complexe:250,  audio:150 },
-      'PU 4': { soins_optam:150, hospit_optam:200, dentaire:175,  optique_b_simple:200,  optique_b_complexe:300,  audio:175 },
-      'PU 5': { soins_optam:150, hospit_optam:225, dentaire:200,  optique_b_simple:250,  optique_b_complexe:350,  audio:200 },
-      'PU 6': { soins_optam:175, hospit_optam:250, dentaire:225,  optique_b_simple:300,  optique_b_complexe:400,  audio:225 },
-      'PU 7': { soins_optam:175, hospit_optam:300, dentaire:250,  optique_b_simple:350,  optique_b_complexe:450,  audio:250 },
-      'PU 8': { soins_optam:200, hospit_optam:325, dentaire:275,  optique_b_simple:350,  optique_b_complexe:500,  audio:275 },
+      'PU 1': { soins_optam:100, hospit_optam:125, dentaire:100,  optique_b_simple:200,  optique_unit:'pct',  audio:100 },
+      'PU 2': { soins_optam:125, hospit_optam:150, dentaire:125,  optique_b_simple:225,  optique_unit:'pct',  audio:125 },
+      'PU 3': { soins_optam:125, hospit_optam:175, dentaire:150,  optique_b_simple:250,  optique_unit:'pct',  audio:150 },
+      'PU 4': { soins_optam:150, hospit_optam:200, dentaire:175,  optique_b_simple:300,  optique_unit:'pct',  audio:175 },
+      'PU 5': { soins_optam:150, hospit_optam:225, dentaire:200,  optique_b_simple:350,  optique_unit:'pct',  audio:200 },
+      'PU 6': { soins_optam:175, hospit_optam:250, dentaire:225,  optique_b_simple:400,  optique_unit:'pct',  audio:225 },
+      'PU 7': { soins_optam:175, hospit_optam:300, dentaire:250,  optique_b_simple:450,  optique_unit:'pct',  audio:250 },
+      'PU 8': { soins_optam:200, hospit_optam:325, dentaire:275,  optique_b_simple:500,  optique_unit:'pct',  audio:275 },
     }
   },
 };
 
 function getNeolianeGuarantees(gammeLabel, formulaLabel) {
+  if (!gammeLabel) return null;
   // Recherche insensible à la casse et aux variantes orthographiques
   const key = Object.keys(NEOLIANE_GUARANTEES).find(k =>
     gammeLabel?.toLowerCase().includes(k.toLowerCase()) ||
     k.toLowerCase().includes(gammeLabel?.toLowerCase())
   );
-  if (!key) return null;
+  if (!key) { console.warn('[Neoliane] Gamme non trouvée:', gammeLabel); return null; }
   const data = NEOLIANE_GUARANTEES[key];
-  const g = data.byFormula[formulaLabel] || null;
-  return g ? { ...g, responsable: data.responsable, pdfUrl: data.pdfUrl } : null;
+
+  // Chercher la formule avec matching flexible (trim + insensible casse)
+  const fLabel = formulaLabel?.trim();
+  let g = data.byFormula[fLabel] || null;
+  if (!g) {
+    // Essai avec normalisation des espaces (ex: 'EN 1' vs 'EN1')
+    const fKey = Object.keys(data.byFormula).find(k =>
+      k.trim().toLowerCase() === fLabel?.toLowerCase() ||
+      k.trim().toLowerCase().replace(/\s+/g,'') === fLabel?.toLowerCase().replace(/\s+/g,'')
+    );
+    g = fKey ? data.byFormula[fKey] : null;
+  }
+  if (!g) { console.warn('[Neoliane] Formule non trouvée:', formulaLabel, '— Clés dispo:', Object.keys(data.byFormula)); return null; }
+  return { ...g, responsable: data.responsable, pdfUrl: data.pdfUrl, audio_extra: g.audio_extra || null };
 }
 
       offers.push({
