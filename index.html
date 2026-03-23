@@ -528,17 +528,17 @@ const MALJ_PDF_URLS = {
 //  Optique = forfait € sauf N1 (100% BR)
 //  Audio = % BR
 // ─────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────
+//  INIZYS — garanties extraites du PDF 2026 (5 niveaux)
+//  N1(2AP4)=100%, N2(2AP5)=120%, N3(2AP1)=140%, N4(2AP2)=200%, N5(2AP3)=300%
+//  optique_b_simple = verres simples, optique_b_complexe = verres complexes (max affiché)
+// ─────────────────────────────────────────────────────────────────
 const INIZYS_GUARANTEES = {
-  // N1 (2AP4) : soins 100%, hospit 100%, dentaire 100%, optique 100% BR
-  ECO:       { soins_optam:100, hospit_optam:100, dentaire:100, optique_b_simple:100,  optique_unit:'pct',  audio:100 },
-  // N2 (2AP5) : soins 120%, hospit 120%, dentaire 150%, optique verres simples 50€
-  ECO_PLUS:  { soins_optam:120, hospit_optam:120, dentaire:150, optique_b_simple:50,   optique_unit:'euro', audio:120 },
-  // N3 (2AP1) : soins 140%, hospit 140%, dentaire 200%, optique verres simples 150€
-  EQUILIBRE: { soins_optam:140, hospit_optam:140, dentaire:200, optique_b_simple:150,  optique_unit:'euro', audio:140 },
-  // N4 (2AP2) : soins 200%, hospit 200%, dentaire 250%, optique verres simples 200€
-  PRIVILEGE: { soins_optam:200, hospit_optam:200, dentaire:250, optique_b_simple:200,  optique_unit:'euro', audio:200 },
-  // N5 (2AP3) : soins 300%, hospit 300%, dentaire 300%, optique verres simples 250€
-  VIP:       { soins_optam:300, hospit_optam:300, dentaire:300, optique_b_simple:250,  optique_unit:'euro', audio:250 },
+  ECO:       { soins_optam:100, hospit_optam:100, dentaire:100, optique_b_simple:100,  optique_b_complexe:100,  optique_unit:'pct',  audio:100 },
+  ECO_PLUS:  { soins_optam:120, hospit_optam:120, dentaire:150, optique_b_simple:50,   optique_b_complexe:200,  optique_unit:'euro', audio:120 },
+  EQUILIBRE: { soins_optam:140, hospit_optam:140, dentaire:200, optique_b_simple:150,  optique_b_complexe:210,  optique_unit:'euro', audio:140 },
+  PRIVILEGE: { soins_optam:200, hospit_optam:200, dentaire:250, optique_b_simple:200,  optique_b_complexe:260,  optique_unit:'euro', audio:200 },
+  VIP:       { soins_optam:300, hospit_optam:300, dentaire:300, optique_b_simple:250,  optique_b_complexe:350,  optique_unit:'euro', audio:250 },
 };
 
 // PDF INIZYS
@@ -587,7 +587,7 @@ const APRIL_PROXY = 'https://www.leviagergaranti.fr/proxy-april.php';
 
 const APRIL_GUARANTEE_BY_PRODUCT = {
   SanteGan: 'MaladieChirurgie',
-  FlexiSante: 'GarantieHospitalisation',
+  OnlySante: 'MaladieChirurgie',
   SanteProtect: 'MaladieChirurgie',
   SanteMix: 'GarantieHospitalisation',
   SantePeps: 'MaladieChirurgie',
@@ -609,13 +609,13 @@ const APRIL_PRODUCTS = {
       '05': { percent: 300, classification: 'VIP' },
     }
   },
-  'FlexiSante': {
-    title: 'APRIL Flexi Santé',
+  'OnlySante': {
+    title: 'APRIL Only Santé',
     levels: {
       '01': { percent: 100, classification: 'ECO' },
-      '02': { percent: 100, classification: 'ECO' },
-      '03': { percent: 125, classification: 'ECO_PLUS' },
-      '04': { percent: 150, classification: 'EQUILIBRE' },
+      '02': { percent: 125, classification: 'ECO_PLUS' },
+      '03': { percent: 150, classification: 'EQUILIBRE' },
+      '04': { percent: 175, classification: 'CONFORT' },
       '05': { percent: 200, classification: 'PRIVILEGE' },
       '06': { percent: 250, classification: 'VIP' },
     }
@@ -801,16 +801,15 @@ const APRIL_GUARANTEES_BY_LEVEL = {
     '05': { soins_optam:350, hospit_optam:350, dentaire:200, optique_b_simple:300,  optique_unit:'euro', audio:600 },
   },
 
-  // ── APRIL Flexi Santé Formule Complète (6 niveaux) ──────────────
-  // Module Hospit/Soins + Module ODA séparés — optique en €
-  // ⚠️ Le prix API = Module Hospit+Soins uniquement (sans ODA ni renforts)
-  FlexiSante: {
-    '01': { soins_optam:100, hospit_optam:100, dentaire:100, optique_b_simple:100,  optique_unit:'pct',  audio:100 },
-    '02': { soins_optam:100, hospit_optam:125, dentaire:125, optique_b_simple:100,  optique_unit:'euro', audio:100 },
-    '03': { soins_optam:125, hospit_optam:150, dentaire:150, optique_b_simple:150,  optique_unit:'euro', audio:100 },
-    '04': { soins_optam:150, hospit_optam:200, dentaire:200, optique_b_simple:200,  optique_unit:'euro', audio:100 },
-    '05': { soins_optam:200, hospit_optam:250, dentaire:250, optique_b_simple:250,  optique_unit:'euro', audio:100 },
-    '06': { soins_optam:250, hospit_optam:300, dentaire:300, optique_b_simple:300,  optique_unit:'euro', audio:100 },
+  // ── APRIL Only Santé (6 niveaux) — NON RESPONSABLE ─────────────
+  // 100% Santé exclu. Dentaire : prothèses forfait €. Optique : forfait verres complexes.
+  OnlySante: {
+    '01': { soins_optam:100, hospit_optam:100, dentaire:100, optique_b_simple:100,  optique_b_complexe:100,  optique_unit:'pct',  audio:100 },
+    '02': { soins_optam:125, hospit_optam:125, dentaire:100, optique_b_simple:150,  optique_b_complexe:200,  optique_unit:'euro', audio:100 },
+    '03': { soins_optam:150, hospit_optam:150, dentaire:100, optique_b_simple:200,  optique_b_complexe:250,  optique_unit:'euro', audio:100 },
+    '04': { soins_optam:175, hospit_optam:175, dentaire:100, optique_b_simple:250,  optique_b_complexe:300,  optique_unit:'euro', audio:100 },
+    '05': { soins_optam:200, hospit_optam:200, dentaire:100, optique_b_simple:300,  optique_b_complexe:350,  optique_unit:'euro', audio:100 },
+    '06': { soins_optam:250, hospit_optam:250, dentaire:100, optique_b_simple:350,  optique_b_complexe:400,  optique_unit:'euro', audio:100 },
   },
 
   // ── APRIL Santé Mix Proximité (6 niveaux) — optique en € ────────
@@ -1347,7 +1346,7 @@ const NEOLIANE_GUARANTEES = {
   // ── AltoSanté (NON RESPONSABLE, AS1-AS6) ────────────────────────
   'AltoSanté': {
     responsable: false,
-    pdfUrl: 'https://assurances-oceane.github.io/comparateur-sante/docs/garanties/neoliane-alto-sante.pdf',
+    pdfUrl: '',
     byFormula: {
       'AS 1': { soins_optam:100, hospit_optam:100, dentaire:100,  optique_b_simple:100,  optique_b_complexe:100,  audio:260 },
       'AS 2': { soins_optam:125, hospit_optam:125, dentaire:125,  optique_b_simple:100,  optique_b_complexe:100,  audio:260 },
@@ -1847,14 +1846,14 @@ const APRIL_PDF_URLS = {
   SanteVita:        'https://assurances-oceane.github.io/comparateur-sante/docs/garanties/april-vita-sante.pdf',
   SanteGan:         'https://assurances-oceane.github.io/comparateur-sante/docs/garanties/complementaire-senior-gan.pdf',
   SanteProtect:     'https://assurances-oceane.github.io/comparateur-sante/docs/garanties/protection-sante-malakoff.pdf',
-  FlexiSante:       'https://assurances-oceane.github.io/comparateur-sante/docs/garanties/april-flexi-sante.pdf',
+  OnlySante:        'https://assurances-oceane.github.io/comparateur-sante/docs/garanties/april-only-sante.pdf',
   SanteMix:         'https://assurances-oceane.github.io/comparateur-sante/docs/garanties/april-sante-mix-proximite.pdf',
 };
 
 // Produits non responsables (ne prennent pas en charge le 100% Santé)
 // FlexiSante Formule Eco = non responsable ; Formule Complète = responsable
 // Dans ce comparateur on propose Formule Complète → responsable
-const APRIL_NON_RESPONSABLE = []; // FlexiSante Formule Complète est responsable
+const APRIL_NON_RESPONSABLE = ['OnlySante']; // April Only Santé = non responsable
 
 // ═══════════════════════════════════════════════════════
 //  MODAL
@@ -1894,15 +1893,24 @@ function openModal(offer) {
       { icon:'🏥', label:'Hospitalisation',  val: hasVal(g.hospit_optam)      ? g.hospit_optam + '% BR'      : '—', note:'Honoraires chirurgicaux DPTAM' },
       { icon:'💊', label:'Soins courants',   val: hasVal(g.soins_optam)       ? g.soins_optam + '% BR'       : '—', note:'Consultations médecins DPTAM' },
       { icon:'🦷', label:'Dentaire',         val: hasVal(g.dentaire)          ? g.dentaire + '% BR'          : '—', note:'Prothèses hors 100% Santé' },
-      { icon:'👓', label:'Optique',          val: hasVal(g.optique_b_simple) ? g.optique_b_simple + (g.optique_unit === 'euro' ? ' €' : '% BR') : '—', note:'Verres + monture classe B (cat. 1)' },
+      { icon:'👓', label:'Optique',
+        get _optVal() {
+          const s = g.optique_b_simple, c = g.optique_b_complexe;
+          if (hasVal(c) && hasVal(s) && g.optique_unit !== 'pct') return Math.max(s, c);
+          return s;
+        },
+        get val() {
+          return hasVal(this._optVal) ? this._optVal + (g.optique_unit === 'euro' ? ' €' : '% BR') : '—';
+        },
+        note:'Verres + monture classe B — complexes (cat. 3)' },
       { icon:'👂', label:'Audiologie',       val: hasVal(g.audio)             ? g.audio + '% BR'             : '—', note:'Prothèses auditives classe II' },
     ];
 
     // Note FlexiSante : prix = Module Hospit+Soins uniquement
-    if (productCode === 'FlexiSante') {
+    if (productCode === 'OnlySante') {
       html += `<div style="padding:10px 14px;background:rgba(37,99,235,0.06);border:1px solid rgba(37,99,235,0.2);border-radius:var(--radius-sm);font-size:12px;color:var(--accent);margin-bottom:12px">
-        ℹ️ <strong>FlexiSanté — Formule Complète Responsable</strong><br>
-        Ce tarif couvre le Module Hospitalisation + Soins courants. Le Module Optique/Dentaire/Audiologie (ODA) est séparé et s'ajoute au prix affiché. Pour une couverture complète, demandez un devis ODA à April.
+        ⚠️ <strong>April Only Santé — Contrat Non Responsable</strong><br>
+        Ce contrat ne prend pas en charge le 100% Santé. Il offre une couverture hospitalisation et soins courants modulable en 6 niveaux. Les actes 100% Santé (dentaire, optique, audio classe A) sont exclus.
       </div>`;
     }
     // Note SanteMix : prix = Hospit + FDS, ODA non inclus
@@ -1989,7 +1997,18 @@ function openModal(offer) {
       { icon:'🏥', label:'Hospitalisation',  val: hasVal(gDisplay.hospit_optam) ? gDisplay.hospit_optam + '% BR' : '—', note:'Honoraires chirurgicaux OPTAM' },
       { icon:'💊', label:'Soins courants',   val: hasVal(gDisplay.soins_optam)  ? gDisplay.soins_optam  + '% BR' : '—', note:'Consultations médecins OPTAM' },
       { icon:'🦷', label:'Dentaire',         val: hasVal(gDisplay.dentaire)     ? gDisplay.dentaire + (isInnovSante ? ' € (forfait global)' : '% BR') : '—', note: isInnovSante ? 'Inclus dans forfait global D+O+A' : 'Prothèses hors 100% Santé' },
-      { icon:'👓', label:'Optique',          val: hasVal(gDisplay.optique_b_simple) ? gDisplay.optique_b_simple + (isInnovSante ? ' € (forfait global)' : (neoData?.optique_unit === 'euro' || (gDisplay.optique_b_simple >= 50 && gDisplay.optique_b_simple <= 1000) ? ' €' : '% BR')) : '—', note: isInnovSante ? 'Inclus dans forfait global D+O+A' : 'Verres + monture classe B (cat. 1)' },
+      { icon:'👓', label:'Optique',
+        get _neoOptVal() {
+          const s = gDisplay.optique_b_simple, c = gDisplay.optique_b_complexe;
+          if (!isInnovSante && hasVal(c) && hasVal(s) && neoData?.optique_unit !== 'pct') return Math.max(s, c);
+          return s;
+        },
+        get val() {
+          const v = this._neoOptVal;
+          const unit = isInnovSante ? ' € (forfait global)' : (neoData?.optique_unit === 'euro' || (v >= 50 && v <= 1000 && neoData?.optique_unit !== 'pct') ? ' €' : '% BR');
+          return hasVal(v) ? v + unit : '—';
+        },
+        note: isInnovSante ? 'Inclus dans forfait global D+O+A' : 'Verres + monture classe B — complexes (cat. 3)' },
       { icon:'👂', label:'Audiologie',       val: hasVal(gDisplay.audio)        ? gDisplay.audio + (isInnovSante ? ' € (forfait global)' : '% BR') : '—', note: isInnovSante ? 'Inclus dans forfait global D+O+A' : 'Prothèses auditives classe II' },
     ];
 
@@ -2046,7 +2065,16 @@ function openModal(offer) {
       { icon:'🏥', label:'Hospitalisation',  val: hasVal(g.hospit_optam)      ? g.hospit_optam + '% BR'   : '—', note:'Honoraires médicaux DPTAM' },
       { icon:'💊', label:'Soins courants',   val: hasVal(g.soins_optam)       ? g.soins_optam  + '% BR'   : '—', note:'Consultations médecins DPTAM' },
       { icon:'🦷', label:'Dentaire',         val: hasVal(g.dentaire)          ? g.dentaire + '% BR'       : '—', note:'Prothèses hors 100% Santé' },
-      { icon:'👓', label:'Optique',          val: hasVal(g.optique_b_simple)  ? g.optique_b_simple + (g.optique_unit === 'pct' ? '% BR' : ' €') : '—', note:'Verres + monture classe B (cat. 1)' },
+      { icon:'👓', label:'Optique',
+        get _optVal() {
+          const s = g.optique_b_simple, c = g.optique_b_complexe;
+          if (hasVal(c) && hasVal(s) && g.optique_unit !== 'pct') return Math.max(s, c);
+          return s;
+        },
+        get val() {
+          return hasVal(this._optVal) ? this._optVal + (g.optique_unit === 'pct' ? '% BR' : ' €') : '—';
+        },
+        note:'Verres + monture classe B — complexes (cat. 3)' },
       { icon:'👂', label:'Audiologie',       val: hasVal(g.audio)             ? g.audio + '% BR'          : '—', note:'Prothèses auditives classe II' },
     ];
 
