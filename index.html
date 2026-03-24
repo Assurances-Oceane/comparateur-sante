@@ -1333,6 +1333,21 @@ const NEOLIANE_GUARANTEES = {
       'PU 8': { soins_optam:200, hospit_optam:325, dentaire:275,  optique_b_simple:500,  optique_unit:'pct',  audio:275 },
     }
   },
+  // ── HospiSanté (NON RESPONSABLE, HS1-HS6) ───────────────────────
+  // Produit hospi-only : pas de dentaire, optique, ni audio
+  // HS1-HS3 = hospi seul, HS4-HS6 = hospi + soins courants
+  'HospiSanté': {
+    responsable: false,
+    pdfUrl: 'https://assurances-oceane.github.io/comparateur-sante/docs/garanties/neoliane-hospi-sante.pdf',
+    byFormula: {
+      'HS 1': { soins_optam:100, hospit_optam:150, dentaire:0, optique_b_simple:0, optique_unit:'pct', audio:0 },
+      'HS 2': { soins_optam:100, hospit_optam:300, dentaire:0, optique_b_simple:0, optique_unit:'pct', audio:0 },
+      'HS 3': { soins_optam:100, hospit_optam:400, dentaire:0, optique_b_simple:0, optique_unit:'pct', audio:0 },
+      'HS 4': { soins_optam:100, hospit_optam:100, dentaire:0, optique_b_simple:0, optique_unit:'pct', audio:0 },
+      'HS 5': { soins_optam:150, hospit_optam:300, dentaire:0, optique_b_simple:0, optique_unit:'pct', audio:0 },
+      'HS 6': { soins_optam:250, hospit_optam:400, dentaire:0, optique_b_simple:0, optique_unit:'pct', audio:0 },
+    }
+  },
 };
 
 function getNeolianeGuarantees(gammeLabel, formulaLabel) {
@@ -2010,7 +2025,10 @@ function openModal(offerOrIndex) {
       soins_optam:       neoData.soins_optam,
       dentaire:          neoData.dentaire,
       optique_b_simple:  neoData.optique_b_simple,
+      optique_b_complexe:neoData.optique_b_complexe,
+      optique_unit:      neoData.optique_unit,
       audio:             neoData.audio,
+      audio_extra:       neoData.audio_extra || null,
     } : g;
 
     // Badge responsable
@@ -2031,24 +2049,33 @@ function openModal(offerOrIndex) {
       </div>`;
     }
 
-    // 5 lignes garanties
+    // Note HospiSanté (hospi-only, pas de dentaire/optique/audio)
+    const isHospiSante = offer.contract?.toLowerCase().includes('hospisanté') || offer.contract?.toLowerCase().includes('hospisante');
+    if (isHospiSante) {
+      html += `<div style="padding:10px 14px;background:rgba(37,99,235,0.06);border:1px solid rgba(37,99,235,0.2);border-radius:var(--radius-sm);font-size:12px;color:var(--accent);margin-bottom:12px">
+        ℹ️ <strong>HospiSanté</strong> — Contrat hospitalisation uniquement. Les frais dentaires, optiques et audioprothèses ne sont pas couverts.
+      </div>`;
+    }
+
+    // 5 lignes garanties (on masque les lignes vides pour HospiSanté)
     const neoRows = [
       { icon:'🏥', label:'Hospitalisation',  val: hasVal(gDisplay.hospit_optam) ? gDisplay.hospit_optam + '% BR' : '—', note:'Honoraires chirurgicaux OPTAM' },
       { icon:'💊', label:'Soins courants',   val: hasVal(gDisplay.soins_optam)  ? gDisplay.soins_optam  + '% BR' : '—', note:'Consultations médecins OPTAM' },
-      { icon:'🦷', label:'Dentaire',         val: hasVal(gDisplay.dentaire)     ? gDisplay.dentaire + (isInnovSante ? ' € (forfait global)' : '% BR') : '—', note: isInnovSante ? 'Inclus dans forfait global D+O+A' : 'Prothèses hors 100% Santé' },
+      { icon:'🦷', label:'Dentaire',         val: (gDisplay.dentaire > 0) ? gDisplay.dentaire + (isInnovSante ? ' € (forfait global)' : '% BR') : (isHospiSante ? 'Non couvert' : '—'), note: isInnovSante ? 'Inclus dans forfait global D+O+A' : 'Prothèses hors 100% Santé' },
       { icon:'👓', label:'Optique',
         get _neoOptVal() {
           const s = gDisplay.optique_b_simple, c = gDisplay.optique_b_complexe;
-          if (!isInnovSante && hasVal(c) && hasVal(s) && neoData?.optique_unit !== 'pct') return Math.max(s, c);
+          if (!isInnovSante && hasVal(c) && hasVal(s) && gDisplay.optique_unit !== 'pct') return Math.max(s, c);
           return s;
         },
         get val() {
+          if (isHospiSante) return 'Non couvert';
           const v = this._neoOptVal;
-          const unit = isInnovSante ? ' € (forfait global)' : (neoData?.optique_unit === 'euro' || (v >= 50 && v <= 1000 && neoData?.optique_unit !== 'pct') ? ' €' : '% BR');
-          return hasVal(v) ? v + unit : '—';
+          const unit = isInnovSante ? ' € (forfait global)' : (gDisplay.optique_unit === 'euro' ? ' €' : '% BR');
+          return hasVal(v) && v > 0 ? v + unit : '—';
         },
         note: isInnovSante ? 'Inclus dans forfait global D+O+A' : 'Verres + monture classe B — complexes (cat. 3)' },
-      { icon:'👂', label:'Audiologie',       val: hasVal(gDisplay.audio) ? gDisplay.audio + (isInnovSante ? ' € (forfait global)' : '% BR') + (neoData?.audio_extra ? ' + ' + neoData.audio_extra + '€/aide' : '') : '—', note: isInnovSante ? 'Inclus dans forfait global D+O+A' : 'Prothèses auditives classe II' },
+      { icon:'👂', label:'Audiologie',       val: isHospiSante ? 'Non couvert' : (hasVal(gDisplay.audio) ? gDisplay.audio + (isInnovSante ? ' € (forfait global)' : '% BR') + (gDisplay.audio_extra ? ' + ' + gDisplay.audio_extra + '€/aide' : '') : '—'), note: isInnovSante ? 'Inclus dans forfait global D+O+A' : 'Prothèses auditives classe II' },
     ];
 
     html += `<div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px">`;
