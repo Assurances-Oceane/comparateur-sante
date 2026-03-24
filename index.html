@@ -2015,7 +2015,10 @@ function openModal(offerOrIndex) {
 
   // ── Format NEOLIANE : même présentation qu'APRIL ────────────────
   } else if (isNeoliane) {
-    const neoData   = getNeolianeGuarantees(offer.neoliane_gamme || offer.contract, offer.neoliane_formula || offer.formula);
+    const _neoGamme = offer.neoliane_gamme || offer.contract;
+    const _neoForm  = offer.neoliane_formula || offer.formula;
+    const neoData   = getNeolianeGuarantees(_neoGamme, _neoForm);
+    console.log('[Neoliane Modal] gamme='+_neoGamme+' formule='+_neoForm+' neoData=', neoData);
     const isNonResp = neoData ? !neoData.responsable : NEOLIANE_NON_RESPONSABLE.some(n => offer.contract?.includes(n));
     const pdfUrl    = neoData?.pdfUrl || null;
 
